@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "scripts": {
-  "lint": "next lint"
+    "lint": "next lint pages lib"
     "db:push": "drizzle-kit push:sqlite",
     "db:studio": "drizzle-kit studio"
   },
