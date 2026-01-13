@@ -22,7 +22,8 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-      run: npm install
+        run: npm install
+
       - name: Run linter
         run: npm run lint
 
@@ -41,11 +42,11 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-      run: npm install
+        run: npm install
+
       - name: Build Next.js app
         run: npm run build
         env:
-          # Add any required build-time env vars
           NODE_ENV: production
 
       - name: Upload build artifacts
@@ -88,7 +89,8 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-      run: npm install
+        run: npm install
+
       - name: Check types
         run: npx tsc --noEmit || echo "TypeScript check completed with warnings"
         continue-on-error: true
@@ -101,7 +103,7 @@ jobs:
     steps:
       - name: Deployment status
         run: |
-          echo "✅ All checks passed!"
-          echo "🚀 Application is ready for deployment"
-          echo "📦 Build artifacts are available"
-          echo "🔒 Security audit completed"
+          echo "All checks passed!"
+          echo "Application is ready for deployment"
+          echo "Build artifacts are available"
+          echo "Security audit completed"
