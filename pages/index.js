@@ -59,4 +59,22 @@ export default function Home() {
           recipes.map((recipe) => (
             <div key={recipe.id} className="recipe-card">
               <h3>{recipe.title}</h3>
-              <p className="recipe-descrip
+              <p className="recipe-description">{recipe.description || 'No description'}</p>
+              <div className="recipe-actions">
+                <Link href={`/recipe/${recipe.id}`} className="btn btn-sm btn-secondary">
+                  📖 View
+                </Link>
+                <Link href={`/recipe/${recipe.id}/edit`} className="btn btn-sm btn-primary">
+                  ✏️ Edit
+                </Link>
+                <button onClick={() => deleteRecipe(recipe.id)} className="btn btn-sm btn-danger">
+                  🗑️ Delete
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </main>
+    </div>
+  );
+}
