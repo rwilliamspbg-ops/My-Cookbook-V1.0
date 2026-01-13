@@ -1,0 +1,29 @@
+{
+  "name": "my-cookbook-v1",
+  "version": "1.0.0",
+  "description": "Combined recipe management app with OpenAI parsing",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:push": "drizzle-kit push:sqlite",
+    "db:studio": "drizzle-kit studio"
+  },
+  "dependencies": {
+    "next": "^14.0.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "drizzle-orm": "^0.29.1",
+    "better-sqlite3": "^9.2.2",
+    "openai": "^4.20.1",
+    "pdf-parse": "^1.1.1",
+    "formidable": "^3.5.1",
+    "axios": "^1.6.2"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.20.6",
+    "@types/better-sqlite3": "^7.6.8",
+    "@types/formidable": "^3.4.5"
+  }
+}
