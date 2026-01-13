@@ -11,19 +11,18 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "next": "^14.0.4",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "@libsql/client": "^0.17.0",
+    "axios": "^1.6.2",
     "drizzle-orm": "^0.29.1",
-    "better-sqlite3": "^9.2.2",
+    "formidable": "^3.5.1",
+    "next": "^14.0.4",
     "openai": "^4.20.1",
     "pdf-parse": "^1.1.1",
-    "formidable": "^3.5.1",
-    "axios": "^1.6.2"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "drizzle-kit": "^0.20.6",
-    "@types/better-sqlite3": "^7.6.8",
-    "@types/formidable": "^3.4.5"
+    "@types/formidable": "^3.4.5",
+    "drizzle-kit": "^0.18.1"
   }
 }
