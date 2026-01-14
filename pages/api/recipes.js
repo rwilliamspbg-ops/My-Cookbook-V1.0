@@ -1,47 +1,50 @@
+import { db } from '../../lib/db';
+import { recipes } from '../../lib/db/schema';
+
 export default async function handler(req, res) {
   try {
-    const form = formidable({ multiples: false });
-    const [fields, files] = await form.parse(req);
-    let extractedText = '';
-    const inputType = fields.inputType?.[0] || 'text';
-
-    if (inputType === 'pdf' && files.file) {
-      const file = files.file[0];
-      const dataBuffer = await fs.readFile(file.filepath);
-      const pdfData = await pdf(dataBuffer);
-      extractedText = pdfData.text;
-    } else if (inputType === 'url') {
-      const url = fields.url?.[0];
-      const response = await fetch(url);
-      extractedText = await response.text();
-    } else {
-      extractedText = fields.text?.[0] || '';
+    if (req.method === 'GET') {
+      const all = await db.select().from(recipes);
+      return res.status(200).json(all);
     }
 
-    if (!extractedText) {
-      return res.status(400).json({ error: 'No text to parse' });
+    if (req.method === 'POST') {
+      const {
+        title,
+        description,
+        ingredients,
+        instructions,
+        prepTime,
+        cookTime,
+        servings,
+        category,
+      } = req.body; // JSON from client
+
+      if (!title || !Array.isArray(ingredients) || !Array.isArray(instructions)) {
+        return res.status(422).json({ error: 'Invalid recipe payload' });
+      }
+
+      const result = await db
+        .insert(recipes)
+        .values({
+          title,
+          description,
+          ingredients: JSON.stringify(ingredients),
+          instructions: JSON.stringify(instructions),
+          prep_time: prepTime,
+          cook_time: cookTime,
+          servings,
+          category,
+        })
+        .returning();
+
+      return res.status(201).json(result[0]);
     }
 
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [
-        { 
-          role: 'system', 
-          content: 'Return ONLY JSON with: title, description, ingredients (array), instructions (array), prepTime, cookTime, servings, category.' 
-        },
-        { 
-          role: 'user', 
-          content: `Extract recipe from:\n${extractedText}` 
-        }
-      ],
-      response_format: { type: 'json_object' },
-    });
-
-    const parsedRecipe = JSON.parse(response.choices[0].message.content);
-    return res.status(200).json({ success: true, recipe: parsedRecipe });
-
+    return res.status(405).json({ error: 'Method not allowed' });
   } catch (error) {
     console.error('API Error:', error);
-    return res.status(500).json({ error: 'Failed to parse recipe' });
+    return res.status(500).json({ error: 'Internal server error' });
   }
 }
+
