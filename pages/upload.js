@@ -11,46 +11,50 @@ export default function UploadPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage(null);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setMessage(null);
 
-    try {
-      let response;
+  try {
+    let response;
+    const formData = new FormData();
 
-      if (inputMethod === 'url' && urlInput) {
-        response = await axios.post('/api/parse-recipe', {
-          type: 'url',
-          content: urlInput
-        });
-      } else if (inputMethod === 'text' && textInput) {
-        response = await axios.post('/api/parse-recipe', {
-          type: 'text',
-          content: textInput
-        });
-      } else if (inputMethod === 'pdf' && pdfFile) {
-        const formData = new FormData();
-        formData.append('file', pdfFile);
-        response = await axios.post('/api/parse-recipe', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        });
-      }
-
-      if (response && response.data) {
-        setMessage({ type: 'success', text: 'Recipe parsed successfully!' });
-        // Redirect to home after success
-        setTimeout(() => window.location.href = '/', 1500);
-      }
-    } catch (error) {
-      setMessage({ 
-        type: 'error', 
-        text: error.response?.data?.error || 'Failed to parse recipe. Please try again.' 
-      });
-    } finally {
+    if (inputMethod === 'url' && urlInput) {
+      formData.append('inputType', 'url');
+      formData.append('url', urlInput);
+    } else if (inputMethod === 'text' && textInput) {
+      formData.append('inputType', 'text');
+      formData.append('text', textInput);
+    } else if (inputMethod === 'pdf' && pdfFile) {
+      formData.append('inputType', 'pdf');
+      formData.append('file', pdfFile);
+    } else {
+      setMessage({ type: 'error', text: 'Please provide recipe input.' });
       setLoading(false);
+      return;
     }
-  };
+
+    response = await axios.post('/api/parse-recipe', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+
+    if (response && response.data) {
+      setMessage({ type: 'success', text: 'Recipe parsed successfully!' });
+      setTimeout(() => (window.location.href = '/'), 1500);
+    }
+  } catch (error) {
+    setMessage({
+      type: 'error',
+      text:
+        error.response?.data?.error ||
+        'Failed to parse recipe. Please try again.',
+    });
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <>
