@@ -6,5 +6,4 @@ export const recipes = sqliteTable('recipes', {
   ingredients: text('ingredients'),
   instructions: text('instructions'),
   prepTime: text('prep_time'),
-  calories: integer('calories'),
 });
