@@ -65,6 +65,8 @@ export default async function handler(req, res) {
         {
           role: 'system',
           content: `You are a recipe parser.
+Extract a recipe from the text, even if formatting is messy.
+
 Return ONLY a JSON object with this exact shape:
 {
   "title": string,
@@ -76,7 +78,12 @@ Return ONLY a JSON object with this exact shape:
   "servings": number,
   "category": string
 }
-If any field is unknown, use null or an empty array. Do not include extra keys or any explanatory text.`,
+
+- "ingredients" must be a non-empty array of strings when a recipe is present.
+- "instructions" must be a non-empty array of strings when a recipe is present.
+- If a field is truly missing, use null (for numbers/strings) or [] (for arrays).
+- Never invent an entirely new recipe; always base fields on the provided text.`
+
         },
         { role: 'user', content: extractedText },
       ],
