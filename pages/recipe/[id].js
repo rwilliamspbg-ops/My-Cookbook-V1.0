@@ -21,7 +21,7 @@ export default function RecipeDetail() {
   });
 
   useEffect(() => {
-    if (id) fetchRecipe();
+    if (id) [fetchRecipe]();
   }, [id]);
 
   const fetchRecipe = async () => {
