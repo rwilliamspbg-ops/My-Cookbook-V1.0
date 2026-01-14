@@ -54,5 +54,5 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'Failed to parse recipe' });
-  }
-}
+  } // Closes the catch block
+} // Closes the export default async function handler
