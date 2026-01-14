@@ -3,15 +3,15 @@
   "version": "1.0.0",
   "description": "Combined recipe management app with OpenAI parsing",
   "scripts": {
-  "dev": "next dev",
-  "build": "next build",
-  "start": "next start",
-  "lint": "next lint -d pages -d lib"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint -d pages -d lib"
   },
   "dependencies": {
     "@libsql/client": "^0.17.0",
     "axios": "^1.7.9",
-    "drizzle-orm": "^0.38.3",
+    "drizzle-orm": "^0.45.1",
     "formidable": "^3.5.2",
     "next": "^15.1.4",
     "openai": "^6.15.0",
