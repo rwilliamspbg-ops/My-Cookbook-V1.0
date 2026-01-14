@@ -12,5 +12,5 @@ export default function Upload() {
   const [loading, setLoading] = useState(false);
   const [parsedRecipe, setParsedRecipe] = useState(null);
   const [editing, setEditing] = useState(false);
-  const [formData, setFormData]
+  const [formData, setFormData] = useState({ title: '', ingredients: '', instructions: '' });
 }
