@@ -11,7 +11,7 @@ export default function UploadPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
 
-  const handleSubmit = async (e) => {
+    const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setMessage(null);
@@ -27,5 +27,12 @@ export default function UploadPage() {
         formData.append('text', textInput);
       } else if (inputMethod === 'pdf' && pdfFile) {
         formData.append('inputType', 'pdf');
-        formData.append('file', pdf
+        formData.append('file', pdfFile);
+      } else {
+        setMessage({ type: 'error', text: 'Please provide recipe input.' });
+        setLoading(false);
+        return;
+      }
+
+      // rest of function...
 
