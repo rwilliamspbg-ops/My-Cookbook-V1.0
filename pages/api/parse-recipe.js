@@ -14,9 +14,6 @@ const openai = new OpenAI({
 });
 
 export default async function handler(req, res) {
-  // ... rest of your code ...
-}
-
   try {
     const form = formidable({ multiples: false });
     const [fields, files] = await form.parse(req);
@@ -40,18 +37,16 @@ export default async function handler(req, res) {
 
     const response = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
-      messages: [{
-        role: 'system',
-        content: 'Return ONLY JSON with: title, description, ingredients (array), instructions (array), prepTime, cookTime, servings, category.'
-      }, {
-        role: 'user',
-        content: `Extract recipe from:\n${extractedText}`
-      }],
+      messages: [
+        { role: 'system', content: 'Return ONLY JSON with: title, description, ingredients (array), instructions (array), prepTime, cookTime, servings, category.' },
+        { role: 'user', content: `Extract recipe from:\n${extractedText}` }
+      ],
       response_format: { type: 'json_object' },
     });
 
     const parsedRecipe = JSON.parse(response.choices[0].message.content);
     return res.status(200).json({ success: true, recipe: parsedRecipe });
+    
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'Failed to parse recipe' });
