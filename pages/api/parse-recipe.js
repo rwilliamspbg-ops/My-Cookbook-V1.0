@@ -4,13 +4,18 @@ import pdf from 'pdf-parse';
 import fs from 'fs/promises';
 
 export const config = {
-  api: { bodyParser: false },
+  api: {
+    bodyParser: false,
+  },
 };
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  // ... rest of your code ...
+}
 
   try {
     const form = formidable({ multiples: false });
