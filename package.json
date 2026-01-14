@@ -1,33 +1,26 @@
 {
   "name": "my-cookbook-v1",
   "version": "1.0.0",
-  "description": "Combined recipe management app with OpenAI parsing",
+  "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint -d pages -d lib"
+    "lint": "next lint"
   },
   "dependencies": {
-    "@libsql/client": "^0.17.0",
-    "axios": "^1.7.9",
-    "better-sqlite3": "^12.6.0",
-    "drizzle-orm": "^0.45.1",
-    "formidable": "^3.5.2",
-    "next": "^15.1.4",
-    "openai": "^6.15.0",
-    "pdf-parse": "^1.1.1",
+    "better-sqlite3": "^11.0.0",
+    "next": "15.5.9",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.2.0",
-    "@types/formidable": "^3.4.5",
-    "@types/node": "^22.10.5",
-    "@types/react": "^19.0.6",
-    "drizzle-kit": "^0.30.4",
-    "eslint": "^9.18.0",
-    "eslint-config-next": "^15.1.4",
-    "typescript": "^5.7.3"
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/node": "^20.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "15.5.9",
+    "typescript": "^5.0.0"
   }
 }
