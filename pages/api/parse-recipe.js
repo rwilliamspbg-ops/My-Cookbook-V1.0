@@ -26,12 +26,16 @@ export default async function handler(req, res) {
       const pdfData = await pdf(dataBuffer);
       extractedText = pdfData.text;
     } else if (inputType === 'url') {
-      const url = fields.url?.[0];
-      const response = await fetch(url);
-      extractedText = await response.text();
-    } else {
-      extractedText = fields.text?.[0] || '';
-    }
+  const url = fields.url?.[0];
+  try {
+    const response = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' } });
+    if (!response.ok) throw new Error('Site blocked request');
+    extractedText = await response.text();
+  } catch (e) {
+    // Fallback: If we can't scrape the site, just send the URL to OpenAI 
+    // and let its browsing capabilities/knowledge try to handle it.
+    extractedText = `Please extract the recipe from this URL: ${url}`;
+  }
 
     if (!extractedText) return res.status(400).json({ error: 'No text to parse' });
 
