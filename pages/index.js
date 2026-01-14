@@ -6,6 +6,7 @@ export default function Home() {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchRecipes();
@@ -32,6 +33,17 @@ export default function Home() {
       alert('Failed to delete recipe');
     }
   };
+
+  // Filter recipes based on search query
+  const filteredRecipes = recipes.filter(recipe => {
+    const query = searchQuery.toLowerCase();
+    return (
+      recipe.title?.toLowerCase().includes(query) ||
+      recipe.description?.toLowerCase().includes(query) ||
+      recipe.ingredients?.toLowerCase().includes(query) ||
+      recipe.instructions?.toLowerCase().includes(query)
+    );
+  });
 
   if (loading) return <div className="loading-container"><p>Loading recipes...</p></div>;
   if (error) return <div className="error-container"><p>{error}</p></div>;
@@ -82,6 +94,33 @@ export default function Home() {
           gap: 15px;
           justify-content: center;
           flex-wrap: wrap;
+        }
+
+        .search-section {
+          margin-bottom: 30px;
+          text-align: center;
+        }
+
+        .search-input {
+          width: 100%;
+          max-width: 600px;
+          padding: 15px 20px;
+          font-size: 16px;
+          border: 3px solid #dc143c;
+          border-radius: 10px;
+          outline: none;
+          transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+          box-shadow: 0 0 20px rgba(220, 20, 60, 0.3);
+          border-color: #ff6b6b;
+        }
+
+        .search-results-count {
+          margin-top: 10px;
+          color: #666;
+          font-style: italic;
         }
 
         .btn {
@@ -284,13 +323,32 @@ export default function Home() {
             </div>
           </header>
 
+          <div className="search-section">
+            <input
+              type="text"
+              className="search-input"
+              placeholder="🔍 Search recipes by title, description, ingredients, or instructions..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            {searchQuery && (
+              <p className="search-results-count">
+                Found {filteredRecipes.length} recipe{filteredRecipes.length !== 1 ? 's' : ''}
+              </p>
+            )}
+          </div>
+
           <main className="recipe-grid">
-            {recipes.length === 0 ? (
+            {filteredRecipes.length === 0 ? (
               <div className="empty-state">
-                <p>No recipes yet. Start by parsing or adding a recipe!</p>
+                <p>
+                  {searchQuery 
+                    ? `No recipes found matching "${searchQuery}"` 
+                    : 'No recipes yet. Start by parsing or adding a recipe!'}
+                </p>
               </div>
             ) : (
-              recipes.map((recipe) => (
+              filteredRecipes.map((recipe) => (
                 <div key={recipe.id} className="recipe-card">
                   <h3>{recipe.title}</h3>
                   <p className="recipe-description">
