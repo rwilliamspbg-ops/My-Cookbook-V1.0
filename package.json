@@ -11,6 +11,7 @@
   "dependencies": {
     "@libsql/client": "^0.17.0",
     "axios": "^1.7.9",
+    "better-sqlite3": "^12.6.0",
     "drizzle-orm": "^0.45.1",
     "formidable": "^3.5.2",
     "next": "^15.1.4",
@@ -20,8 +21,8 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@types/formidable": "^3.4.5",
     "@eslint/eslintrc": "^3.2.0",
+    "@types/formidable": "^3.4.5",
     "@types/node": "^22.10.5",
     "@types/react": "^19.0.6",
     "drizzle-kit": "^0.30.4",
