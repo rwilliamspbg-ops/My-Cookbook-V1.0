@@ -1,7 +1,3 @@
-import { db } from '../../lib/db';
-import { recipes } from '../../lib/schema';
-import { eq } from 'drizzle-orm';
-
 export default async function handler(req, res) {
   try {
     const form = formidable({ multiples: false });
