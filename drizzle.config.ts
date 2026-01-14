@@ -1,10 +1,10 @@
-import type { Config } from 'drizzle-kit';
+import { defineConfig } from 'drizzle-kit';
 
-export default {
+export default defineConfig({
   schema: './lib/schema.js',
   out: './drizzle',
-  driver: 'better-sqlite',
+  dialect: 'sqlite', // High priority: check this line
   dbCredentials: {
-    url: process.env.DATABASE_URL || './sqlite.db',
+    url: 'sqlite.db', // Path to your local sqlite.db file
   },
-} satisfies Config;
+});
