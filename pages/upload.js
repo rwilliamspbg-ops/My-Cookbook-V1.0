@@ -11,50 +11,67 @@ export default function UploadPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  setMessage(null);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage(null);
 
-  try {
-    let response;
-    const formData = new FormData();
+    try {
+      const formData = new FormData();
 
-    if (inputMethod === 'url' && urlInput) {
-      formData.append('inputType', 'url');
-      formData.append('url', urlInput);
-    } else if (inputMethod === 'text' && textInput) {
-      formData.append('inputType', 'text');
-      formData.append('text', textInput);
-    } else if (inputMethod === 'pdf' && pdfFile) {
-      formData.append('inputType', 'pdf');
-      formData.append('file', pdfFile);
-    } else {
-      setMessage({ type: 'error', text: 'Please provide recipe input.' });
-      setLoading(false);
-      return;
-    }
+      if (inputMethod === 'url' && urlInput) {
+        formData.append('inputType', 'url');
+        formData.append('url', urlInput);
+      } else if (inputMethod === 'text' && textInput) {
+        formData.append('inputType', 'text');
+        formData.append('text', textInput);
+      } else if (inputMethod === 'pdf' && pdfFile) {
+        formData.append('inputType', 'pdf');
+        formData.append('file', pdfFile);
+      } else {
+        setMessage({ type: 'error', text: 'Please provide recipe input.' });
+        setLoading(false);
+        return;
+      }
 
-    response = await axios.post('/api/parse-recipe', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+      // 1. Parse with OpenAI
+      const parseResponse = await axios.post('/api/parse-recipe', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
 
-    if (response && response.data) {
-      setMessage({ type: 'success', text: 'Recipe parsed successfully!' });
+      const parsed = parseResponse.data?.recipe;
+      if (!parsed) {
+        setMessage({ type: 'error', text: 'No recipe returned from parser.' });
+        setLoading(false);
+        return;
+      }
+
+      // 2. Save to DB
+      await axios.post('/api/recipes', {
+        title: parsed.title,
+        description: parsed.description,
+        ingredients: parsed.ingredients,
+        instructions: parsed.instructions,
+        prepTime: parsed.prepTime,
+        cookTime: parsed.cookTime,
+        servings: parsed.servings,
+        category: parsed.category,
+      });
+
+      setMessage({ type: 'success', text: 'Recipe parsed and saved!' });
       setTimeout(() => (window.location.href = '/'), 1500);
+    } catch (error) {
+      console.error('Upload/parse error:', error);
+      setMessage({
+        type: 'error',
+        text:
+          error.response?.data?.error ||
+          'Failed to parse and save recipe. Please try again.',
+      });
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    setMessage({
-      type: 'error',
-      text:
-        error.response?.data?.error ||
-        'Failed to parse recipe. Please try again.',
-    });
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   return (
     <>
@@ -63,12 +80,22 @@ const handleSubmit = async (e) => {
         <div className="container">
           <header className="header">
             <h1>📤 Parse Recipe</h1>
-            <p style={{margin: '10px 0 0 0', fontSize: '1.1em', opacity: 0.9}}>
+            <p
+              style={{
+                margin: '10px 0 0 0',
+                fontSize: '1.1em',
+                opacity: 0.9,
+              }}
+            >
               Extract recipe information using AI from URLs, PDFs, or text
             </p>
           </header>
 
-          <Link href="/" className="btn btn-secondary" style={{marginBottom: '30px', display: 'inline-flex'}}>
+          <Link
+            href="/"
+            className="btn btn-secondary"
+            style={{ marginBottom: '30px', display: 'inline-flex' }}
+          >
             ← Back to Recipes
           </Link>
 
@@ -80,26 +107,42 @@ const handleSubmit = async (e) => {
 
           <div className="card">
             <h2 className="card-title">Choose Input Method</h2>
-            
-            <div style={{display: 'flex', gap: '10px', marginBottom: '30px', flexWrap: 'wrap'}}>
+
+            <div
+              style={{
+                display: 'flex',
+                gap: '10px',
+                marginBottom: '30px',
+                flexWrap: 'wrap',
+              }}
+            >
               <button
                 onClick={() => setInputMethod('url')}
-                className={`btn ${inputMethod === 'url' ? 'btn-primary' : 'btn-secondary'}`}
-                style={{flex: '1', minWidth: '120px'}}
+                className={`btn ${
+                  inputMethod === 'url' ? 'btn-primary' : 'btn-secondary'
+                }`}
+                style={{ flex: '1', minWidth: '120px' }}
+                type="button"
               >
                 🌐 URL
               </button>
               <button
                 onClick={() => setInputMethod('pdf')}
-                className={`btn ${inputMethod === 'pdf' ? 'btn-primary' : 'btn-secondary'}`}
-                style={{flex: '1', minWidth: '120px'}}
+                className={`btn ${
+                  inputMethod === 'pdf' ? 'btn-primary' : 'btn-secondary'
+                }`}
+                style={{ flex: '1', minWidth: '120px' }}
+                type="button"
               >
                 📄 PDF
               </button>
               <button
                 onClick={() => setInputMethod('text')}
-                className={`btn ${inputMethod === 'text' ? 'btn-primary' : 'btn-secondary'}`}
-                style={{flex: '1', minWidth: '120px'}}
+                className={`btn ${
+                  inputMethod === 'text' ? 'btn-primary' : 'btn-secondary'
+                }`}
+                style={{ flex: '1', minWidth: '120px' }}
+                type="button"
               >
                 📝 Text
               </button>
@@ -117,7 +160,13 @@ const handleSubmit = async (e) => {
                     onChange={(e) => setUrlInput(e.target.value)}
                     required
                   />
-                  <p style={{fontSize: '0.9em', color: '#666', marginTop: '8px'}}>
+                  <p
+                    style={{
+                      fontSize: '0.9em',
+                      color: '#666',
+                      marginTop: '8px',
+                    }}
+                  >
                     Enter the URL of a recipe webpage
                   </p>
                 </div>
@@ -133,7 +182,13 @@ const handleSubmit = async (e) => {
                     onChange={(e) => setPdfFile(e.target.files[0])}
                     required
                   />
-                  <p style={{fontSize: '0.9em', color: '#666', marginTop: '8px'}}>
+                  <p
+                    style={{
+                      fontSize: '0.9em',
+                      color: '#666',
+                      marginTop: '8px',
+                    }}
+                  >
                     Upload a PDF file containing a recipe
                   </p>
                 </div>
@@ -141,32 +196,5 @@ const handleSubmit = async (e) => {
 
               {inputMethod === 'text' && (
                 <div className="form-group">
-                  <label className="form-label">Recipe Text</label>
-                  <textarea
-                    className="form-textarea"
-                    placeholder="Paste your recipe text here...\n\nExample:\nChocolate Chip Cookies\n\nIngredients:\n- 2 cups flour\n- 1 cup sugar\n...\n\nInstructions:\n1. Preheat oven to 350°F\n2. Mix ingredients..."                    value={textInput}
-                    onChange={(e) => setTextInput(e.target.value)}
-                    required
-                    style={{minHeight: '250px'}}
-                  />
-                  <p style={{fontSize: '0.9em', color: '#666', marginTop: '8px'}}>
-                    Paste recipe text including title, ingredients, and instructions
-                  </p>
-                </div>
-              )}
+                  <label c
 
-              <button
-                type="submit"
-                className="btn btn-success btn-lg"
-                disabled={loading}
-                style={{width: '100%', marginTop: '20px'}}
-              >
-                {loading ? '🔄 Parsing Recipe...' : '✨ Parse Recipe with AI'}
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-}
