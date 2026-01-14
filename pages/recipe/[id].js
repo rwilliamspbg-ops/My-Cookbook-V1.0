@@ -40,7 +40,7 @@ export default function RecipeDetail() {
         category: data.category || '',
       });
       setLoading(false);
-    } catch (err) {
+    } catch (_err) {
       alert('Failed to load recipe');
       router.push('/');
     }
@@ -52,7 +52,7 @@ export default function RecipeDetail() {
       alert('Recipe updated successfully!');
       setEditing(false);
       fetchRecipe();
-    } catch (err) {
+    } catch (_err) {
       alert('Failed to update recipe');
     }
   };

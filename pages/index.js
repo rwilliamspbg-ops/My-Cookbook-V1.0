@@ -17,7 +17,7 @@ export default function Home() {
       const response = await axios.get('/api/recipes');
       setRecipes(response.data);
       setLoading(false);
-    } catch (err) {
+    } catch (_err) {
       setError('Failed to load recipes');
       setLoading(false);
     }
@@ -29,7 +29,7 @@ export default function Home() {
     try {
       await axios.delete(`/api/recipes/${id}`);
       fetchRecipes();
-    } catch (err) {
+    } catch (_err) {
       alert('Failed to delete recipe');
     }
   };
