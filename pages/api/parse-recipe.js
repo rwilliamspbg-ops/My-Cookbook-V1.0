@@ -3,6 +3,8 @@ import OpenAI from 'openai';
 import formidable from 'formidable';
 import pdf from 'pdf-parse';
 import fs from 'fs/promises';
+import { extractPdfTextWithOcr } from '../../lib/pdfOcr';
+
 
 export const config = {
   api: {
@@ -95,14 +97,23 @@ export default async function handler(req, res) {
 
     // 1. Extract text based on inputType
     if (inputType === 'pdf') {
-      const file = files.file?.[0];
-      if (!file) {
-        return res.status(400).json({ error: 'PDF file is required' });
-      }
-      if (file.size > MAX_FILE_SIZE_BYTES) {
-        return res
-          .status(413)
-          .json({ error: 'PDF file too large (max 10MB)' });
+  const file = files.file?.[0];
+  if (!file) {
+    return res.status(400).json({ error: 'PDF file is required' });
+  }
+  if (file.size > MAX_FILE_SIZE_BYTES) {
+    return res.status(413).json({ error: 'PDF file too large (max 10MB)' });
+  }
+
+  // OLD:
+  // const dataBuffer = await fs.readFile(file.filepath);
+  // const pdfData = await pdfParse(dataBuffer);
+  // extractedText = pdfData.text || '';
+
+  // NEW:
+  extractedText = await extractPdfTextWithOcr(file.filepath);
+}
+
       }
 
       const dataBuffer = await fs.readFile(file.filepath);
