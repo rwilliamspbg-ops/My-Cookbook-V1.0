@@ -1,6 +1,5 @@
 import OpenAI from 'openai';
 import formidable from 'formidable';
-import * as pdfParseModule from 'pdf-parse';
 import fs from 'fs/promises';
 
 export const config = {
@@ -17,12 +16,6 @@ const openai = new OpenAI({
 const MAX_CHARS = 8000;
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
 const URL_FETCH_TIMEOUT_MS = 8000; // 8s
-
-// Resolve pdf-parse function regardless of module shape
-const pdfParse =
-  typeof pdfParseModule === 'function'
-    ? pdfParseModule
-    : pdfParseModule.default;
 
 function createFormidable() {
   return formidable({
@@ -98,9 +91,9 @@ export default async function handler(req, res) {
           .json({ error: 'PDF file too large (max 10MB)' });
       }
 
-      if (!pdfParse) {
-        throw new Error('pdf-parse function not available');
-      }
+      // Use CommonJS require to avoid ESM/default wrapping issues
+      // eslint-disable-next-line global-require
+      const pdfParse = require('pdf-parse');
 
       const dataBuffer = await fs.readFile(file.filepath);
       const pdfData = await pdfParse(dataBuffer);
