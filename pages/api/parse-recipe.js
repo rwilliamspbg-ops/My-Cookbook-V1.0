@@ -91,21 +91,9 @@ export default async function handler(req, res) {
           .json({ error: 'PDF file too large (max 10MB)' });
       }
 
-      // Load pdf-parse in a way that works with CommonJS + ESM wrapping
-      // eslint-disable-next-line global-require
-      const pdfParseModule = require('pdf-parse');
-      const pdfParseFn =
-        typeof pdfParseModule === 'function'
-          ? pdfParseModule
-          : pdfParseModule.default;
-
-      if (typeof pdfParseFn !== 'function') {
-        throw new TypeError('pdf-parse export is not a function');
-      }
-
+      // Fallback: treat PDF bytes as UTF-8 text; works for many text-based PDFs
       const dataBuffer = await fs.readFile(file.filepath);
-      const pdfData = await pdfParseFn(dataBuffer);
-      extractedText = (pdfData.text || '').trim();
+      extractedText = dataBuffer.toString('utf-8').trim();
     } else if (inputType === 'url') {
       const url = fields.url?.[0];
       if (!url) {
