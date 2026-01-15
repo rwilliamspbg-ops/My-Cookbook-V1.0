@@ -47,12 +47,23 @@ function normalizeWhitespace(text) {
   return text.replace(/\s+/g, ' ').trim();
 }
 
+// More permissive: accept any recipe where *either*
+// title or some ingredients or some instructions exist.
 function basicRecipeShapeValid(recipe) {
   if (!recipe || typeof recipe !== 'object') return false;
+
   const { title, ingredients, instructions } = recipe;
-  if (!title || typeof title !== 'string') return false;
-  if (!Array.isArray(ingredients) || ingredients.length === 0) return false;
-  if (!Array.isArray(instructions) || instructions.length === 0) return false;
+
+  const hasTitle = typeof title === 'string' && title.trim().length > 0;
+  const hasIngredients =
+    Array.isArray(ingredients) && ingredients.some((s) => typeof s === 'string' && s.trim().length > 0);
+  const hasInstructions =
+    Array.isArray(instructions) && instructions.some((s) => typeof s === 'string' && s.trim().length > 0);
+
+  // If absolutely nothing is there, treat as invalid.
+  if (!hasTitle && !hasIngredients && !hasInstructions) {
+    return false;
+  }
   return true;
 }
 
@@ -91,7 +102,7 @@ export default async function handler(req, res) {
           .json({ error: 'PDF file too large (max 10MB)' });
       }
 
-      // Fallback: treat PDF bytes as UTF-8 text; works for many text-based PDFs
+      // Best-effort: treat bytes as UTF-8; works for many text-based PDFs
       const dataBuffer = await fs.readFile(file.filepath);
       extractedText = dataBuffer.toString('utf-8').trim();
     } else if (inputType === 'url') {
@@ -120,19 +131,23 @@ export default async function handler(req, res) {
       extractedText = extractedText.slice(0, MAX_CHARS);
     }
 
-    // 2. Call OpenAI
+    // 2. Call OpenAI with a more aggressive prompt
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [
         {
           role: 'system',
-          content: `You are a recipe parser.
-Extract a recipe from the text, even if formatting is messy.
+          content: `You are a highly reliable recipe parser.
+
+Your goals:
+- If there is *any* recipe-like content, infer a clear title, ingredients list, and instructions as aggressively as possible.
+- If multiple recipes exist, pick the most prominent one.
+- If the text truly does not contain a recipe at all, return a JSON object with all fields null/empty.
 
 Return ONLY a JSON object with this exact shape:
 {
-  "title": string,
-  "description": string,
+  "title": string | null,
+  "description": string | null,
   "ingredients": string[],
   "instructions": string[],
   "prepTime": number | null,
@@ -141,14 +156,17 @@ Return ONLY a JSON object with this exact shape:
   "category": string | null
 }
 
-- "ingredients" must be a non-empty array of strings when a recipe is present.
-- "instructions" must be a non-empty array of strings when a recipe is present.
-- If a field is truly missing, use null (for numbers/strings) or [] (for arrays).
-- Never invent an entirely new recipe; always base fields on the provided text.`,
+Important:
+- When any recipe-like content exists, do your best to infer a short title.
+- "ingredients" should list one ingredient per string where possible.
+- "instructions" should list one step per string where possible.
+- Use null for truly missing scalar fields and [] for truly missing lists.
+- Never invent a recipe from thin air; always base everything on the given text.`,
         },
         { role: 'user', content: extractedText },
       ],
       response_format: { type: 'json_object' },
+      temperature: 0.2, // more deterministic extraction
     });
 
     const message = completion.choices[0]?.message;
@@ -175,8 +193,9 @@ Return ONLY a JSON object with this exact shape:
     parsedRecipe.servings = coerceNumberOrNull(parsedRecipe.servings);
 
     if (!basicRecipeShapeValid(parsedRecipe)) {
+      // Pass through whatever the model gave so the UI can still show/edit it.
       return res.status(422).json({
-        error: 'Invalid recipe format',
+        error: 'Invalid or very weak recipe format; please edit manually.',
         recipe: parsedRecipe,
       });
     }
