@@ -1,10 +1,7 @@
-// pages/api/parse-recipe.js
 import OpenAI from 'openai';
 import formidable from 'formidable';
-import pdf from 'pdf-parse';
+import pdfParse from 'pdf-parse/lib/pdf-parse.js';
 import fs from 'fs/promises';
-import { extractPdfTextWithOcr } from '../../lib/pdfOcr';
-
 
 export const config = {
   api: {
@@ -14,19 +11,18 @@ export const config = {
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-  max_retries: 1, // reduce long stalls from repeated retries
+  max_retries: 1,
 });
 
 const MAX_CHARS = 8000;
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
 const URL_FETCH_TIMEOUT_MS = 8000; // 8s
-const OPENAI_TIMEOUT_MS = 20000; // 20s
 
 function createFormidable() {
   return formidable({
     multiples: false,
     maxFileSize: MAX_FILE_SIZE_BYTES,
-    maxFieldsSize: 1 * 1024 * 1024, // 1MB of text fields
+    maxFieldsSize: 1 * 1024 * 1024,
   });
 }
 
@@ -46,17 +42,6 @@ async function fetchWithTimeout(url) {
   } finally {
     clearTimeout(timeoutId);
   }
-}
-
-async function callOpenAIWithTimeout(payload) {
-  const timeoutSignal = AbortSignal.timeout(OPENAI_TIMEOUT_MS); // Node 18+[web:26]
-
-  return openai.chat.completions.create(
-    {
-      ...payload,
-    },
-    { signal: timeoutSignal }
-  );
 }
 
 function normalizeWhitespace(text) {
@@ -95,30 +80,21 @@ export default async function handler(req, res) {
 
     let extractedText = '';
 
-    // 1. Extract text based on inputType
+    // 1. Extract text
     if (inputType === 'pdf') {
-  const file = files.file?.[0];
-  if (!file) {
-    return res.status(400).json({ error: 'PDF file is required' });
-  }
-  if (file.size > MAX_FILE_SIZE_BYTES) {
-    return res.status(413).json({ error: 'PDF file too large (max 10MB)' });
-  }
-
-  // OLD:
-  // const dataBuffer = await fs.readFile(file.filepath);
-  // const pdfData = await pdfParse(dataBuffer);
-  // extractedText = pdfData.text || '';
-
-  // NEW:
-  extractedText = await extractPdfTextWithOcr(file.filepath);
-}
-
+      const file = files.file?.[0];
+      if (!file) {
+        return res.status(400).json({ error: 'PDF file is required' });
+      }
+      if (file.size > MAX_FILE_SIZE_BYTES) {
+        return res
+          .status(413)
+          .json({ error: 'PDF file too large (max 10MB)' });
       }
 
       const dataBuffer = await fs.readFile(file.filepath);
-      const pdfData = await pdf(dataBuffer);
-      extractedText = pdfData.text || '';
+      const pdfData = await pdfParse(dataBuffer);
+      extractedText = (pdfData.text || '').trim();
     } else if (inputType === 'url') {
       const url = fields.url?.[0];
       if (!url) {
@@ -127,15 +103,12 @@ export default async function handler(req, res) {
 
       try {
         const html = await fetchWithTimeout(url);
-        // basic HTML strip then whitespace normalization
         const stripped = html.replace(/<[^>]*>/g, ' ');
         extractedText = normalizeWhitespace(stripped);
       } catch (err) {
-        // Fallback prompt text
         extractedText = `Please extract the recipe from this URL: ${url}`;
       }
     } else {
-      // text
       extractedText = fields.text?.[0] || '';
       extractedText = normalizeWhitespace(extractedText);
     }
@@ -148,13 +121,14 @@ export default async function handler(req, res) {
       extractedText = extractedText.slice(0, MAX_CHARS);
     }
 
-    // 2. Call OpenAI with timeout
-    const completion = await callOpenAIWithTimeout({
+    // 2. Call OpenAI
+    const completion = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [
         {
           role: 'system',
-          content: `You are a recipe parser. Extract a recipe from the text, even if formatting is messy.
+          content: `You are a recipe parser.
+Extract a recipe from the text, even if formatting is messy.
 
 Return ONLY a JSON object with this exact shape:
 {
@@ -190,7 +164,7 @@ Return ONLY a JSON object with this exact shape:
       }
       try {
         parsedRecipe = JSON.parse(message.content);
-      } catch (err) {
+      } catch (_err) {
         return res.status(502).json({
           error: 'Failed to parse AI response as JSON',
         });
