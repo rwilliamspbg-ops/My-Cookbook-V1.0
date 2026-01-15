@@ -91,12 +91,20 @@ export default async function handler(req, res) {
           .json({ error: 'PDF file too large (max 10MB)' });
       }
 
-      // Use CommonJS require to avoid ESM/default wrapping issues
+      // Load pdf-parse in a way that works with CommonJS + ESM wrapping
       // eslint-disable-next-line global-require
-      const pdfParse = require('pdf-parse');
+      const pdfParseModule = require('pdf-parse');
+      const pdfParseFn =
+        typeof pdfParseModule === 'function'
+          ? pdfParseModule
+          : pdfParseModule.default;
+
+      if (typeof pdfParseFn !== 'function') {
+        throw new TypeError('pdf-parse export is not a function');
+      }
 
       const dataBuffer = await fs.readFile(file.filepath);
-      const pdfData = await pdfParse(dataBuffer);
+      const pdfData = await pdfParseFn(dataBuffer);
       extractedText = (pdfData.text || '').trim();
     } else if (inputType === 'url') {
       const url = fields.url?.[0];
