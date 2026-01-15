@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
 import formidable from 'formidable';
-import pdfParse from 'pdf-parse/lib/pdf-parse.js';
+import pdfParse from 'pdf-parse';
 import fs from 'fs/promises';
 
 export const config = {
