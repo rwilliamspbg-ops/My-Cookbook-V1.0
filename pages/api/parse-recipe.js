@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
 import formidable from 'formidable';
-import pdfParse from 'pdf-parse';
+import * as pdfParseModule from 'pdf-parse';
 import fs from 'fs/promises';
 
 export const config = {
@@ -17,6 +17,12 @@ const openai = new OpenAI({
 const MAX_CHARS = 8000;
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
 const URL_FETCH_TIMEOUT_MS = 8000; // 8s
+
+// Resolve pdf-parse function regardless of module shape
+const pdfParse =
+  typeof pdfParseModule === 'function'
+    ? pdfParseModule
+    : pdfParseModule.default;
 
 function createFormidable() {
   return formidable({
@@ -90,6 +96,10 @@ export default async function handler(req, res) {
         return res
           .status(413)
           .json({ error: 'PDF file too large (max 10MB)' });
+      }
+
+      if (!pdfParse) {
+        throw new Error('pdf-parse function not available');
       }
 
       const dataBuffer = await fs.readFile(file.filepath);
@@ -171,7 +181,6 @@ Return ONLY a JSON object with this exact shape:
       }
     }
 
-    // Coerce numeric fields
     parsedRecipe.prepTime = coerceNumberOrNull(parsedRecipe.prepTime);
     parsedRecipe.cookTime = coerceNumberOrNull(parsedRecipe.cookTime);
     parsedRecipe.servings = coerceNumberOrNull(parsedRecipe.servings);
@@ -185,7 +194,8 @@ Return ONLY a JSON object with this exact shape:
 
     return res.status(200).json({ success: true, recipe: parsedRecipe });
   } catch (error) {
-    console.error('Parsing Error:', error);
+    console.error('Parsing Error (parse-recipe):', error);
+
     const status =
       error?.message && error.message.includes('maxFileSize')
         ? 413
@@ -196,7 +206,8 @@ Return ONLY a JSON object with this exact shape:
         status === 413
           ? 'Uploaded file too large'
           : 'Failed to parse recipe',
-      detail: error.message,
+      detail: error?.message || 'Unknown error',
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
     });
   }
 }
