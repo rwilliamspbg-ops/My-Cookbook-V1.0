@@ -9,6 +9,13 @@ export default async function handler(req, res) {
       return res.status(200).json(all);
     }
 
+        if (req.method === 'POST') {
+                const recipe = req.body;
+                const stmt = db.prepare(`INSERT INTO recipes (title, description, ingredients, instructions, prep_time, cook_time, servings, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`);
+                const result = stmt.run(recipe.title, recipe.description, JSON.stringify(recipe.ingredients || []), JSON.stringify(recipe.instructions || []), recipe.prepTime, recipe.cookTime, recipe.servings, recipe.category);
+                return res.status(201).json({ success: true, id: result.lastInsertRowid });
+              }
+
     return res.status(405).json({ error: 'Method not allowed' });
   } catch (err) {
     console.error('API /api/recipes error:', err);
