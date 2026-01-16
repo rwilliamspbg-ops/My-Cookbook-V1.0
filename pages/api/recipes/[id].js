@@ -1,7 +1,6 @@
 // pages/api/recipes/[id].js
-import db from '../../../lib/db';
-export default function handler(req, res) {
-  const {
+import { fetchRecipe } from '../../../lib/db';
+export default async function handler(req, res) {  const {
     query: { id },
     method,
   } = req;
@@ -10,7 +9,7 @@ export default function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const recipe = db.fetchRecipe(id);
+  const recipe = await fetchRecipe(id);
   if (!recipe) return res.status(404).json({ error: 'Recipe not found' });
   return res.status(200).json({ recipe });
 }
