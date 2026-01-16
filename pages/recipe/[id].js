@@ -1,7 +1,3 @@
-// pages/recipe/[id].js
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-// pages/recipe/[id].js
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
