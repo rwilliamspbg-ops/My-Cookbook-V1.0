@@ -1,10 +1,14 @@
 // pages/recipe/[id].js
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+// pages/recipe/[id].js
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 
 export default function RecipeDetail() {
   const router = useRouter();
   const { id } = router.query;
+
   const [recipe, setRecipe] = useState(null);
   const [error, setError] = useState(null);
 
@@ -15,12 +19,18 @@ export default function RecipeDetail() {
     async function loadRecipe() {
       try {
         const res = await fetch(`/api/recipes/${id}`);
+        const data = await res.json().catch(() => ({}));
+
         if (!res.ok) {
-          const data = await res.json().catch(() => ({}));
           throw new Error(data.error || `Failed to load recipe ${id}`);
         }
-        const data = await res.json();
-        if (!cancelled) setRecipe(data.recipe);
+        if (!data.recipe) {
+          throw new Error(`Recipe ${id} not found`);
+        }
+
+        if (!cancelled) {
+          setRecipe(data.recipe);
+        }
       } catch (err) {
         if (!cancelled) {
           console.error('fetchRecipe error:', err);
@@ -42,9 +52,31 @@ export default function RecipeDetail() {
     <div>
       <h1>{recipe.title}</h1>
       {recipe.description && <p>{recipe.description}</p>}
-      {/* render ingredients/instructions as before */}
+
+      {recipe.ingredients?.length > 0 && (
+        <>
+          <h2>Ingredients</h2>
+          <ul>
+            {recipe.ingredients.map((ing, i) => (
+              <li key={i}>{ing}</li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      {recipe.instructions?.length > 0 && (
+        <>
+          <h2>Instructions</h2>
+          <ol>
+            {recipe.instructions.map((step, i) => (
+              <li key={i}>{step}</li>
+            ))}
+          </ol>
+        </>
+      )}
     </div>
   );
 }
+
 
 

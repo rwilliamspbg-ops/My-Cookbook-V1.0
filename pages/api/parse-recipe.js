@@ -1,3 +1,4 @@
+// pages/api/parse-recipe.js
 import OpenAI from 'openai';
 import formidable from 'formidable';
 import fs from 'fs/promises';
@@ -47,7 +48,7 @@ function normalizeWhitespace(text) {
   return text.replace(/\s+/g, ' ').trim();
 }
 
-// More permissive: accept any recipe where *either*
+// More permissive: accept any recipe where either
 // title or some ingredients or some instructions exist.
 function basicRecipeShapeValid(recipe) {
   if (!recipe || typeof recipe !== 'object') return false;
@@ -56,11 +57,12 @@ function basicRecipeShapeValid(recipe) {
 
   const hasTitle = typeof title === 'string' && title.trim().length > 0;
   const hasIngredients =
-    Array.isArray(ingredients) && ingredients.some((s) => typeof s === 'string' && s.trim().length > 0);
+    Array.isArray(ingredients) &&
+    ingredients.some((s) => typeof s === 'string' && s.trim().length > 0);
   const hasInstructions =
-    Array.isArray(instructions) && instructions.some((s) => typeof s === 'string' && s.trim().length > 0);
+    Array.isArray(instructions) &&
+    instructions.some((s) => typeof s === 'string' && s.trim().length > 0);
 
-  // If absolutely nothing is there, treat as invalid.
   if (!hasTitle && !hasIngredients && !hasInstructions) {
     return false;
   }
@@ -102,7 +104,6 @@ export default async function handler(req, res) {
           .json({ error: 'PDF file too large (max 10MB)' });
       }
 
-      // Best-effort: treat bytes as UTF-8; works for many text-based PDFs
       const dataBuffer = await fs.readFile(file.filepath);
       extractedText = dataBuffer.toString('utf-8').trim();
     } else if (inputType === 'url') {
@@ -115,7 +116,7 @@ export default async function handler(req, res) {
         const html = await fetchWithTimeout(url);
         const stripped = html.replace(/<[^>]*>/g, ' ');
         extractedText = normalizeWhitespace(stripped);
-      } catch (err) {
+      } catch (_err) {
         extractedText = `Please extract the recipe from this URL: ${url}`;
       }
     } else {
@@ -131,7 +132,7 @@ export default async function handler(req, res) {
       extractedText = extractedText.slice(0, MAX_CHARS);
     }
 
-    // 2. Call OpenAI with a more aggressive prompt
+    // 2. Call OpenAI (aggressive extraction)
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [
@@ -140,7 +141,7 @@ export default async function handler(req, res) {
           content: `You are a highly reliable recipe parser.
 
 Your goals:
-- If there is *any* recipe-like content, infer a clear title, ingredients list, and instructions as aggressively as possible.
+- If there is any recipe-like content, infer a clear title, ingredients list, and instructions as aggressively as possible.
 - If multiple recipes exist, pick the most prominent one.
 - If the text truly does not contain a recipe at all, return a JSON object with all fields null/empty.
 
@@ -166,7 +167,7 @@ Important:
         { role: 'user', content: extractedText },
       ],
       response_format: { type: 'json_object' },
-      temperature: 0.2, // more deterministic extraction
+      temperature: 0.2,
     });
 
     const message = completion.choices[0]?.message;
@@ -193,7 +194,6 @@ Important:
     parsedRecipe.servings = coerceNumberOrNull(parsedRecipe.servings);
 
     if (!basicRecipeShapeValid(parsedRecipe)) {
-      // Pass through whatever the model gave so the UI can still show/edit it.
       return res.status(422).json({
         error: 'Invalid or very weak recipe format; please edit manually.',
         recipe: parsedRecipe,
@@ -219,4 +219,5 @@ Important:
     });
   }
 }
+
 
