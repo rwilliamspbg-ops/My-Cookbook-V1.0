@@ -1,12 +1,11 @@
 // pages/api/recipes.js
 
 // Server-only SQLite helper (better-sqlite3)
-import db from '../../lib/db';
+import db, { fetchAllRecipes } from '../../lib/db';
 export default async function handler(req, res) {
-  try {
-    if (req.method === 'GET') {
-      const all = db.fetchAllRecipes(); // sync better-sqlite3
-      return res.status(200).json(all);
+    try {if (req.method === 'GET') {
+      const all = fetchAllRecipes();
+            return res.status(200).json({ recipes: all);
     }
 
         if (req.method === 'POST') {
