@@ -1,7 +1,5 @@
 // pages/test-debug.js - Comprehensive Test & Debug Page for PDF Parsing and Database
 import { useState, useEffect } from 'react';
-import { db } from '../lib/db';
-import { recipes } from '../lib/schema';
 
 export default function TestDebugPage() {
   const [allRecipes, setAllRecipes] = useState([]);
