@@ -16,7 +16,7 @@ export default async function handler(req, res) {
               }
 
     return res.status(405).json({ error: 'Method not allowed' });
-  } catch (err) {
+  } catch (_err) {
     console.error('API /api/recipes error:', err);
     return res.status(500).json({
       error: 'Failed to load recipes',
