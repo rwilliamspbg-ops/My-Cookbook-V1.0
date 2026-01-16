@@ -14,8 +14,9 @@ export default function Home() {
 
   const fetchRecipes = async () => {
     try {
-      const response = await axios.get('/api/recipes');
-      setRecipes(response.data);
+      const response = await 
+      axios.get('/api/recipes');
+      setRecipes(response.data.recipes || []);
       setLoading(false);
     } catch (_err) {
       setError('Failed to load recipes');
@@ -35,15 +36,18 @@ export default function Home() {
   };
 
   // Filter recipes based on search query
-  const filteredRecipes = recipes.filter(recipe => {
-    const query = searchQuery.toLowerCase();
-    return (
-      recipe.title?.toLowerCase().includes(query) ||
-      recipe.description?.toLowerCase().includes(query) ||
-      recipe.ingredients?.toLowerCase().includes(query) ||
-      recipe.instructions?.toLowerCase().includes(query)
-    );
-  });
+  // Filter recipes based on search query
+const filteredRecipes = recipes.filter(recipe => {
+  const query = searchQuery.toLowerCase();
+  return (
+    recipe.title?.toLowerCase().includes(query) ||
+    recipe.description?.toLowerCase().includes(query)
+  );
+});
+
+console.log('recipes value:', recipes);
+console.log('type:', typeof recipes, Array.isArray(recipes));
+
 
   if (loading) return <div className="loading-container"><p>Loading recipes...</p></div>;
   if (error) return <div className="error-container"><p>{error}</p></div>;
