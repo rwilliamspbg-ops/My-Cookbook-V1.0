@@ -3,15 +3,13 @@
 // Server-only SQLite helper (better-sqlite3)
 const db = require('../../lib/db');
 
-async function handler(req, res) {
+export default async function handler(req, res) {
   try {
     if (req.method === 'GET') {
-      // Synchronous better-sqlite3 call; no await needed
-      const all = db.fetchAllRecipes();
+      const all = db.fetchAllRecipes(); // sync better-sqlite3
       return res.status(200).json(all);
     }
 
-    // Extend here with POST/PUT/DELETE if needed, still via db.*
     return res.status(405).json({ error: 'Method not allowed' });
   } catch (err) {
     console.error('API /api/recipes error:', err);
@@ -22,6 +20,5 @@ async function handler(req, res) {
   }
 }
 
-// Export as CommonJS for this file
-module.exports = handler;
+
 
