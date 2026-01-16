@@ -22,8 +22,8 @@ export default function NewRecipe() {
       await axios.post('/api/recipes', formData);
       alert('Recipe created successfully!');
       router.push('/');
-    } catch (_err) {
-      alert('Failed to create recipe');
+    } catch {
+  console.error("Failed");
     }
   };
 

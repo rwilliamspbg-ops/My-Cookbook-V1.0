@@ -30,8 +30,8 @@ export default function Home() {
     try {
       await axios.delete(`/api/recipes/${id}`);
       fetchRecipes();
-    } catch (_err) {
-      alert('Failed to delete recipe');
+    } catch {
+  console.error("Failed");
     }
   };
 
