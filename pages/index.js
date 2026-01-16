@@ -18,8 +18,8 @@ export default function Home() {
       axios.get('/api/recipes');
       setRecipes(response.data.recipes || []);
       setLoading(false);
-    } catch (_err) {
-      setError('Failed to load recipes');
+    } catch {
+  console.error("Failed");
       setLoading(false);
     }
   };
