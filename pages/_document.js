@@ -1,0 +1,84 @@
+// pages/_document.js - Custom Document for Next.js with Chef's Canvas styling
+import { Html, Head, Main, NextScript } from 'next/document';
+
+export default function Document() {
+  return (
+    <Html lang="en">
+      <Head>
+        {/* Tailwind CSS CDN */}
+        <script src="https://cdn.tailwindcss.com"></script>
+        
+        {/* Tailwind Config */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              tailwind.config = {
+                theme: {
+                  extend: {
+                    fontFamily: {
+                      serif: ['Georgia', 'Cambria', '"Times New Roman"', 'Times', 'serif'],
+                      sans: ['"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif'],
+                    },
+                    colors: {
+                      primary: { 
+                        50: '#fef3f2', 100: '#fee4e2', 200: '#fecdd3', 300: '#fda4af', 
+                        400: '#fb7185', 500: '#f43f5e', 600: '#e11d48', 700: '#be123c', 
+                        800: '#9f1239', 900: '#881337' 
+                      },
+                      secondary: { 
+                        50: '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc', 
+                        400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1', 
+                        800: '#075985', 900: '#0c4a6e' 
+                      },
+                      neutral: { 
+                        50: '#fafafa', 100: '#f5f5f5', 200: '#e5e5e5', 300: '#d4d4d4', 
+                        400: '#a3a3a3', 500: '#737373', 600: '#525252', 700: '#404040', 
+                        800: '#262626', 900: '#171717' 
+                      },
+                      accent: '#10b981',
+                      success: '#22c55e',
+                      warning: '#f59e0b',
+                      danger: '#ef4444',
+                    }
+                  },
+                },
+              }
+            `,
+          }}
+        />
+        
+        {/* Custom styles */}
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+              /* Custom scrollbar for a cleaner look */
+              ::-webkit-scrollbar {
+                width: 8px;
+                height: 8px;
+              }
+              ::-webkit-scrollbar-track {
+                background: #f1f1f1;
+              }
+              ::-webkit-scrollbar-thumb {
+                background: #ccc;
+                border-radius: 4px;
+              }
+              ::-webkit-scrollbar-thumb:hover {
+                background: #999;
+              }
+              @media print {
+                .print-hide {
+                  display: none !important;
+                }
+              }
+            `,
+          }}
+        />
+      </Head>
+      <body className="bg-stone-100 text-stone-900">
+        <Main />
+        <NextScript />
+      </body>
+    </Html>
+  );
+}
