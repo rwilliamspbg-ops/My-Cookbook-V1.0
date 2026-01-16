@@ -182,7 +182,7 @@ Important:
       }
       try {
         parsedRecipe = JSON.parse(message.content);
-      } catch (...) {
+      } catch  {
         return res.status(502).json({
           error: 'Failed to parse AI response as JSON',
         });
