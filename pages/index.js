@@ -37,7 +37,8 @@ export default function Home() {
 
   // Filter recipes based on search query
   // Filter recipes based on search query
-const filteredRecipes = recipes.filter(recipe => {
+    const safeRecipes = Array.isArray(recipes) ? recipes : [];
+const filteredRecipes = safeRecipes.filter(recipe => {
   const query = searchQuery.toLowerCase();
   return (
     recipe.title?.toLowerCase().includes(query) ||
