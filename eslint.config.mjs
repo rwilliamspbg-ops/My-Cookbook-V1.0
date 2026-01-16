@@ -14,6 +14,10 @@ const eslintConfig = [
   {
     // Ignores must be at the top level in Flat Config
     ignores: [".next/", "node_modules/", "out/"]
+        rules: {
+        "no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
+                "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }]
+      },
   }
 ];
 
