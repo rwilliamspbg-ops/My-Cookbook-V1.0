@@ -40,11 +40,27 @@ export default async function handler(req, res) {
 
       return res.status(201).json(result[0]);
     }
+// pages/api/recipes.js
 
+// Use the server-only better-sqlite3 helper
+// eslint-disable-next-line global-require
+const db = require('../../lib/db');
+
+export default async function handler(req, res) {
+  try {
+    if (req.method === 'GET') {
+      const all = db.fetchAllRecipes();
+      return res.status(200).json(all);
+    }
+
+    // Add other methods (POST, PUT, DELETE) here if needed, all via lib/db.js
     return res.status(405).json({ error: 'Method not allowed' });
-  } catch (error) {
-    console.error('API Error:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+  } catch (err) {
+    console.error('API /api/recipes error:', err);
+    return res.status(500).json({
+      error: 'Failed to load recipes',
+      detail: err.message,
+    });
   }
 }
 
