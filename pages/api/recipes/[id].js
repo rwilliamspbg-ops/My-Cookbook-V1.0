@@ -1,7 +1,5 @@
 // pages/api/recipes/[id].js
-// eslint-disable-next-line global-require
-const db = require('../../../lib/db');
-
+import db from '../../../lib/db';
 export default function handler(req, res) {
   const {
     query: { id },
