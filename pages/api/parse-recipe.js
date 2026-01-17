@@ -107,22 +107,22 @@ export default async function handler(req, res) {
       const dataBuffer = await fs.readFile(file.filepath);
       extractedText = dataBuffer.toString('utf-8').trim();
     } else if (inputType === 'url') {
-      const url = fields.url?.[0];
-      if (!url) {
-        return res.status(400).json({ error: 'URL is required' });
-      }
+  const url = fields.url?.[0];
+  if (!url) {
+    return res.status(400).json({ error: 'URL is required' });
+  }
 
-      try {
-        const html = await fetchWithTimeout(url);
-        const stripped = html.replace(/<[^>]*>/g, ' ');
-        extractedText = normalizeWhitespace(stripped);
-      } catch (_err) {
-        extractedText = `Please extract the recipe from this URL: ${url}`;
-      }
-    } else {
-      extractedText = fields.text?.[0] || '';
-      extractedText = normalizeWhitespace(extractedText);
-    }
+  try {
+    const html = await fetchWithTimeout(url);
+    const stripped = html.replace(/<[^>]*>/g, ' ');
+    extractedText = normalizeWhitespace(stripped);
+  } catch {
+    extractedText = `Please extract the recipe from this URL: ${url}`;
+  }
+} else {
+  extractedText = fields.text?.[0] || '';
+  extractedText = normalizeWhitespace(extractedText);
+}
 
     if (!extractedText) {
       return res.status(400).json({ error: 'No text to parse' });
