@@ -225,8 +225,7 @@ export default function UploadPage() {
                 </button>
               </form>
             </div>
-          )}
-
+      )}
           {parsedRecipe && (
             <div className="recipe-card">
               <h3>{parsedRecipe.title}</h3>
