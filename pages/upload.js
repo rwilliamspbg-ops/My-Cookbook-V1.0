@@ -40,7 +40,7 @@ export default function UploadPage() {
       } else {
         setMessage({ type: 'error', text: '❌ Failed to parse recipe' });
       }
-    } } catch (error) {
+    } catch (error) {
       console.error('Parse error:', error);
       
       // Check if it's a 422 error with a partial recipe
@@ -59,7 +59,7 @@ export default function UploadPage() {
         });
       }
     }
-    } finally {
+    finally {
       setLoading(false);
     }
   };
