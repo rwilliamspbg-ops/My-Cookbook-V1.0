@@ -40,12 +40,25 @@ export default function UploadPage() {
       } else {
         setMessage({ type: 'error', text: '❌ Failed to parse recipe' });
       }
-    } catch (error) {
+    } } catch (error) {
       console.error('Parse error:', error);
-      setMessage({
-        type: 'error',
-        text: `❌ Error: ${error.response?.data?.error || error.message}`,
-      });
+      
+      // Check if it's a 422 error with a partial recipe
+      if (error.response?.status === 422 && error.response?.data?.recipe) {
+        // Still set the parsed recipe so user can edit it
+        setParsedRecipe(error.response.data.recipe);
+        setMessage({
+          type: 'error',
+          text: `⚠️ ${error.response.data.error || 'Weak recipe format. Please review and edit manually.'}`
+        });
+      } else {
+        // Other errors
+        setMessage({
+          type: 'error',
+          text: `❌ Error: ${error.response?.data?.error || error.message}`,
+        });
+      }
+    }
     } finally {
       setLoading(false);
     }
