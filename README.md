@@ -4,25 +4,33 @@ A comprehensive recipe management application with AI-powered parsing capabiliti
 
 ## Features
 
-- 🤖 **AI-Powered Recipe Parsing**: Use OpenAI to automatically extract recipe information from:
-  - PDF files
-  - Web URLs
-  - Plain text
-- 📝 **Full CRUD Operations**: Create, read, update, and delete recipes
-- ✏️ **Recipe Editing**: Edit any recipe field including title, description, ingredients, and instructions
-- 💾 **Local Database**: SQLite database for fast, reliable local storage
-- 🎨 **Modern UI**: Built with React and Next.js for a responsive user experience
-- 📤 **File Upload**: Easy file upload functionality for PDF recipes
+🤖 AI-powered recipe parsing: Extract structured recipes from PDFs, URLs, and plain text using OpenAI.
+
+📝 Full CRUD operations: Create, view, update, and delete stored recipes.
+
+✏️ Recipe editing: Update title, description, ingredients, and instructions inline.
+​
+💾 Local database: Persist recipes in a local SQLite database via Drizzle ORM.
+​
+🎨 Modern UI: Responsive interface built with React and Next.js.
+​
+📤 File upload: Import PDF recipes directly through the upload flow.
 
 ## Tech Stack
 
-- **Framework**: Next.js 15.5.9 with React 19
-- **Language**: TypeScript
-- **Database**: SQLite with Drizzle ORM
-- **AI**: OpenAI API (GPT-4o-mini)
-- **PDF Processing**: pdf-parse
-- **Styling**: Formidable for form handling
-- **Linting**: ESLint with Next.js configuration
+Framework: Next.js 15.5.9 with React 19
+​
+Language: JavaScript with some TypeScript files
+​
+Database: SQLite with Drizzle ORM
+​
+AI: OpenAI API (GPT-4o-mini)
+​
+PDF processing: Tesseract-based OCR for PDF text extraction
+​
+Forms / UI: Custom components and shared styles (no Formidable in current UI)
+​
+Linting: ESLint with Next.js configuration
 
 ## Prerequisites
 
