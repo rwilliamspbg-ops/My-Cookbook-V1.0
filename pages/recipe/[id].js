@@ -148,7 +148,7 @@ function parseData(data) {
   try {
     if (typeof data === 'string') return JSON.parse(data);
     return Array.isArray(data) ? data : [];
-  } catch () {
+  } catch (e) {
     return typeof data === 'string' ? data.split('\n').filter(Boolean) : [];
   }
 }
