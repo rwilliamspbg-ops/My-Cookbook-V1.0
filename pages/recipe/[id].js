@@ -67,25 +67,25 @@ export default function RecipePage() {
     }
   })();
 
-    // Fetch AI-generated dish image
+   function RecipePage({ recipe }) {  // Assuming recipe from getServerSideProps or props
+  // All hooks first
   useEffect(() => {
-    if (!recipe?.name) return;
-
+    if (!recipe?.name) return;  // Early exit inside effect
     const generateDishImage = async () => {
-      try {
-        const res = await fetch('/api/generate-image', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ recipeName: recipe.name })
-        });
-        const data = await res.json();
-        setDishImage(data.imageUrl);
-      } catch (err) {
-        console.error('Failed to generate image:', err);
-        // Fallback to placeholder if generation fails
-        setDishImage(`https://via.placeholder.com/800x600?text=${encodeURIComponent(recipe.name)}&bg=f39c12&text_color=ffffff`);
-      }
+      // Your image generation logic
     };
+    generateDishImage();
+  }, [recipe]);  // Depend on recipe
+
+  // Other hooks like useState here too
+
+  if (!recipe) return <div>Loading...</div>;  // Now after hooks
+
+  return (
+    // JSX
+  );
+   }
+
 
     generateDishImage();
   }, [recipe?.name]);
