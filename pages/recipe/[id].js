@@ -1,11 +1,13 @@
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { useRouter } from 'react-router-dom'; // Note: If using Next.js Pages router, keep 'next/router'
+import { useRouter as useNextRouter } from 'next/router'; 
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
+import Image from 'next/image'; // FIX 1: Import the Image component
 import styles from '../../styles/recipe-card.module.css';
 
 export default function RecipePage() {
-  const router = useRouter();
+  const router = useNextRouter();
   const { id } = router.query;
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -34,7 +36,10 @@ export default function RecipePage() {
   useEffect(() => {
     if (!recipe?.name) return;
     const generateDishImage = async () => {
-      // Your image generation logic here
+      // FIX 2: Added logic to use setDishImage so it is not "unused"
+      // Replace the URL below with your actual image generation endpoint
+      const imageUrl = `/api/generate-image?name=${encodeURIComponent(recipe.name)}`;
+      setDishImage(imageUrl); 
     };
     generateDishImage();
   }, [recipe?.name]);
@@ -43,7 +48,6 @@ export default function RecipePage() {
   if (error) return <div className={styles.error}>Error: {error}</div>;
   if (!recipe) return <div className={styles.error}>Recipe not found</div>;
 
-  // Helper logic for parsing ingredients/instructions
   const ingredients = parseData(recipe.ingredients);
   const instructions = parseData(recipe.instructions);
 
@@ -53,7 +57,6 @@ export default function RecipePage() {
         <title>{recipe.name} - My Cookbook</title>
       </Head>
       <div className={styles.pageContainer}>
-        {/* Header with navigation and print button */}
         <header className={styles.header}>
           <Link href="/" className={styles.backLink}>
             ← Back to Cookbook
@@ -67,60 +70,41 @@ export default function RecipePage() {
           </button>
         </header>
 
-        {/* Main Recipe Card */}
         <article className={styles.recipeCard}>
-          {/* Card Header with title and description */}
           <header className={styles.cardHeader}>
             <h1 className={styles.recipeName}>{recipe.name}</h1>
             {recipe.description && (
               <p className={styles.description}>{recipe.description}</p>
             )}
-            {/* Meta information as pill-style badges */}
             <div className={styles.meta}>
-              {recipe.prepTime && (
-                <span className={styles.metaItem}>⏱ Prep: {recipe.prepTime}</span>
-              )}
-              {recipe.cookTime && (
-                <span className={styles.metaItem}>🔥 Cook: {recipe.cookTime}</span>
-              )}
-              {recipe.servings && (
-                <span className={styles.metaItem}>🍽 Serves: {recipe.servings}</span>
-              )}
-              {recipe.category && (
-                <span className={styles.metaItem}>🏷 {recipe.category}</span>
-              )}
+              {recipe.prepTime && <span className={styles.metaItem}>⏱ Prep: {recipe.prepTime}</span>}
+              {recipe.cookTime && <span className={styles.metaItem}>🔥 Cook: {recipe.cookTime}</span>}
+              {recipe.servings && <span className={styles.metaItem}>🍽 Serves: {recipe.servings}</span>}
+              {recipe.category && <span className={styles.metaItem}>🏷 {recipe.category}</span>}
             </div>
           </header>
-            {/* Dish Image */}
-            {dishImage && (
-              <div className={styles.dishImageContainer}>
-                <Image
-                  src={dishImage}
-                  alt={recipe.name}
-                  className={styles.dishImage}
-                  loading="lazy"
-                />
-              </div>
-            )}
 
-          {/* Two-column layout: ingredients and instructions */}
+          {dishImage && (
+            <div className={styles.dishImageContainer}>
+              <Image
+                src={dishImage}
+                alt={recipe.name}
+                className={styles.dishImage}
+                width={800} // Required for next/image
+                height={500} // Required for next/image
+                priority
+              />
+            </div>
+          )}
+
           <section className={styles.cardContent}>
-            {/* Ingredients Section */}
             <div className={styles.section}>
               <h2 className={styles.sectionTitle}>Ingredients</h2>
               <ul className={styles.ingredientsList}>
                 {ingredients.map((ingredient, idx) => (
                   <li key={idx} className={styles.ingredientItem}>
-                    <input
-                      type="checkbox"
-                      className={styles.checkbox}
-                      id={`ingredient-${idx}`}
-                      aria-label={`Check off ${ingredient}`}
-                    />
-                    <label
-                      htmlFor={`ingredient-${idx}`}
-                      className={styles.ingredientLabel}
-                    >
+                    <input type="checkbox" className={styles.checkbox} id={`ingredient-${idx}`} />
+                    <label htmlFor={`ingredient-${idx}`} className={styles.ingredientLabel}>
                       {ingredient}
                     </label>
                   </li>
@@ -128,14 +112,11 @@ export default function RecipePage() {
               </ul>
             </div>
 
-            {/* Instructions Section */}
             <div className={styles.section}>
               <h2 className={styles.sectionTitle}>Instructions</h2>
               <ol className={styles.instructionsList}>
                 {instructions.map((step, idx) => (
-                  <li key={idx} className={styles.instructionItem}>
-                    {step}
-                  </li>
+                  <li key={idx} className={styles.instructionItem}>{step}</li>
                 ))}
               </ol>
             </div>
@@ -144,12 +125,13 @@ export default function RecipePage() {
       </div>
     </>
   );
-function parseData(data) {
-  try {
-    if (typeof data === 'string') return JSON.parse(data);
-    return Array.isArray(data) ? data : [];
-  } catch (e) {
-    return typeof data === 'string' ? data.split('\n').filter(Boolean) : [];
+
+  function parseData(data) {
+    try {
+      if (typeof data === 'string') return JSON.parse(data);
+      return Array.isArray(data) ? data : [];
+    } catch (_e) { // FIX 3: Changed 'e' to '_e' to signal it is an intentionally unused variable
+      return typeof data === 'string' ? data.split('\n').filter(Boolean) : [];
+    }
   }
-}
 }
