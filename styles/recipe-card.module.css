@@ -313,13 +313,12 @@
 }
 
 /* PRINT STYLES */
+/* PRINT STYLES */
 @media print {
   .pageContainer * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
-}
-
 
   body {
     background: white !important;
@@ -398,8 +397,7 @@
     padding: 0.75rem;
     padding-left: 2.5rem;
     background: white !important;
-      }
+  }
 }
-
 
     
