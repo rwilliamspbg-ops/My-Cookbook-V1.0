@@ -11,6 +11,7 @@ export default async function handler(req, res) {
 
     if (req.method === 'POST') {
       const recipe = req.body;
+
       const stmt = db.prepare(`
         INSERT INTO recipes (
           title,
@@ -45,6 +46,7 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Missing id' });
       }
 
+      // better-sqlite3 delete by id
       const stmt = db.prepare('DELETE FROM recipes WHERE id = ?');
       const result = stmt.run(id);
 
@@ -64,3 +66,4 @@ export default async function handler(req, res) {
     });
   }
 }
+
