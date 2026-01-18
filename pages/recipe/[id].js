@@ -6,6 +6,7 @@ import styles from '../../styles/recipe-card.module.css';
 export default function RecipePage() {
   const router = useRouter();
   const { id } = router.query;
+
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -54,9 +55,11 @@ export default function RecipePage() {
 
       <div className={styles.pageContainer}>
         <header className={styles.header}>
-          <a href="/" className={styles.backLink}>← Back to Cookbook</a>
-          <button 
-            onClick={() => window.print()} 
+          <a href="/" className={styles.backLink}>
+            ← Back to Cookbook
+          </a>
+          <button
+            onClick={() => window.print()}
             className={styles.printButton}
             title="Print this recipe"
           >
@@ -67,9 +70,11 @@ export default function RecipePage() {
         <div className={styles.recipeCard}>
           <div className={styles.cardHeader}>
             <h1 className={styles.recipeName}>{recipe.name}</h1>
+
             {recipe.description && (
               <p className={styles.description}>{recipe.description}</p>
             )}
+
             {recipe.servings && (
               <div className={styles.meta}>
                 <span className={styles.metaItem}>
@@ -85,7 +90,35 @@ export default function RecipePage() {
               <ul className={styles.ingredientsList}>
                 {ingredients.map((ingredient, idx) => (
                   <li key={idx} className={styles.ingredientItem}>
-                    <input 
-                      type="checkbox" 
+                    <input
+                      type="checkbox"
                       className={styles.checkbox}
                       id={`ingredient-${idx}`}
+                    />
+                    <label
+                      htmlFor={`ingredient-${idx}`}
+                      className={styles.ingredientLabel}
+                    >
+                      {ingredient}
+                    </label>
+                  </li>
+                ))}
+              </ul>
+            </section>
+
+            <section className={styles.section}>
+              <h2 className={styles.sectionTitle}>Instructions</h2>
+              <ol className={styles.instructionsList}>
+                {instructions.map((step, idx) => (
+                  <li key={idx} className={styles.instructionItem}>
+                    {step}
+                  </li>
+                ))}
+              </ol>
+            </section>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
