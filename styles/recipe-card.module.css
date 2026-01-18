@@ -1,0 +1,399 @@
+/* Container & Layout */
+.pageContainer {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem;
+  background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 1rem;
+}
+
+.backLink {
+  padding: 0.5rem 1rem;
+  background: white;
+  color: #2c3e50;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.backLink:hover {
+  transform: translateX(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.printButton {
+  padding: 0.75rem 1.5rem;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+  transition: all 0.3s ease;
+}
+
+.printButton:hover {
+  background: #c0392b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+}
+
+.printButton:active {
+  transform: translateY(0);
+}
+
+/* Recipe Card */
+.recipeCard {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.cardHeader {
+  padding: 2rem 2.5rem;
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  color: white;
+  border-bottom: 4px solid #e74c3c;
+}
+
+.recipeName {
+  margin: 0 0 0.5rem 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.description {
+  margin: 0.5rem 0 1rem 0;
+  font-size: 1rem;
+  opacity: 0.95;
+  line-height: 1.5;
+}
+
+.meta {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.metaItem {
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.metaItem strong {
+  font-weight: 600;
+}
+
+/* Card Content - Two Column Layout */
+.cardContent {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  padding: 2.5rem;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+}
+
+.sectionTitle {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2c3e50;
+  padding-bottom: 0.75rem;
+  border-bottom: 3px solid #e74c3c;
+  display: inline-block;
+}
+
+/* Ingredients List */
+.ingredientsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ingredientItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #ecf0f1;
+  transition: all 0.2s ease;
+}
+
+.ingredientItem:last-child {
+  border-bottom: none;
+}
+
+.ingredientItem:hover {
+  background: #f9f9f9;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  margin-left: -0.5rem;
+  margin-right: -0.5rem;
+  border-radius: 4px;
+}
+
+.checkbox {
+  margin-top: 3px;
+  accent-color: #e74c3c;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.ingredientItem label {
+  cursor: pointer;
+  flex: 1;
+  font-size: 0.95rem;
+  color: #34495e;
+  user-select: none;
+}
+
+.ingredientItem input:checked + label {
+  text-decoration: line-through;
+  color: #95a5a6;
+}
+
+/* Instructions List */
+.instructionsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  counter-reset: step-counter;
+}
+
+.instructionItem {
+  counter-increment: step-counter;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: #f9f9f9;
+  border-left: 4px solid #e74c3c;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #34495e;
+  position: relative;
+  padding-left: 3rem;
+}
+
+.instructionItem::before {
+  content: counter(step-counter);
+  position: absolute;
+  left: -18px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #e74c3c;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.instructionItem:last-child {
+  margin-bottom: 0;
+}
+
+/* Card Footer */
+.cardFooter {
+  padding: 2rem 2.5rem;
+  background: #f9f9f9;
+  border-top: 1px solid #ecf0f1;
+}
+
+.notesTitle {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.notes {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #34495e;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+/* Loading & Error States */
+.loading,
+.error {
+  padding: 2rem;
+  text-align: center;
+  font-size: 1.1rem;
+  color: #2c3e50;
+  background: white;
+  border-radius: 8px;
+  margin: 2rem auto;
+  max-width: 500px;
+}
+
+.error {
+  background: #fadbd8;
+  color: #c0392b;
+  border: 1px solid #e74c3c;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .pageContainer {
+    padding: 0.5rem;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .backLink,
+  .printButton {
+    width: 100%;
+    text-align: center;
+  }
+
+  .cardHeader {
+    padding: 1.5rem;
+  }
+
+  .recipeName {
+    font-size: 1.75rem;
+  }
+
+  .cardContent {
+    grid-template-columns: 1fr;
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .meta {
+    gap: 1rem;
+    font-size: 0.9rem;
+  }
+
+  .cardFooter {
+    padding: 1.5rem;
+  }
+
+  .instructionItem {
+    padding-left: 2.5rem;
+  }
+
+  .instructionItem::before {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+    left: -16px;
+  }
+}
+
+/* PRINT STYLES */
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body {
+    background: white !important;
+    margin: 0;
+    padding: 0;
+  }
+
+  .pageContainer {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    background: white !important;
+    min-height: auto;
+  }
+
+  .header {
+    display: none;
+  }
+
+  .recipeCard {
+    box-shadow: none;
+    border: 1px solid #ddd;
+    page-break-after: avoid;
+  }
+
+  .cardHeader {
+    padding: 1.5rem;
+    background: #2c3e50 !important;
+    color: white !important;
+    border-bottom: 3px solid #e74c3c !important;
+  }
+
+  .recipeName {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .description {
+    font-size: 0.95rem;
+  }
+
+  .cardContent {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    page-break-inside: avoid;
+  }
+
+  .section {
+    page-break-inside: avoid;
+  }
+
+  .sectionTitle {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+
+  .ingredientItem {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .ingredientItem label {
+    font-size: 0.9rem;
+  }
+
+  .checkbox {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .instructionItem {
+    page-break-inside: avoid;
+    margin-bottom: 0.75rem;
+    padding: 0.75rem;
+    padding-left: 2.5rem;
+    background: white !important;
+    
