@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
@@ -54,18 +55,20 @@ export default function RecipePage() {
       </Head>
 
       <div className={styles.pageContainer}>
-        <header className={styles.header}>
-          <a href="/" className={styles.backLink}>
-            ← Back to Cookbook
-          </a>
-          <button
-            onClick={() => window.print()}
-            className={styles.printButton}
-            title="Print this recipe"
-          >
-            🖨️ Print
-          </button>
-        </header>
+      <header className={styles.header}>
+  <Link href="/" className={styles.backLink}>
+    ← Back to Cookbook
+  </Link>
+  <button
+    onClick={() => window.print()}
+    className={styles.printButton}
+    title="Print this recipe"
+  >
+    🖨️ Print
+  </button>
+</header>
+
+
 
         <div className={styles.recipeCard}>
           <div className={styles.cardHeader}>
