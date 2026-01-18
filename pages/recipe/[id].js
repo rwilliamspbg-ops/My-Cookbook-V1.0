@@ -94,7 +94,7 @@ export default function RecipePage() {
             {/* Dish Image */}
             {dishImage && (
               <div className={styles.dishImageContainer}>
-                <img
+                <Image
                   src={dishImage}
                   alt={recipe.name}
                   className={styles.dishImage}
@@ -148,7 +148,7 @@ function parseData(data) {
   try {
     if (typeof data === 'string') return JSON.parse(data);
     return Array.isArray(data) ? data : [];
-  } catch (e) {
+  } catch () {
     return typeof data === 'string' ? data.split('\n').filter(Boolean) : [];
   }
 }
