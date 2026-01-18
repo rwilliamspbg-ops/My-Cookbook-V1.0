@@ -1,59 +1,125 @@
-// pages/api/recipes/[id].js
-import db from '../../../lib/db';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import Head from 'next/head';
+import styles from '../../styles/recipe-card.module.css';
 
-export default async function handler(req, res) {
-  const {
-    query: { id },
-    method,
-  } = req;
+export default function RecipePage() {
+  const router = useRouter();
+  const { id } = router.query;
+  const [recipe, setRecipe] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  try {
-    if (method === 'GET') {
-      // fetch a single recipe by id
-      const stmt = db.prepare('SELECT * FROM recipes WHERE id = ?');
-      const recipe = stmt.get(id);
+  useEffect(() => {
+    if (!id) return;
 
-      if (!recipe) {
-        return res.status(404).json({ error: 'Recipe not found' });
-      }
-
-      // if you stored JSON strings for ingredients/instructions, parse them:
+    const fetchRecipe = async () => {
       try {
-        if (typeof recipe.ingredients === 'string') {
-          recipe.ingredients = JSON.parse(recipe.ingredients);
-        }
-        if (typeof recipe.instructions === 'string') {
-          recipe.instructions = JSON.parse(recipe.instructions);
-        }
-      } catch {
-        // ignore JSON parse errors, leave as raw strings
+        const res = await fetch(`/api/recipes/${id}`);
+        if (!res.ok) throw new Error('Recipe not found');
+        const data = await res.json();
+        setRecipe(data.recipe);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
+    };
 
-      return res.status(200).json({ recipe });
-    }
+    fetchRecipe();
+  }, [id]);
 
-    if (method === 'DELETE') {
-      if (!id) {
-        return res.status(400).json({ error: 'Missing id' });
-      }
+  if (loading) return <div className={styles.loading}>Loading recipe...</div>;
+  if (error) return <div className={styles.error}>Error: {error}</div>;
+  if (!recipe) return <div className={styles.error}>Recipe not found</div>;
 
-      const stmt = db.prepare('DELETE FROM recipes WHERE id = ?');
-      const result = stmt.run(id);
+  const ingredients = Array.isArray(recipe.ingredients)
+    ? recipe.ingredients
+    : typeof recipe.ingredients === 'string'
+    ? recipe.ingredients.split('\n').filter(Boolean)
+    : [];
 
-      if (result.changes === 0) {
-        return res.status(404).json({ error: 'Recipe not found' });
-      }
+  const instructions = Array.isArray(recipe.instructions)
+    ? recipe.instructions
+    : typeof recipe.instructions === 'string'
+    ? recipe.instructions.split('\n').filter(Boolean)
+    : [];
 
-      return res.status(200).json({ success: true });
-    }
+  return (
+    <>
+      <Head>
+        <title>{recipe.name} - My Cookbook</title>
+        <meta name="description" content={`Recipe for ${recipe.name}`} />
+      </Head>
 
-    return res.status(405).json({ error: 'Method not allowed' });
-  } catch (err) {
-    console.error('Failed in /api/recipes/[id]:', err);
-    return res.status(500).json({
-      error: 'Failed to process request',
-      detail: err.message,
-    });
-  }
+      <div className={styles.pageContainer}>
+        <header className={styles.header}>
+          <a href="/" className={styles.backLink}>← Back to Cookbook</a>
+          <button 
+            onClick={() => window.print()} 
+            className={styles.printButton}
+            title="Print this recipe"
+          >
+            🖨️ Print
+          </button>
+        </header>
+
+        <div className={styles.recipeCard}>
+          <div className={styles.cardHeader}>
+            <h1 className={styles.recipeName}>{recipe.name}</h1>
+            {recipe.description && (
+              <p className={styles.description}>{recipe.description}</p>
+            )}
+            {recipe.servings && (
+              <div className={styles.meta}>
+                <span className={styles.metaItem}>
+                  👥 Servings: <strong>{recipe.servings}</strong>
+                </span>
+              </div>
+            )}
+          </div>
+
+          <div className={styles.cardContent}>
+            <section className={styles.section}>
+              <h2 className={styles.sectionTitle}>Ingredients</h2>
+              <ul className={styles.ingredientsList}>
+                {ingredients.map((ingredient, idx) => (
+                  <li key={idx} className={styles.ingredientItem}>
+                    <input 
+                      type="checkbox" 
+                      className={styles.checkbox}
+                      id={`ingredient-${idx}`}
+                    />
+                    <label htmlFor={`ingredient-${idx}`}>
+                      {ingredient}
+                    </label>
+                  </li>
+                ))}
+              </ul>
+            </section>
+
+            <section className={styles.section}>
+              <h2 className={styles.sectionTitle}>Instructions</h2>
+              <ol className={styles.instructionsList}>
+                {instructions.map((instruction, idx) => (
+                  <li key={idx} className={styles.instructionItem}>
+                    {instruction}
+                  </li>
+                ))}
+              </ol>
+            </section>
+          </div>
+
+          {recipe.notes && (
+            <div className={styles.cardFooter}>
+              <h3 className={styles.notesTitle}>Notes</h3>
+              <p className={styles.notes}>{recipe.notes}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
 }
+
 
