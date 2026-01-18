@@ -10,6 +10,7 @@ export default function RecipePage() {
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+    const [dishImage, setDishImage] = useState(null);
 
   useEffect(() => {
     if (!id) return;
@@ -66,6 +67,29 @@ export default function RecipePage() {
     }
   })();
 
+    // Fetch AI-generated dish image
+  useEffect(() => {
+    if (!recipe?.name) return;
+
+    const generateDishImage = async () => {
+      try {
+        const res = await fetch('/api/generate-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ recipeName: recipe.name })
+        });
+        const data = await res.json();
+        setDishImage(data.imageUrl);
+      } catch (err) {
+        console.error('Failed to generate image:', err);
+        // Fallback to placeholder if generation fails
+        setDishImage(`https://via.placeholder.com/800x600?text=${encodeURIComponent(recipe.name)}&bg=f39c12&text_color=ffffff`);
+      }
+    };
+
+    generateDishImage();
+  }, [recipe?.name]);
+
   return (
     <>
       <Head>
@@ -112,6 +136,17 @@ export default function RecipePage() {
               )}
             </div>
           </header>
+            {/* Dish Image */}
+            {dishImage && (
+              <div className={styles.dishImageContainer}>
+                <img
+                  src={dishImage}
+                  alt={recipe.name}
+                  className={styles.dishImage}
+                  loading="lazy"
+                />
+              </div>
+            )}
 
           {/* Two-column layout: ingredients and instructions */}
           <section className={styles.cardContent}>
