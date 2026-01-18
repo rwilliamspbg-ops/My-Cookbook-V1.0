@@ -1,9 +1,8 @@
-import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import styles from '../../styles/recipe-card.module.css';
+export default function RecipePage() { ... }
 
-export default function RecipePage() {
   const router = useRouter();
   const { id } = router.query;
   const [recipe, setRecipe] = useState(null);
@@ -24,7 +23,7 @@ export default function RecipePage() {
       } finally {
         setLoading(false);
       }
-    };
+    }
 
     fetchRecipe();
   }, [id]);
