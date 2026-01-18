@@ -7,7 +7,6 @@ import styles from '../../styles/recipe-card.module.css';
 export default function RecipePage() {
   const router = useRouter();
   const { id } = router.query;
-
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -55,40 +54,49 @@ export default function RecipePage() {
       </Head>
 
       <div className={styles.pageContainer}>
-      <header className={styles.header}>
-  <Link href="/" className={styles.backLink}>
-    ← Back to Cookbook
-  </Link>
-  <button
-    onClick={() => window.print()}
-    className={styles.printButton}
-    title="Print this recipe"
-  >
-    🖨️ Print
-  </button>
-</header>
+        {/* Header with navigation and print button */}
+        <header className={styles.header}>
+          <Link href="/" className={styles.backLink}>
+            ← Back to Cookbook
+          </Link>
+          <button
+            onClick={() => window.print()}
+            className={styles.printButton}
+            title="Print this recipe"
+          >
+            🖨 Print
+          </button>
+        </header>
 
-
-
-        <div className={styles.recipeCard}>
-          <div className={styles.cardHeader}>
+        {/* Main Recipe Card */}
+        <article className={styles.recipeCard}>
+          {/* Card Header with title and description */}
+          <header className={styles.cardHeader}>
             <h1 className={styles.recipeName}>{recipe.name}</h1>
-
             {recipe.description && (
               <p className={styles.description}>{recipe.description}</p>
             )}
+            {/* Meta information as pill-style badges */}
+            <div className={styles.meta}>
+              {recipe.prepTime && (
+                <span className={styles.metaItem}>⏱ Prep: {recipe.prepTime}</span>
+              )}
+              {recipe.cookTime && (
+                <span className={styles.metaItem}>🔥 Cook: {recipe.cookTime}</span>
+              )}
+              {recipe.servings && (
+                <span className={styles.metaItem}>🍽 Serves: {recipe.servings}</span>
+              )}
+              {recipe.category && (
+                <span className={styles.metaItem}>🏷 {recipe.category}</span>
+              )}
+            </div>
+          </header>
 
-            {recipe.servings && (
-              <div className={styles.meta}>
-                <span className={styles.metaItem}>
-                  👥 Servings: <strong>{recipe.servings}</strong>
-                </span>
-              </div>
-            )}
-          </div>
-
-          <div className={styles.cardContent}>
-            <section className={styles.section}>
+          {/* Two-column layout: ingredients and instructions */}
+          <section className={styles.cardContent}>
+            {/* Ingredients Section */}
+            <div className={styles.section}>
               <h2 className={styles.sectionTitle}>Ingredients</h2>
               <ul className={styles.ingredientsList}>
                 {ingredients.map((ingredient, idx) => (
@@ -97,6 +105,7 @@ export default function RecipePage() {
                       type="checkbox"
                       className={styles.checkbox}
                       id={`ingredient-${idx}`}
+                      aria-label={`Check off ${ingredient}`}
                     />
                     <label
                       htmlFor={`ingredient-${idx}`}
@@ -107,9 +116,10 @@ export default function RecipePage() {
                   </li>
                 ))}
               </ul>
-            </section>
+            </div>
 
-            <section className={styles.section}>
+            {/* Instructions Section */}
+            <div className={styles.section}>
               <h2 className={styles.sectionTitle}>Instructions</h2>
               <ol className={styles.instructionsList}>
                 {instructions.map((step, idx) => (
@@ -118,9 +128,9 @@ export default function RecipePage() {
                   </li>
                 ))}
               </ol>
-            </section>
-          </div>
-        </div>
+            </div>
+          </section>
+        </article>
       </div>
     </>
   );
