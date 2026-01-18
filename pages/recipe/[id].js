@@ -34,17 +34,37 @@ export default function RecipePage() {
   if (error) return <div className={styles.error}>Error: {error}</div>;
   if (!recipe) return <div className={styles.error}>Recipe not found</div>;
 
-  const ingredients = Array.isArray(recipe.ingredients)
-    ? recipe.ingredients
-    : typeof recipe.ingredients === 'string'
-    ? recipe.ingredients.split('\n').filter(Boolean)
-    : [];
+  const ingredients = (() => {
+    try {
+      // Try to parse as JSON if it's a string
+      if (typeof recipe.ingredients === 'string') {
+        return JSON.parse(recipe.ingredients);
+      }
+      // If it's already an array, use it directly
+      return Array.isArray(recipe.ingredients) ? recipe.ingredients : [];
+    } catch (e) {
+      // If JSON parsing fails, treat as newline-separated string
+      return typeof recipe.ingredients === 'string'
+        ? recipe.ingredients.split('\n').filter(Boolean)
+        : [];
+    }
+  })();
 
-  const instructions = Array.isArray(recipe.instructions)
-    ? recipe.instructions
-    : typeof recipe.instructions === 'string'
-    ? recipe.instructions.split('\n').filter(Boolean)
-    : [];
+  const instructions = (() => {
+    try {
+      // Try to parse as JSON if it's a string
+      if (typeof recipe.instructions === 'string') {
+        return JSON.parse(recipe.instructions);
+      }
+      // If it's already an array, use it directly
+      return Array.isArray(recipe.instructions) ? recipe.instructions : [];
+    } catch (e) {
+      // If JSON parsing fails, treat as newline-separated string
+      return typeof recipe.instructions === 'string'
+        ? recipe.instructions.split('\n').filter(Boolean)
+        : [];
+    }
+  })();
 
   return (
     <>
