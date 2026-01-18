@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { useRouter } from 'react-router-dom'; // Note: If using Next.js Pages router, keep 'next/router'
 import { useRouter as useNextRouter } from 'next/router'; 
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
@@ -130,7 +129,7 @@ export default function RecipePage() {
     try {
       if (typeof data === 'string') return JSON.parse(data);
       return Array.isArray(data) ? data : [];
-    } catch (_e) { // FIX 3: Changed 'e' to '_e' to signal it is an intentionally unused variable
+    } catch {
       return typeof data === 'string' ? data.split('\n').filter(Boolean) : [];
     }
   }
