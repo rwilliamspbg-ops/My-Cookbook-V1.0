@@ -292,27 +292,25 @@
   }
 
   .meta {
-    gap: 1rem;
-    font-size: 0.9rem;
-  }
-
-  .cardFooter {
-    padding: 1.5rem;
-  }
-
-  .instructionItem {
-    padding-left: 2.5rem;
-  }
-
-  .instructionItem::before {
-    width: 28px;
-    height: 28px;
-    font-size: 0.8rem;
-    left: -16px;
-  }
+  gap: 1rem;
+  font-size: 0.9rem;
 }
 
-/* PRINT STYLES */
+.cardFooter {
+  padding: 1.5rem;
+}
+
+.instructionItem {
+  padding-left: 2.5rem;
+}
+
+.instructionItem::before {
+  width: 28px;
+  height: 28px;
+  font-size: 0.8rem;
+  left: -16px;
+}
+
 /* PRINT STYLES */
 @media print {
   .pageContainer * {
@@ -320,17 +318,11 @@
     print-color-adjust: exact !important;
   }
 
-  body {
-    background: white !important;
-    margin: 0;
-    padding: 0;
-  }
-
   .pageContainer {
-    max-width: 100%;
+    background: white !important;
     margin: 0;
     padding: 0;
-    background: white !important;
+    max-width: 100%;
     min-height: auto;
   }
 
