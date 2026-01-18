@@ -289,3 +289,28 @@
     page-break-inside: avoid;
   }
 }
+
+
+/* Dish Image Container */
+.dishImageContainer {
+  width: 100%;
+  margin: 0 0 2rem 0;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(243, 156, 18, 0.2);
+  background: #f8f9fa;
+  page-break-inside: avoid;
+}
+
+.dishImage {
+  width: 100%;
+  height: auto;
+  max-height: 600px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.dishImageContainer:hover .dishImage {
+  transform: scale(1.02);
+}
