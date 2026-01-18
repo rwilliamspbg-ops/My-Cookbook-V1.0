@@ -314,10 +314,12 @@
 
 /* PRINT STYLES */
 @media print {
-  * {
+  .pageContainer * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
+}
+
 
   body {
     background: white !important;
