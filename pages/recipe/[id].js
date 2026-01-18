@@ -10,11 +10,11 @@ export default function RecipePage() {
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-    const [dishImage, setDishImage] = useState(null);
+  const [dishImage, setDishImage] = useState(null);
 
+  // 1. Fetch Recipe Data
   useEffect(() => {
     if (!id) return;
-
     const fetchRecipe = async () => {
       try {
         const res = await fetch(`/api/recipes/${id}`);
@@ -27,76 +27,31 @@ export default function RecipePage() {
         setLoading(false);
       }
     };
-
     fetchRecipe();
   }, [id]);
+
+  // 2. Generate Image (Triggered when recipe name is available)
+  useEffect(() => {
+    if (!recipe?.name) return;
+    const generateDishImage = async () => {
+      // Your image generation logic here
+    };
+    generateDishImage();
+  }, [recipe?.name]);
 
   if (loading) return <div className={styles.loading}>Loading recipe...</div>;
   if (error) return <div className={styles.error}>Error: {error}</div>;
   if (!recipe) return <div className={styles.error}>Recipe not found</div>;
 
-  const ingredients = (() => {
-    try {
-      // Try to parse as JSON if it's a string
-      if (typeof recipe.ingredients === 'string') {
-        return JSON.parse(recipe.ingredients);
-      }
-      // If it's already an array, use it directly
-      return Array.isArray(recipe.ingredients) ? recipe.ingredients : [];
-    } catch (e) {
-      // If JSON parsing fails, treat as newline-separated string
-      return typeof recipe.ingredients === 'string'
-        ? recipe.ingredients.split('\n').filter(Boolean)
-        : [];
-    }
-  })();
-
-  const instructions = (() => {
-    try {
-      // Try to parse as JSON if it's a string
-      if (typeof recipe.instructions === 'string') {
-        return JSON.parse(recipe.instructions);
-      }
-      // If it's already an array, use it directly
-      return Array.isArray(recipe.instructions) ? recipe.instructions : [];
-    } catch (e) {
-      // If JSON parsing fails, treat as newline-separated string
-      return typeof recipe.instructions === 'string'
-        ? recipe.instructions.split('\n').filter(Boolean)
-        : [];
-    }
-  })();
-
-   function RecipePage({ recipe }) {  // Assuming recipe from getServerSideProps or props
-  // All hooks first
-  useEffect(() => {
-    if (!recipe?.name) return;  // Early exit inside effect
-    const generateDishImage = async () => {
-      // Your image generation logic
-    };
-    generateDishImage();
-  }, [recipe]);  // Depend on recipe
-
-  // Other hooks like useState here too
-
-  if (!recipe) return <div>Loading...</div>;  // Now after hooks
-
-  return (
-    // JSX
-  );
-   }
-
-
-    generateDishImage();
-  }, [recipe?.name]);
+  // Helper logic for parsing ingredients/instructions
+  const ingredients = parseData(recipe.ingredients);
+  const instructions = parseData(recipe.instructions);
 
   return (
     <>
       <Head>
         <title>{recipe.name} - My Cookbook</title>
-        <meta name="description" content={`Recipe for ${recipe.name}`} />
       </Head>
-
       <div className={styles.pageContainer}>
         {/* Header with navigation and print button */}
         <header className={styles.header}>
@@ -189,4 +144,12 @@ export default function RecipePage() {
       </div>
     </>
   );
+function parseData(data) {
+  try {
+    if (typeof data === 'string') return JSON.parse(data);
+    return Array.isArray(data) ? data : [];
+  } catch (e) {
+    return typeof data === 'string' ? data.split('\n').filter(Boolean) : [];
+  }
+}
 }
