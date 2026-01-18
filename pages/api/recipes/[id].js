@@ -1,29 +1,27 @@
-import { useEffect, useState } from 'react';
-import Head from 'next/head';
-import styles from '../../styles/recipe-card.module.css';
-export default function RecipePage() { ... }
+export default async function handler(req, res) {
+  const { id } = req.query;
 
-  const router = useRouter();
-  const { id } = router.query;
-  const [recipe, setRecipe] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  if (req.method === 'GET') {
+    try {
+      // TODO: replace this with your real data source
+      const recipe = {
+        id,
+        name: 'Sample Recipe',
+        description: 'Placeholder recipe from the /api/recipes/[id] route.',
+        servings: 4,
+        ingredients: ['1 cup flour', '2 eggs', '1 tsp salt'],
+        instructions: ['Mix ingredients', 'Bake for 20 minutes at 350°F'],
+      };
 
-  useEffect(() => {
-    if (!id) return;
-
-    const fetchRecipe = async () => {
-      try {
-        const res = await fetch(`/api/recipes/${id}`);
-        if (!res.ok) throw new Error('Recipe not found');
-        const data = await res.json();
-        setRecipe(data.recipe);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
+      res.status(200).json({ recipe });
+    } catch (err) {
+      res.status(500).json({ error: 'Failed to load recipe' });
     }
+  } else {
+    res.setHeader('Allow', ['GET']);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
+  }
+}
 
     fetchRecipe();
   }, [id]);
