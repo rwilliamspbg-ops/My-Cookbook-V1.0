@@ -78,7 +78,7 @@ export async function POST(req: Request) {
     }
 
     return Response.json({ listId: list.id, itemCount: items.length }, { status: 201 });
-    
+    // try block ends here
   } catch (error) {
     console.error('Shopping list error:', error);
     return Response.json({ error: 'Failed to create shopping list' }, { status: 500 });
