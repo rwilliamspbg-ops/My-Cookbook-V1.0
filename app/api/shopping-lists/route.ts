@@ -42,13 +42,16 @@ export async function POST(req: Request) {
     >();
 
     for (const ing of ingredients) {
-      const key = `${ing.ingredientName.toLowerCase()}::${ing.unit || ''}`;
-      const existing = aggregated.get(key) || {
-        name: ing.ingredientName,
-        unit: ing.unit,
-        qty: 0,
-        sourceIds: new Set(),
-      };
+  const name = ing.ingredient; 
+  const unit = (ing as any).unit || ''; 
+  
+  const key = `${name.toLowerCase()}::${unit}`;
+  
+  const existing = aggregated.get(key) || {
+    name: name,
+    unit: unit,
+    amount: 0
+  };
 
       existing.qty += ing.quantity || 0;
       existing.sourceIds.add(ing.recipeId);
