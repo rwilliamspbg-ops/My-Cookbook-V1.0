@@ -38,19 +38,17 @@ export function aggregateIngredients(
   const aggregated = new Map<string, { quantity: number; unit: string | null; name: string }>();
 
   for (const ing of allIngredients) {
- 
   const name = ing.ingredient; 
   const unit = ing.unit || 'null';
-  
   const key = `${name.toLowerCase()}::${unit}`;
   
   const existing = aggregated.get(key) || {
-    name: name, 
+    name: name,
     unit: unit,
-    qty: 0,
+    qty: 0, 
+    
   };
-
-  
+    
   existing.qty += ing.quantity || 0;
   
   aggregated.set(key, existing);
