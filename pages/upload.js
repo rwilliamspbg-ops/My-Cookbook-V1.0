@@ -20,22 +20,18 @@ export default function UploadPage() {
 
     try {
       const formData = new FormData();
-      formData.append('inputType', inputMethod);
+formData.append('inputType', inputMethod);
 
-      if (inputMethod === 'pdf') {
-        if (!pdfFile) {
-          setMessage({ type: 'error', text: 'Please select a PDF file.' });
-          setLoading(false);
-          return;
-        }
-        formData.append('file', pdfFile); // must be "file" to match parse-recipe.js
-      } else if (inputMethod === 'url') {
-        formData.append('url', urlInput);
-      } else if (inputMethod === 'text') {
-        formData.append('text', textInput);
-      }
+if (inputMethod === 'pdf') {
+  formData.append('file', pdfFile);
+} else if (inputMethod === 'url') {
+  formData.append('url', urlInput);
+} else if (inputMethod === 'text') {
+  formData.append('text', textInput);
+}
 
-      const response = await axios.post('/api/parse-recipe', formData);
+const response = await axios.post('/api/parse-recipe', formData);
+
 
       if (response.data.success) {
         setParsedRecipe(response.data.recipe);
