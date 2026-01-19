@@ -1,23 +1,20 @@
-// lib/db/schema.ts
 import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+
+export const recipes = sqliteTable('recipes', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  title: text('title').notNull(),
+  slug: text('slug').notNull(), 
+});
 
 export const collections = sqliteTable('collections', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   name: text('name').notNull(),
-  // include slug here if you decided to keep it from the previous error!
-});
-  slug: text('slug').notNull(), // <--- Make sure this line exists!
 });
 
 export const recipeIngredients = sqliteTable('recipe_ingredients', {
   id: integer('id').primaryKey({ autoIncrement: true }),
-  recipe_id: integer('recipe_id').notNull(),
+  recipeId: integer('recipe_id').references(() => recipes.id),
   ingredient: text('ingredient').notNull(),
-});
-
-export const collections = sqliteTable('collections', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  name: text('name').notNull(),
 });
 
 export const recipes = sqliteTable('recipes', {
