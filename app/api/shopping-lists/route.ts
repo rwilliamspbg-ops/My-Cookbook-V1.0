@@ -98,9 +98,9 @@ export async function GET(req: Request) {
     }
 
     const items = await db
-      .select()
-      .from(shoppingListItems)
-      .where(eq(shoppingListItems.shoppingListId, parseInt(listId)));
+  .select()
+  .from(shoppingListItems)
+  .where(eq(shoppingListItems.list_id, parseInt(listId)));
 
     return Response.json(items);
   } catch (error) {
