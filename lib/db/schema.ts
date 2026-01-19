@@ -4,6 +4,8 @@ import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 export const collections = sqliteTable('collections', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   name: text('name').notNull(),
+  // include slug here if you decided to keep it from the previous error!
+});
   slug: text('slug').notNull(), // <--- Make sure this line exists!
 });
 
@@ -17,6 +19,13 @@ export const collections = sqliteTable('collections', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   name: text('name').notNull(),
 });
+
+export const recipes = sqliteTable('recipes', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  title: text('title').notNull(),
+  // ... other columns
+});
+
 
 export const shoppingLists = sqliteTable('shopping_lists', {
   id: integer('id').primaryKey({ autoIncrement: true }),
