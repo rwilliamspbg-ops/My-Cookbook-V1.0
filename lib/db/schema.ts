@@ -6,8 +6,9 @@ export const recipes = sqliteTable('recipes', {
   slug: text('slug').notNull(),
   description: text('description'),
   ingredients: text('ingredients'),
-  instructions: text('instructions'),
-  
+  instructions: text('instructions'), // Added
+  servings: text('servings'),         // Added - This was causing the current error
+  imageUrl: text('image_url'),        // Added - Just in case your parser sends this too
 });
 
 export const collections = sqliteTable('collections', {
