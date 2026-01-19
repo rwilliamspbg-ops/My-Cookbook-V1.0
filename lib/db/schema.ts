@@ -3,7 +3,11 @@ import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 export const recipes = sqliteTable('recipes', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   title: text('title').notNull(),
-  slug: text('slug').notNull(), 
+  slug: text('slug').notNull(),
+  description: text('description'),
+  ingredients: text('ingredients'),
+  instructions: text('instructions'),
+  
 });
 
 export const collections = sqliteTable('collections', {
