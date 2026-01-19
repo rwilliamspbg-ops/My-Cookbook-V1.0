@@ -1,20 +1,18 @@
 import { db } from '@/lib/db';
-import { recipeIngredients, recipes } from '@/lib/db/schema';
-import { NextRequest } from 'next/server';
+import { recipeIngredients } from '@/lib/db/schema';
+import { eq } from 'drizzle-orm'; // <--- Add this line!
 
 export async function GET(
-  request: NextRequest, 
+  request: Request,
   context: { params: Promise<{ id: string }> }
 ) {
-  try {
-    const { id } = await context.params;
-    const ingredients = await db
-      .select()
-      .from(recipeIngredients)
-      .where(eq(recipeIngredients.recipeId, recipeId));
+  const { id } = await context.params;
+  const recipeId = parseInt(id);
 
-    return Response.json(ingredients);
-  } catch (error) {
-    return Response.json({ error: 'Failed to fetch ingredients' }, { status: 500 });
-  }
+  const ingredients = await db
+    .select()
+    .from(recipeIngredients)
+    .where(eq(recipeIngredients.recipeId, recipeId));
+
+  return Response.json(ingredients);
 }
