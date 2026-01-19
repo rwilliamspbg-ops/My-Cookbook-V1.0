@@ -1,10 +1,10 @@
-import { db } from '@/lib/db';
+import { db } from '../../../lib/db';
 import {
   shoppingLists,
   shoppingListItems,
   recipeIngredients,
   recipes,
-} from '@/lib/db/schema';
+} from '../../../lib/db/schema';
 import { inArray, eq } from 'drizzle-orm';
 
 export async function POST(req: Request) {
