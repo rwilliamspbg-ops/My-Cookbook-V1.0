@@ -1,9 +1,13 @@
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
-
-export const recipes = sqliteTable('recipes', {
-  id: integer('id').primaryKey(),
-  title: text('title').notNull(),
-  ingredients: text('ingredients'),
-  instructions: text('instructions'),
-  prepTime: text('prep_time'),
+export const collections = sqliteTable('collections', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name').notNull(),
+  slug: text('slug').notNull(),
+  userId: integer('user_id'), // add auth later
+  createdAt: integer('created_at', { mode: 'timestamp' }).defaultNow(),
 });
+
+export const recipeCollections = sqliteTable('recipe_collections', {
+  recipeId: integer('recipe_id').references(() => recipes.id).notNull(),
+  collectionId: integer('collection_id').references(() => collections.id).notNull(),
+});
+
