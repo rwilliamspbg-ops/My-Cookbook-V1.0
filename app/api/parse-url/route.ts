@@ -33,19 +33,37 @@ async function scrapeRecipe(url: string): Promise<ParsedRecipe> {
 export async function POST(req: Request) {
   try {
     const { url } = await req.json();
-
     if (!url) {
       return Response.json({ error: 'URL required' }, { status: 400 });
     }
 
-    // 1. Scrape recipe
     const parsed = await scrapeRecipe(url);
 
-    // 2. Insert recipe
     const [recipe] = await db
       .insert(recipes)
       .values({
         title: parsed.title,
         description: parsed.description || '',
         ingredients: parsed.ingredients.join('\n'),
-        instructions: parsed.
+        instructions: parsed.instructions.join('\n'),
+        servings: parsed.servings ?? null,
+        prep_time: parsed.prepTimeMinutes ?? null,
+        cook_time: parsed.cookTimeMinutes ?? null,
+        image_url: parsed.imageUrl ?? null,
+      })
+      .returning();
+
+    if (parsed.ingredients?.length) {
+      const ingredientRows = parsed.ingredients.map((line: string) => ({
+        recipe_id: recipe.id,
+        ingredient: line,
+      }));
+      await db.insert(recipeIngredients).values(ingredientRows);
+    }
+
+    return Response.json({ recipe }, { status: 201 });
+  } catch (err) {
+    console.error('parse-url error', err);
+    return Response.json({ error: 'Failed to parse recipe URL' }, { status: 500 });
+  }
+}
