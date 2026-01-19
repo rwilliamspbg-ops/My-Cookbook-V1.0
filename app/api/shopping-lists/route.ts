@@ -65,13 +65,16 @@ export async function POST(req: Request) {
     } 
 
     
-    const items = Array.from(aggregated.values()).map((v) => ({
-      shoppingListId: list.id,
-      ingredientName: v.name,
-      unit: v.unit,
-      quantity: v.qty,
-      sourceRecipeIds: JSON.stringify([...v.sourceIds]),
-    }));
+    // ./app/api/shopping-lists/route.ts
+
+const items = Array.from(aggregated.values()).map((v) => ({
+  
+  list_id: list.id,           
+  ingredient: v.name,         
+  unit: v.unit,               
+  quantity: v.qty,
+  sourceRecipeIds: JSON.stringify([...v.sourceIds]), 
+}));
 
     if (items.length) {
       await db.insert(shoppingListItems).values(items);
