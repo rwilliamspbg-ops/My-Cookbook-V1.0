@@ -85,18 +85,18 @@ export default async function handler(req, res) {
   try {
     const [fields, files] = await form.parse(req);
 
-    const inputTypeRaw = fields.inputType?.[0] || 'text';
-    const inputType = ['pdf', 'url', 'text'].includes(inputTypeRaw)
-      ? inputTypeRaw
-      : 'text';
+const inputTypeRaw = fields.inputType?.[0] || 'text';
+const inputType = ['pdf', 'url', 'text'].includes(inputTypeRaw)
+  ? inputTypeRaw
+  : 'text';
 
-    let extractedText = '';
+let extractedText = '';
 
-    // 1. Extract text
-    if (inputType === 'pdf') {
-  const file = formData.get('file');   // ❌ formData is not defined here
+if (inputType === 'pdf') {
+  const file = files.file?.[0];   // must be "file"
+
   if (!file) {
-    return NextResponse.json({ error: 'File is required' }, { status: 422 }); // ❌ NextResponse in pages/api
+    return res.status(422).json({ error: 'File is required' });
   }
 
   if (file.size > MAX_FILE_SIZE_BYTES) {
@@ -107,7 +107,18 @@ export default async function handler(req, res) {
 
   const dataBuffer = await fs.readFile(file.filepath);
   extractedText = dataBuffer.toString('utf-8').trim();
+} else if (inputType === 'url') {
+  const url = fields.url?.[0];
+  if (!url) {
+    return res.status(400).json({ error: 'URL is required' });
+  }
+
+  // ...
+} else {
+  extractedText = fields.text?.[0] || '';
+  extractedText = normalizeWhitespace(extractedText);
 }
+
  
     else if (inputType === 'url') {
   const url = fields.url?.[0];
