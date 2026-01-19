@@ -7,7 +7,13 @@ const UNIT_CONVERSIONS: Record<string, { toBase: number; base: string }> = {
   oz: { toBase: 28.35, base: 'g' },
   lb: { toBase: 453.6, base: 'g' },
 };
-
+export const UNIT_CONVERSIONS = {
+  tsp: { toBase: 5, base: 'ml' },
+  tbsp: { toBase: 15, base: 'ml' },
+  cup: { toBase: 240, base: 'ml' },
+  oz: { toBase: 28.35, base: 'g' },
+  lb: { toBase: 453.6, base: 'g' },
+};
 export function scaleIngredients(
   ingredients: RecipeIngredient[],
   baseServings: number,
