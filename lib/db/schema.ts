@@ -1,17 +1,10 @@
 // lib/db/schema.ts
-import { sqliteTable, integer, text } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 
-export const recipes = sqliteTable('recipes', {
+export const collections = sqliteTable('collections', {
   id: integer('id').primaryKey({ autoIncrement: true }),
-  title: text('title').notNull(),
-  description: text('description').default(''),
-  ingredients: text('ingredients').notNull(),    // newline-joined string
-  instructions: text('instructions').notNull(),  // newline-joined string
-  servings: integer('servings'),
-  prep_time: integer('prep_time'),
-  cook_time: integer('cook_time'),
-  image_url: text('image_url'),
-  created_at: integer('created_at').default(Math.floor(Date.now() / 1000)),
+  name: text('name').notNull(),
+  slug: text('slug').notNull(), // <--- Make sure this line exists!
 });
 
 export const recipeIngredients = sqliteTable('recipe_ingredients', {
