@@ -1,5 +1,5 @@
 // app/api/recipes/route.ts
-import { NextResponse } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 import { db } from '@/lib/db';
 import { recipes } from '@/lib/db/schema';
 import { z } from 'zod';
@@ -14,6 +14,8 @@ const createRecipeSchema = z.object({
   imageUrl: z.string().url().optional(),
 });
 
+type CreateRecipeInput = z.infer<typeof createRecipeSchema>;
+
 export async function GET() {
   try {
     const allRecipes = await db.select().from(recipes).limit(100);
@@ -27,10 +29,10 @@ export async function GET() {
   }
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const json = await req.json();
-    const body = createRecipeSchema.parse(json);
+    const json: unknown = await req.json();
+    const body: CreateRecipeInput = createRecipeSchema.parse(json);
 
     const slug =
       body.slug ??
@@ -57,8 +59,8 @@ export async function POST(req: Request) {
       { success: true, recipe: inserted },
       { status: 201 }
     );
-  } catch (err: any) {
-    if (err?.name === 'ZodError') {
+  } catch (err) {
+    if (err instanceof z.ZodError) {
       return NextResponse.json(
         { error: 'Invalid request body', details: err.issues },
         { status: 400 }
@@ -72,6 +74,7 @@ export async function POST(req: Request) {
     );
   }
 }
+
 
 
 
