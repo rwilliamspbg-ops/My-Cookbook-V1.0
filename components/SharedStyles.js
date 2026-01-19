@@ -1,339 +1,142 @@
-// Shared styles component for consistent theming across all pages
-// Mobile-first responsive design with vivid aesthetics and enhanced button styles
-
+// components/SharedStyles.js
 export default function SharedStyles() {
   return (
     <style jsx global>{`
-      /* Global resets */
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-      }
-
-      /* Checkerboard background */
-      .checkerboard-bg {
-        min-height: 100vh;
-        background-image: 
-          linear-gradient(45deg, #dc143c 25%, transparent 25%),
-          linear-gradient(-45deg, #dc143c 25%, transparent 25%),
-          linear-gradient(45deg, transparent 75%, #dc143c 75%),
-          linear-gradient(-45deg, transparent 75%, #dc143c 75%);
-        background-size: 60px 60px;
-        background-position: 0 0, 0 30px, 30px -30px, -30px 0px;
-        background-color: #ffffff;
-        padding: 15px;
-      }
-
-      .container {
-        max-width: 1400px;
+      .page-container {
+        max-width: 960px;
         margin: 0 auto;
-        background: rgba(255, 255, 255, 0.97);
-        border-radius: 15px;
-        padding: 20px;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        padding: 2rem 1rem;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+          sans-serif;
       }
-
-      .header {
-        text-align: center;
-        margin-bottom: 30px;
-        padding: 25px 20px;
-        background: linear-gradient(135deg, #dc143c 0%, #ff6b6b 100%);
-        border-radius: 10px;
-        color: white;
-        box-shadow: 0 5px 15px rgba(220, 20, 60, 0.3);
-      }
-
-      .header h1 {
-        margin: 0 0 15px 0;
-        font-size: clamp(1.8em, 5vw, 3em);
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-      }
-
-      .header-actions {
+      .page-header {
         display: flex;
-        gap: 12px;
-        justify-content: center;
-        flex-wrap: wrap;
-      }
-
-      /* Enhanced Button Styles with Modern Effects */
-      .btn {
-        padding: 12px 24px;
-        border-radius: 8px;
-        text-decoration: none;
-        font-weight: 600;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        border: none;
-        cursor: pointer;
-        font-size: 15px;
-        display: inline-flex;
+        justify-content: space-between;
         align-items: center;
-        justify-content: center;
-        gap: 8px;
-        position: relative;
-        overflow: hidden;
-        text-transform: none;
-        letter-spacing: 0.3px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1.5rem;
       }
-
-      .btn::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 0;
-        height: 0;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.3);
-        transform: translate(-50%, -50%);
-        transition: width 0.6s, height 0.6s;
+      .page-header h1 {
+        font-size: 1.8rem;
+        margin: 0;
       }
-
-      .btn:hover::before {
-        width: 300px;
-        height: 300px;
+      .back-link {
+        color: #2563eb;
+        text-decoration: none;
       }
-
-      .btn:active {
-        transform: scale(0.95);
+      .back-link:hover {
+        text-decoration: underline;
       }
-
-      /* Primary Button - White with Red Text */
-      .btn-primary {
-        background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
-        color: #dc143c;
-        border: 2px solid #dc143c;
+      .page-content {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
       }
-
-      .btn-primary:hover {
-        background: linear-gradient(135deg, #dc143c 0%, #c41230 100%);
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(220, 20, 60, 0.4);
-      }
-
-      /* Secondary Button - Transparent with White Border */
-      .btn-secondary {
-        background: rgba(255, 255, 255, 0.15);
-        color: white;
-        border: 2px solid white;
-        backdrop-filter: blur(10px);
-      }
-
-      .btn-secondary:hover {
-        background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
-        color: #dc143c;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(255, 255, 255, 0.5);
-      }
-
-      /* Success Button - Green */
-      .btn-success {
-        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-        color: white;
-        border: 2px solid transparent;
-      }
-
-      .btn-success:hover {
-        background: linear-gradient(135deg, #20c997 0%, #17a2b8 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(32, 201, 151, 0.4);
-      }
-
-      /* Danger Button - Red */
-      .btn-danger {
-        background: linear-gradient(135deg, #dc143c 0%, #a00000 100%);
-        color: white;
-        border: 2px solid transparent;
-      }
-
-      .btn-danger:hover {
-        background: linear-gradient(135deg, #c82333 0%, #8b0000 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(220, 20, 60, 0.5);
-      }
-
-      /* Warning Button - Orange/Yellow */
-      .btn-warning {
-        background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
-        color: #333;
-        border: 2px solid transparent;
-        font-weight: 700;
-      }
-
-      .btn-warning:hover {
-        background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(255, 193, 7, 0.4);
-      }
-
-      /* Info Button - Blue */
-      .btn-info {
-        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
-        color: white;
-        border: 2px solid transparent;
-      }
-
-      .btn-info:hover {
-        background: linear-gradient(135deg, #138496 0%, #0f6674 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(23, 162, 184, 0.4);
-      }
-
-      /* Small Button */
-      .btn-sm {
-        padding: 8px 16px;
-        font-size: 14px;
-      }
-
-      /* Large Button */
-      .btn-lg {
-        padding: 16px 32px;
-        font-size: 18px;
-      }
-
-      /* Disabled Button */
-      .btn:disabled,
-      .btn.disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        transform: none !important;
-        box-shadow: none !important;
-      }
-
-      .btn:disabled:hover,
-      .btn.disabled:hover {
-        transform: none !important;
-      }
-
-      /* Form elements */
-      .form-group {
-        margin-bottom: 20px;
-      }
-
-      .form-label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: 600;
-        color: #333;
-      }
-
-      .form-input,
-      .form-textarea,
-      .form-select {
-        width: 100%;
-        padding: 12px 15px;
-        font-size: 15px;
-        border: 2px solid #ddd;
-        border-radius: 8px;
-        outline: none;
-        transition: all 0.3s ease;
-        font-family: inherit;
-      }
-
-      .form-input:focus,
-      .form-textarea:focus,
-      .form-select:focus {
-        border-color: #dc143c;
-        box-shadow: 0 0 15px rgba(220, 20, 60, 0.2);
-      }
-
-      .form-textarea {
-        min-height: 120px;
-        resize: vertical;
-      }
-
-      /* Card */
       .card {
-        background: white;
-        border: 3px solid #dc143c;
-        border-radius: 12px;
-        padding: 25px;
-        box-shadow: 0 5px 15px rgba(220, 20, 60, 0.2);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
+        background: #ffffff;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
       }
-
-      .card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
+      .input-methods {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+      .input-methods button {
+        flex: 1;
+        padding: 0.5rem 0.75rem;
+        border-radius: 999px;
+        border: 1px solid #e5e7eb;
+        background: #f9fafb;
+        cursor: pointer;
+      }
+      .input-methods button.active {
+        background: #2563eb;
+        color: #ffffff;
+        border-color: #2563eb;
+      }
+      .upload-form .form-group {
+        margin-bottom: 1rem;
+      }
+      .upload-form label {
+        display: block;
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+      }
+      .upload-form input,
+      .upload-form textarea {
         width: 100%;
-        height: 5px;
-        background: linear-gradient(90deg, #dc143c, #ff6b6b, #dc143c);
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+        border: 1px solid #d1d5db;
+        font-size: 0.95rem;
       }
-
-      .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(220, 20, 60, 0.3);
+      .upload-form button {
+        margin-top: 0.5rem;
+        padding: 0.6rem 1.2rem;
+        border-radius: 999px;
+        border: none;
+        background: #16a34a;
+        color: #ffffff;
+        font-weight: 500;
+        cursor: pointer;
       }
-
-      .card-title {
-        margin: 0 0 15px 0;
-        color: #dc143c;
-        font-size: 1.6em;
-        border-bottom: 2px solid #dc143c;
-        padding-bottom: 10px;
+      .upload-form button[disabled] {
+        opacity: 0.7;
+        cursor: default;
       }
-
-      /* Loading Spinner */
-      @keyframes spin {
-        to { transform: rotate(360deg); }
+      .alert {
+        margin-top: 1rem;
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        font-size: 0.9rem;
       }
-
-      .spinner {
-        width: 40px;
-        height: 40px;
-        border: 4px solid #f3f3f3;
-        border-top: 4px solid #dc143c;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin: 20px auto;
+      .alert-success {
+        background: #ecfdf5;
+        color: #166534;
+        border: 1px solid #bbf7d0;
       }
-
-      /* Mobile Responsive */
-      @media (max-width: 768px) {
-        .checkerboard-bg {
-          padding: 10px;
-          background-size: 40px 40px;
-        }
-
-        .container {
-          padding: 15px;
-        }
-
-        .header-actions {
-          flex-direction: column;
-        }
-
-        .btn {
-          width: 100%;
-          justify-content: center;
-        }
-
-        .form-input,
-        .form-textarea {
-          font-size: 16px; /* Prevents zoom on iOS */
-        }
+      .alert-error {
+        background: #fef2f2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
       }
-
-      /* Tablet Responsive */
-      @media (min-width: 769px) and (max-width: 1024px) {
-        .container {
-          padding: 20px;
-        }
+      .parsed-recipe h3 {
+        margin-top: 0;
+        margin-bottom: 0.25rem;
+      }
+      .parsed-recipe .description {
+        margin-bottom: 0.5rem;
+        color: #4b5563;
+      }
+      .parsed-recipe .meta {
+        display: flex;
+        gap: 0.75rem;
+        font-size: 0.85rem;
+        color: #6b7280;
+        margin-bottom: 0.75rem;
+      }
+      .parsed-recipe .columns {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.25rem;
+        margin-bottom: 1rem;
+      }
+      .parsed-recipe ul,
+      .parsed-recipe ol {
+        margin: 0;
+        padding-left: 1.25rem;
+      }
+      .parsed-recipe button {
+        padding: 0.6rem 1.2rem;
+        border-radius: 999px;
+        border: none;
+        background: #2563eb;
+        color: #ffffff;
+        font-weight: 500;
+        cursor: pointer;
       }
     `}</style>
   );
 }
+
