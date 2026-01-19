@@ -20,15 +20,15 @@ export default function UploadPage() {
 
     try {
       const formData = new FormData();
-      formData.append('inputType', inputMethod);
+      formData.append('file', selectedFile);
 
-      if (inputMethod === 'url') {
-        formData.append('url', urlInput);
-      } else if (inputMethod === 'pdf' && pdfFile) {
-        formData.append('file', pdfFile);
-      } else if (inputMethod === 'text') {
-        formData.append('text', textInput);
-      }
+      if (mode === 'pdf') {
+  formData.append('file', selectedFile);
+} else if (mode === 'url') {
+  formData.append('url', urlValue);
+} else if (mode === 'text') {
+  formData.append('text', rawText);
+}
 
       const response = await axios.post('/api/parse-recipe', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -68,17 +68,20 @@ export default function UploadPage() {
     if (!parsedRecipe) return;
 
     try {
-      await axios.post('/api/recipes', parsedRecipe);
+      await axios.post('/api/recipes', formData);
       setMessage({ type: 'success', text: '✅ Recipe saved to your cookbook!' });
       // Optionally redirect after a delay
       setTimeout(() => {
         window.location.href = '/';
       }, 1500);
-    } catch (error) {
-      console.error('Save error:', error);
-      setMessage({ type: 'error', text: '❌ Failed to save recipe' });
-    }
-  };
+    } catch (err) {
+  if (axios.isAxiosError(err)) {
+    console.error('Parse error status:', err.response?.status);
+    console.error('Parse error data:', err.response?.data);
+  } else {
+    console.error(err);
+  }
+};
 
   return (
     <>
