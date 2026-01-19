@@ -39,19 +39,22 @@ export async function POST(req: Request) {
 
     const parsed = await scrapeRecipe(url);
 
-    const [recipe] = await db
-      .insert(recipes)
-      .values({
-        title: parsed.title,
-        description: parsed.description || '',
-        ingredients: parsed.ingredients.join('\n'),
-        instructions: parsed.instructions.join('\n'),
-        servings: parsed.servings ?? null,
-        prep_time: parsed.prepTimeMinutes ?? null,
-        cook_time: parsed.cookTimeMinutes ?? null,
-        image_url: parsed.imageUrl ?? null,
-      })
-      .returning();
+   // app/api/parse-url/route.ts
+
+const [recipe] = await db
+  .insert(recipes)
+  .values({
+    title: parsed.title,
+    description: parsed.description || '',
+    ingredients: parsed.ingredients.join('\n'),
+    instructions: parsed.instructions.join('\n'),
+    slug: someSlugVariable, 
+    imageUrl: parsed.imageUrl,           // Make sure this isn't image_url
+    prepTimeMinutes: parsed.prepTimeMinutes, // Use this instead of prep_time
+    cookTimeMinutes: parsed.cookTimeMinutes, // Use this instead of cook_time
+    servings: parsed.servings,
+  })
+  .returning();
 
     if (parsed.ingredients?.length) {
       const ingredientRows = parsed.ingredients.map((line: string) => ({
