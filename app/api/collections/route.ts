@@ -20,7 +20,7 @@ export async function POST(req: Request) {
 
     const [collection] = await db
       .insert(collections)
-      .values({ name, slug })
+      .values({ name })
       .returning();
 
     return Response.json(collection, { status: 201 });
