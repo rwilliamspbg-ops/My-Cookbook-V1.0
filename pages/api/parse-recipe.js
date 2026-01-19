@@ -107,20 +107,20 @@ if (inputType === 'pdf') {
 
   const dataBuffer = await fs.readFile(file.filepath);
   extractedText = dataBuffer.toString('utf-8').trim();
-} else if (inputType === 'url') {
-  const url = fields.url?.[0];
-  if (!url) {
-    return res.status(400).json({ error: 'URL is required' });
+if (inputType === 'pdf') {
+  const file = files.file?.[0]; // must be "file"
+  if (!file) {
+    return res.status(422).json({ error: 'File is required' });
+  }
+  if (file.size > MAX_FILE_SIZE_BYTES) {
+    return res
+      .status(413)
+      .json({ error: 'PDF file too large (max 10MB)' });
   }
 
-  // ...
-} else {
-  extractedText = fields.text?.[0] || '';
-  extractedText = normalizeWhitespace(extractedText);
-}
-
- 
-    else if (inputType === 'url') {
+  const dataBuffer = await fs.readFile(file.filepath);
+  extractedText = dataBuffer.toString('utf-8').trim();
+} else if (inputType === 'url') {
   const url = fields.url?.[0];
   if (!url) {
     return res.status(400).json({ error: 'URL is required' });
@@ -133,6 +133,11 @@ if (inputType === 'pdf') {
   } catch {
     extractedText = `Please extract the recipe from this URL: ${url}`;
   }
+} else {
+  extractedText = fields.text?.[0] || '';
+  extractedText = normalizeWhitespace(extractedText);
+}
+
 } else {
   extractedText = fields.text?.[0] || '';
   extractedText = normalizeWhitespace(extractedText);
