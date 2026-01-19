@@ -15,7 +15,7 @@ export default function Home() {
   const fetchRecipes = async () => {
     try {
       const response = await axios.get('/api/recipes');
-      setRecipes(response.data.recipes || []);
+      setRecipes(Array.isArray(data) ? data : []);
       setLoading(false);
     } catch {
       console.error('Failed');
