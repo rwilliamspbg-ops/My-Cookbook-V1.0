@@ -20,7 +20,10 @@ export default function UploadPage() {
 
     try {
       const formData = new FormData();
-      formData.append('file', selectedFile);
+formData.append('file', selectedFile);     // key must be "file"
+formData.append('inputType', 'pdf');
+await axios.post('/api/parse-recipe', formData);
+
 
       if (mode === 'pdf') {
   formData.append('file', selectedFile);
