@@ -94,20 +94,22 @@ export default async function handler(req, res) {
 
     // 1. Extract text
     if (inputType === 'pdf') {
-      const file = formData.get('file');
-if (!file) {
-  return NextResponse.json({ error: 'File is required' }, { status: 422 });
+  const file = formData.get('file');   // ❌ formData is not defined here
+  if (!file) {
+    return NextResponse.json({ error: 'File is required' }, { status: 422 }); // ❌ NextResponse in pages/api
+  }
+
+  if (file.size > MAX_FILE_SIZE_BYTES) {
+    return res
+      .status(413)
+      .json({ error: 'PDF file too large (max 10MB)' });
+  }
+
+  const dataBuffer = await fs.readFile(file.filepath);
+  extractedText = dataBuffer.toString('utf-8').trim();
 }
-
-      if (file.size > MAX_FILE_SIZE_BYTES) {
-        return res
-          .status(413)
-          .json({ error: 'PDF file too large (max 10MB)' });
-      }
-
-      const dataBuffer = await fs.readFile(file.filepath);
-      extractedText = dataBuffer.toString('utf-8').trim();
-    } else if (inputType === 'url') {
+ 
+    else if (inputType === 'url') {
   const url = fields.url?.[0];
   if (!url) {
     return res.status(400).json({ error: 'URL is required' });
