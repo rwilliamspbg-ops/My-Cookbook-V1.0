@@ -42,26 +42,29 @@ export async function POST(req: Request) {
     >();
 
     for (const ing of ingredients) {
-  const name = ing.ingredient; 
-  const unit = (ing as any).unit || ''; 
-  
-  const key = `${name.toLowerCase()}::${unit}`;
-  
-  const existing = aggregated.get(key) || {
-    name: name,
-    unit: unit,
-    qty: 0,
-    sourceIds: new Set<number>()
-    
-  };
+      const name = ing.ingredient; 
+      const unit = (ing as any).unit || ''; 
+      
+      const key = `${name.toLowerCase()}::${unit}`;
+      
+      const existing = aggregated.get(key) || {
+        name: name,
+        unit: unit,
+        qty: 0,
+        sourceIds: new Set<number>()
+      };
 
       existing.qty += ing.quantity || 0;
+      
       if (ing.recipeId) {
-      existing.sourceIds.add(ing.recipeId);
+        existing.sourceIds.add(ing.recipeId);
+      }
+      
+      
       aggregated.set(key, existing);
-    }
+    } 
 
-    // Insert aggregated items
+    
     const items = Array.from(aggregated.values()).map((v) => ({
       shoppingListId: list.id,
       ingredientName: v.name,
@@ -75,6 +78,7 @@ export async function POST(req: Request) {
     }
 
     return Response.json({ listId: list.id, itemCount: items.length }, { status: 201 });
+    
   } catch (error) {
     console.error('Shopping list error:', error);
     return Response.json({ error: 'Failed to create shopping list' }, { status: 500 });
