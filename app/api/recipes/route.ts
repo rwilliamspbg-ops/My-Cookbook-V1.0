@@ -21,15 +21,14 @@ export async function POST(req: Request) {
     const [inserted] = await db
       .insert(recipes)
       .values({
-        title: body.title,
-        description: body.description || '',
-        ingredients: body.ingredients || '',
-        instructions: body.instructions || '',
-        servings: body.servings || null,
-        prep_time: body.prep_time || null,
-        cook_time: body.cook_time || null,
-        image_url: body.image_url || null,
-      })
+  title: body.title,
+  description: body.description || '',
+  ingredients: body.ingredients || '',
+  slug: body.slug || body.title.toLowerCase().replace(/ /g, '-'), 
+  prepTimeMinutes: body.prep_time, 
+  cookTimeMinutes: body.cook_time, 
+  imageUrl: body.imageUrl,         
+})
       .returning();
 
     return NextResponse.json({ success: true, recipe: inserted }, { status: 201 });
