@@ -85,6 +85,8 @@ export default async function handler(req, res) {
   try {
     const [fields, files] = await form.parse(req);
 
+const [fields, files] = await form.parse(req);
+
 const inputTypeRaw = fields.inputType?.[0] || 'text';
 const inputType = ['pdf', 'url', 'text'].includes(inputTypeRaw)
   ? inputTypeRaw
@@ -92,21 +94,6 @@ const inputType = ['pdf', 'url', 'text'].includes(inputTypeRaw)
 
 let extractedText = '';
 
-if (inputType === 'pdf') {
-  const file = files.file?.[0];   // must be "file"
-
-  if (!file) {
-    return res.status(422).json({ error: 'File is required' });
-  }
-
-  if (file.size > MAX_FILE_SIZE_BYTES) {
-    return res
-      .status(413)
-      .json({ error: 'PDF file too large (max 10MB)' });
-  }
-
-  const dataBuffer = await fs.readFile(file.filepath);
-  extractedText = dataBuffer.toString('utf-8').trim();
 if (inputType === 'pdf') {
   const file = files.file?.[0]; // must be "file"
   if (!file) {
@@ -131,112 +118,24 @@ if (inputType === 'pdf') {
     const stripped = html.replace(/<[^>]*>/g, ' ');
     extractedText = normalizeWhitespace(stripped);
   } catch {
+    extractedText = '';
+  }
+
+  // Fallback so we never send an empty string for URL input
+  if (!extractedText) {
     extractedText = `Please extract the recipe from this URL: ${url}`;
   }
 } else {
+  // inputType === 'text'
   extractedText = fields.text?.[0] || '';
   extractedText = normalizeWhitespace(extractedText);
 }
 
-} else {
-  extractedText = fields.text?.[0] || '';
-  extractedText = normalizeWhitespace(extractedText);
+// Only block truly empty text input
+if (!extractedText && inputType === 'text') {
+  return res.status(400).json({ error: 'No text to parse' });
 }
 
-    if (!extractedText) {
-      return res.status(400).json({ error: 'No text to parse' });
-    }
-
-    if (extractedText.length > MAX_CHARS) {
-      extractedText = extractedText.slice(0, MAX_CHARS);
-    }
-
-    // 2. Call OpenAI (aggressive extraction)
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [
-        {
-          role: 'system',
-          content: `You are a highly reliable recipe parser.
-
-Your goals:
-- If there is any recipe-like content, infer a clear title, ingredients list, and instructions as aggressively as possible.
-- If multiple recipes exist, pick the most prominent one.
-- If the text truly does not contain a recipe at all, return a JSON object with all fields null/empty.
-
-Return ONLY a JSON object with this exact shape:
-{
-  "title": string | null,
-  "description": string | null,
-  "ingredients": string[],
-  "instructions": string[],
-  "prepTime": number | null,
-  "cookTime": number | null,
-  "servings": number | null,
-  "category": string | null
+if (extractedText.length > MAX_CHARS) {
+  extractedText = extractedText.slice(0, MAX_CHARS);
 }
-
-Important:
-- When any recipe-like content exists, do your best to infer a short title.
-- "ingredients" should list one ingredient per string where possible.
-- "instructions" should list one step per string where possible.
-- Use null for truly missing scalar fields and [] for truly missing lists.
-- Never invent a recipe from thin air; always base everything on the given text.`,
-        },
-        { role: 'user', content: extractedText },
-      ],
-      response_format: { type: 'json_object' },
-      temperature: 0.2,
-    });
-
-    const message = completion.choices[0]?.message;
-    if (!message) {
-      return res.status(502).json({ error: 'No completion from OpenAI' });
-    }
-
-    let parsedRecipe = message.parsed;
-    if (!parsedRecipe) {
-      if (!message.content) {
-        return res.status(502).json({ error: 'No content from OpenAI' });
-      }
-      try {
-        parsedRecipe = JSON.parse(message.content);
-      } catch  {
-        return res.status(502).json({
-          error: 'Failed to parse AI response as JSON',
-        });
-      }
-    }
-
-    parsedRecipe.prepTime = coerceNumberOrNull(parsedRecipe.prepTime);
-    parsedRecipe.cookTime = coerceNumberOrNull(parsedRecipe.cookTime);
-    parsedRecipe.servings = coerceNumberOrNull(parsedRecipe.servings);
-
-    if (!basicRecipeShapeValid(parsedRecipe)) {
-      return res.status(422).json({
-        error: 'Invalid or very weak recipe format; please edit manually.',
-        recipe: parsedRecipe,
-      });
-    }
-
-    return res.status(200).json({ success: true, recipe: parsedRecipe });
-  } catch (error) {
-    console.error('Parsing Error (parse-recipe):', error);
-
-    const status =
-      error?.message && error.message.includes('maxFileSize')
-        ? 413
-        : 500;
-
-    return res.status(status).json({
-      error:
-        status === 413
-          ? 'Uploaded file too large'
-          : 'Failed to parse recipe',
-      detail: error?.message || 'Unknown error',
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
-    });
-  }
-}
-
-
