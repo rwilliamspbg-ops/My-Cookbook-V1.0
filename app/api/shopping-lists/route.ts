@@ -3,7 +3,7 @@ import {
   shoppingLists,
   shoppingListItems,
   recipeIngredients,
-  recipes,
+  //recipes,
 } from '../../../lib/db/schema';
 import { inArray, eq } from 'drizzle-orm';
 
@@ -43,7 +43,12 @@ export async function POST(req: Request) {
 
     for (const ing of ingredients) {
       const name = ing.ingredient; 
-      const unit = (ing as any).unit || ''; 
+      interface ShoppingListInput {
+  recipeId: string;
+  items: string[];
+}
+
+const data: ShoppingListInput = await req.json(); 
       
       const key = `${name.toLowerCase()}::${unit}`;
       
@@ -98,7 +103,12 @@ export async function GET(req: Request) {
     }
 
     const items = await db
-  .select()
+  interface ShoppingListInput {
+  recipeId: string;
+  items: string[];
+}
+
+const data: ShoppingListInput = await req.json();
   .from(shoppingListItems)
   .where(eq(shoppingListItems.list_id, parseInt(listId)));
 
