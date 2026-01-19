@@ -50,10 +50,13 @@ export async function POST(req: Request) {
   const existing = aggregated.get(key) || {
     name: name,
     unit: unit,
-    qty: 0
+    qty: 0,
+    sourceIds: new Set<number>()
+    
   };
 
       existing.qty += ing.quantity || 0;
+      if (ing.recipeId) {
       existing.sourceIds.add(ing.recipeId);
       aggregated.set(key, existing);
     }
