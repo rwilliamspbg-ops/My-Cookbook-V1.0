@@ -1,12 +1,11 @@
 import { db } from '../../../lib/db';
 import { collections } from '../../../lib/db/schema';
-import { eq } from 'drizzle-orm';
 
 export async function GET() {
   try {
     const allCollections = await db.select().from(collections);
     return Response.json(allCollections);
-  } catch (error) {
+  } catch (_error) { // Prefixed with _ to satisfy linting
     return Response.json({ error: 'Failed to fetch collections' }, { status: 500 });
   }
 }
@@ -16,7 +15,7 @@ export async function POST(req: Request) {
     const { name } = await req.json();
     if (!name) return Response.json({ error: 'Name required' }, { status: 400 });
 
-    const slug = name.toLowerCase().replace(/\s+/g, '-');
+    // Removed 'const slug' as it was assigned but never used
 
     const [collection] = await db
       .insert(collections)
@@ -24,7 +23,7 @@ export async function POST(req: Request) {
       .returning();
 
     return Response.json(collection, { status: 201 });
-  } catch (error) {
+  } catch (_error) { // Prefixed with _ to satisfy linting
     return Response.json({ error: 'Failed to create collection' }, { status: 500 });
   }
 }
