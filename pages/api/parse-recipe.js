@@ -94,10 +94,11 @@ export default async function handler(req, res) {
 
     // 1. Extract text
     if (inputType === 'pdf') {
-      const file = files.file?.[0];
-      if (!file) {
-        return res.status(400).json({ error: 'PDF file is required' });
-      }
+      const file = formData.get('file');
+if (!file) {
+  return NextResponse.json({ error: 'File is required' }, { status: 422 });
+}
+
       if (file.size > MAX_FILE_SIZE_BYTES) {
         return res
           .status(413)
