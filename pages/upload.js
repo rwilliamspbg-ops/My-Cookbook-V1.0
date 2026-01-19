@@ -44,33 +44,27 @@ export default function UploadPage() {
         setMessage({ type: 'error', text: '❌ Failed to parse recipe' });
       }
     } catch (error) {
-      console.error('Parse error:', error);
+  console.error('Parse error:', error);
 
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 422 && error.response?.data?.recipe) {
-          setParsedRecipe(error.response.data.recipe);
-          setMessage({
-            type: 'error',
-            text:
-              '⚠️ ' +
-              (error.response.data.error ||
-                'Weak recipe format. Please review and edit manually.'),
-          });
-        } else {
-          setMessage({
-            type: 'error',
-            text: `❌ Error: ${error.response?.data?.error || error.message}`,
-          });
-        }
-      } else {
-        setMessage({
-          type: 'error',
-          text: '❌ Unexpected error while parsing recipe.',
-        });
-      }
-    } finally {
-      setLoading(false);
-    }
+  if (axios.isAxiosError(error)) {
+    console.error('Status:', error.response?.status);
+    console.error('Data:', error.response?.data);
+    setMessage({
+      type: 'error',
+      text:
+        '❌ Error: ' +
+        (error.response?.data?.error || error.message),
+    });
+  } else {
+    setMessage({
+      type: 'error',
+      text: '❌ Unexpected error while parsing recipe.',
+    });
+  }
+} finally {
+  setLoading(false);
+}
+
   };
 
   const saveRecipe = async () => {
