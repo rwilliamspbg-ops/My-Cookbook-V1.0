@@ -64,36 +64,49 @@ const response = await axios.post('/api/parse-recipe', formData);
   };
 
   const saveRecipe = async () => {
-    if (!parsedRecipe) return;
+  if (!parsedRecipe) return;
 
-    try {
-      await axios.post('/api/recipes', {
-        title: parsedRecipe.title || 'Untitled Recipe',
-        description: parsedRecipe.description || '',
-        ingredients: (parsedRecipe.ingredients || []).join('\n'),
-        prep_time: parsedRecipe.prepTime ?? null,
-        cook_time: parsedRecipe.cookTime ?? null,
-        imageUrl: null,
-      });
-
-      setMessage({
-        type: 'success',
-        text: '✅ Recipe saved to your cookbook!',
-      });
-
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 1500);
-    } catch (err) {
-      console.error('Save error:', err);
-      setMessage({
-        type: 'error',
-        text:
-          '❌ Failed to save recipe: ' +
-          (err.response?.data?.error || err.message),
-      });
-    }
+  // Build payload to satisfy createRecipeSchema in route.ts
+  const payload = {
+    title: parsedRecipe.title || 'Untitled Recipe',
+    description: parsedRecipe.description || '',
+    ingredients: (parsedRecipe.ingredients || []).join('\n'),
   };
+
+  // Only include numeric fields when present
+  if (parsedRecipe.prepTime != null) {
+    payload.prep_time = Number(parsedRecipe.prepTime);
+  }
+  if (parsedRecipe.cookTime != null) {
+    payload.cook_time = Number(parsedRecipe.cookTime);
+  }
+
+  // imageUrl is optional and must be a valid URL if present,
+  // so omit it for now instead of sending null
+  // (the schema expects a string URL when provided).
+
+  try {
+    await axios.post('/api/recipes', payload);
+
+    setMessage({
+      type: 'success',
+      text: '✅ Recipe saved to your cookbook!',
+    });
+
+    setTimeout(() => {
+      window.location.href = '/';
+    }, 1500);
+  } catch (err) {
+    console.error('Save error:', err);
+    setMessage({
+      type: 'error',
+      text:
+        '❌ Failed to save recipe: ' +
+        (err.response?.data?.error || err.message),
+    });
+  }
+};
+
 
   return (
     <>
