@@ -24,6 +24,8 @@ export const recipeIngredients = sqliteTable('recipe_ingredients', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   recipeId: integer('recipe_id').references(() => recipes.id),
   ingredient: text('ingredient').notNull(),
+  quantity: integer('quantity'),
+  unit: text('unit'),
 });
 
 
