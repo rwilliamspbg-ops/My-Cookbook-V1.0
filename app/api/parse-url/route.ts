@@ -41,17 +41,23 @@ export async function POST(req: Request) {
 
    // app/api/parse-url/route.ts
 
+const slug = parsed.title
+  .toLowerCase()
+  .replace(/[^a-z0-9]+/g, '-') 
+  .replace(/^-+|-+$/g, '');    
+
+
 const [recipe] = await db
   .insert(recipes)
   .values({
     title: parsed.title,
+    slug: slug, 
     description: parsed.description || '',
     ingredients: parsed.ingredients.join('\n'),
     instructions: parsed.instructions.join('\n'),
-    slug: someSlugVariable, 
-    imageUrl: parsed.imageUrl,           // Make sure this isn't image_url
-    prepTimeMinutes: parsed.prepTimeMinutes, // Use this instead of prep_time
-    cookTimeMinutes: parsed.cookTimeMinutes, // Use this instead of cook_time
+    imageUrl: parsed.imageUrl,
+    prepTimeMinutes: parsed.prepTimeMinutes,
+    cookTimeMinutes: parsed.cookTimeMinutes,
     servings: parsed.servings,
   })
   .returning();
