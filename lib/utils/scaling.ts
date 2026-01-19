@@ -34,7 +34,6 @@ export function normalizeUnit(rawUnit?: string): string | null {
 
 export function aggregateIngredients(
   allIngredients: RecipeIngredient[]
-  // 1. Change 'quantity' to 'qty' in the return type definition
 ): Map<string, { qty: number; unit: string | null; name: string }> {
   
   const aggregated = new Map<string, { qty: number; unit: string | null; name: string }>();
@@ -53,6 +52,10 @@ export function aggregateIngredients(
     existing.qty += ing.quantity || 0;
     aggregated.set(key, existing);
   }
+
+  // >>> ADD THIS LINE HERE <<<
+  return aggregated; 
+}
   
   for (const ing of allIngredients) {
   const name = ing.ingredient; 
