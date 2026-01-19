@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+// app/api/recipes/route.ts
+import { NextResponse } from 'next/server';
+>>>>>>> refs/remotes/origin/main
 import { db } from '../../../lib/db/index';
 import { recipes, recipeIngredients } from '../../../lib/db/schema';
 import { eq } from 'drizzle-orm';
@@ -15,60 +20,36 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { title, ingredients, instructions, prepTime, cookTime, servings, category, imageUrl, source } = body;
 
-    if (!title || !ingredients || !instructions) {
-      return Response.json(
-        { error: 'Missing required fields: title, ingredients, instructions' },
-        { status: 400 }
-      );
-    }
-
-    // Insert recipe
-    const [recipe] = await db
+    // Adjust field names to match your schema
+    const [inserted] = await db
       .insert(recipes)
       .values({
-        title,
-        ingredients: Array.isArray(ingredients) ? ingredients.join('\n') : ingredients,
-        instructions: Array.isArray(instructions) ? instructions.join('\n') : instructions,
-        prepTime: prepTime?.toString() || null,
-        cookTime: cookTime?.toString() || null,
-        servings: servings || 4,
-        category: category || null,
-        imageUrl: imageUrl || null,
-        source: source || null,
-        baseServings: servings || 4,
+        title: body.title,
+        source: body.source || null,
+        instructions: body.instructions,
+        total_time: body.total_time || null,
+        servings: body.servings || null,
       })
       .returning();
 
-    return Response.json(
-      { id: recipe.id, message: 'Recipe saved successfully' },
-      { status: 201 }
-    );
-  } catch (error) {
-    console.error('POST /api/recipes error:', error);
-    return Response.json(
-      { error: 'Failed to save recipe', details: String(error) },
-      { status: 500 }
-    );
-  }
-}
-
-export async function DELETE(req: Request) {
-  try {
-    const { searchParams } = new URL(req.url);
-    const id = searchParams.get('id');
-
-    if (!id) {
-      return Response.json({ error: 'Recipe ID required' }, { status: 400 });
+    if (body.ingredients?.length) {
+      await db.insert(recipeIngredients).values(
+        body.ingredients.map((ing: any) => ({
+          recipe_id: inserted.id,
+          name: ing.name,
+          quantity: ing.quantity || null,
+          unit: ing.unit || null,
+        })),
+      );
     }
 
-    const recipeId = parseInt(id);
-    await db.delete(recipes).where(eq(recipes.id, recipeId));
-
-    return Response.json({ message: 'Recipe deleted' });
-  } catch (error) {
-    console.error('DELETE /api/recipes error:', error);
-    return Response.json({ error: 'Failed to delete recipe' }, { status: 500 });
+    return NextResponse.json({ success: true, recipe: inserted }, { status: 201 });
+  } catch (err) {
+    console.error('POST /api/recipes error', err);
+    return NextResponse.json({ error: 'Failed to save recipe' }, { status: 500 });
   }
 }
+
+
+
