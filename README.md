@@ -207,3 +207,115 @@ rwilliamspbg-ops
 ## Support
 
 For issues, questions, or suggestions, please open an issue on GitHub.
+
+
+## Deployment
+
+This app is configured for **zero-friction deployment** to [Vercel](https://vercel.com), the platform optimized for Next.js.
+
+### Option 1: Deploy to Vercel (Recommended)
+
+1. **Sign up for Vercel** at https://vercel.com/signup
+2. **Import this repository:**
+   - Go to https://vercel.com/new
+   - Select "Import Git Repository"
+   - Paste: `https://github.com/rwilliamspbg-ops/My-Cookbook-V1.0`
+   - Click "Continue"
+3. **Configure environment variables:**
+   - In the "Environment Variables" section, add:
+     - `OPENAI_API_KEY`: Your OpenAI API key (get one at https://platform.openai.com/api-keys)
+   - Click "Deploy"
+4. **Done!** Your app is live. Vercel provides a URL like `https://my-cookbook-v1-o12345.vercel.app`
+
+#### Auto-deploy on GitHub push:
+- Once connected, every push to `main` triggers an automatic deployment
+- Preview deployments for pull requests are automatic
+
+### Option 2: Deploy to Other Platforms
+
+**Railway, Render, or Heroku** also support Node.js/Next.js apps. All require:
+1. Fork this repository to your GitHub account
+2. Connect your fork to the platform's dashboard
+3. Set `OPENAI_API_KEY` environment variable
+4. Deploy
+
+## Local Development
+
+### Prerequisites
+- Node.js 20+ ([download](https://nodejs.org/))
+- npm or yarn
+
+### Setup
+
+```bash
+# Clone the repo
+git clone https://github.com/rwilliamspbg-ops/My-Cookbook-V1.0.git
+cd My-Cookbook-V1.0
+
+# Install dependencies
+npm install
+
+# Create .env.local
+cp .env.example .env.local
+
+# Edit .env.local and add your OpenAI API key
+# OPENAI_API_KEY=sk-your-key-here
+
+# Start the dev server
+npm run dev
+```
+
+Visit [http://localhost:3000](http://localhost:3000)
+
+### Build for production
+
+```bash
+npm run build
+npm run start
+```
+
+## CI/CD Pipeline
+
+Every push to `main` or `develop` runs automated tests via GitHub Actions (`.github/workflows/ci.yml`):
+- ✅ Linting (ESLint)
+- ✅ Build verification
+- ✅ TypeScript type checking
+
+All checks must pass before merging to `main`.
+
+## Configuration Files
+
+- **`vercel.json`** – Vercel deployment settings and security headers
+- **`.env.example`** – Template for environment variables
+- **`.github/workflows/ci.yml`** – Automated CI/CD pipeline
+- **`next.config.js`** – Next.js build configuration
+- **`tsconfig.json`** – TypeScript configuration
+
+## Production Checklist
+
+Before deploying to production:
+
+- [ ] Set `NODE_ENV=production` on the deployment platform
+- [ ] Secure your `OPENAI_API_KEY` (use platform secrets, never commit)
+- [ ] Review `vercel.json` security headers
+- [ ] Test all routes on mobile ([Chrome DevTools](https://developer.chrome.com/docs/devtools/device-mode/))
+- [ ] Enable HTTPS (automatic on Vercel)
+- [ ] Set up database backups if using external DB
+- [ ] Monitor logs and errors (Vercel provides built-in observability)
+
+## Troubleshooting
+
+### Build fails on Vercel
+- Check logs: Vercel Dashboard → Select Deployment → Logs
+- Ensure `OPENAI_API_KEY` is set in Environment Variables
+- Verify `package.json` `build` script works locally: `npm run build`
+
+### Recipes not saving
+- Check browser DevTools → Network tab when clicking "Save"
+- Ensure `/api/recipes` returns 200
+- Verify SQLite database exists and has write permissions
+
+### PDF/URL parsing fails
+- PDF must contain selectable text (not scanned images)
+- URL must be publicly accessible
+- OpenAI API quota may be exceeded (check usage at https://platform.openai.com/account/usage/overview)
