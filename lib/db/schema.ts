@@ -17,11 +17,6 @@ export const recipeIngredients = sqliteTable('recipe_ingredients', {
   ingredient: text('ingredient').notNull(),
 });
 
-export const recipes = sqliteTable('recipes', {
-  id: integer('id').primaryKey({ autoIncrement: true }),
-  title: text('title').notNull(),
-  // ... other columns
-});
 
 
 export const shoppingLists = sqliteTable('shopping_lists', {
