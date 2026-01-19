@@ -38,16 +38,23 @@ export function aggregateIngredients(
   const aggregated = new Map<string, { quantity: number; unit: string | null; name: string }>();
 
   for (const ing of allIngredients) {
-    const key = `${ing.ingredientName.toLowerCase()}::${ing.unit || 'null'}`;
-    const existing = aggregated.get(key) || {
-      name: ing.ingredientName,
-      unit: ing.unit,
-      quantity: 0,
-    };
+ 
+  const name = ing.ingredient; 
+  const unit = ing.unit || 'null';
+  
+  const key = `${name.toLowerCase()}::${unit}`;
+  
+  const existing = aggregated.get(key) || {
+    name: name, 
+    unit: unit,
+    qty: 0,
+  };
 
-    existing.quantity += ing.quantity || 0;
-    aggregated.set(key, existing);
-  }
+  
+  existing.qty += ing.quantity || 0;
+  
+  aggregated.set(key, existing);
+}
 
   return aggregated;
 }
