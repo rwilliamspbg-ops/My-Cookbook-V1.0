@@ -8,7 +8,10 @@ export const recipes = sqliteTable('recipes', {
   ingredients: text('ingredients'),
   instructions: text('instructions'), 
   servings: integer('servings'),         
-  imageUrl: text('image_url'),        
+  imageUrl: text('image_url'),
+  prep_time: text('prep_time'), 
+  cook_time: text('cook_time'),
+  
 });
 
 export const collections = sqliteTable('collections', {
