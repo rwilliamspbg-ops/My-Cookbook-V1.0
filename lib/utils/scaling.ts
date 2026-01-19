@@ -42,17 +42,20 @@ export function aggregateIngredients(
   const unit = ing.unit || 'null';
   const key = `${name.toLowerCase()}::${unit}`;
   
+  for (const ing of allIngredients) {
+  const name = ing.ingredient; 
+  const unit = ing.unit || 'null';
+  const key = `${name.toLowerCase()}::${unit}`;
+  
+  // 1. Ensure the default object uses 'qty' to match your math below
   const existing = aggregated.get(key) || {
     name: name,
     unit: unit,
     qty: 0, 
-    
   };
-    
+
+  // 2. Now 'existing.qty' is guaranteed to exist on both sides of the union
   existing.qty += ing.quantity || 0;
   
   aggregated.set(key, existing);
-}
-
-  return aggregated;
 }
