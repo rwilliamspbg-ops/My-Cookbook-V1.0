@@ -1,5 +1,7 @@
-import { db } from '@/lib/db';
-import { recipes, recipeIngredients } from '@/lib/db/schema';
+// app/api/recipes/route.ts
+import { NextResponse } from 'next/server';
+import { db } from '../../../lib/db/index';
+import { recipes, recipeIngredients } from '../../../lib/db/schema';
 import { eq } from 'drizzle-orm';
 
 export async function GET() {
@@ -15,14 +17,37 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { title, ingredients, instructions, prepTime, cookTime, servings, category, imageUrl, source } = body;
 
-    if (!title || !ingredients || !instructions) {
-      return Response.json(
-        { error: 'Missing required fields: title, ingredients, instructions' },
-        { status: 400 }
+    // Adjust field names to match your schema
+    const [inserted] = await db
+      .insert(recipes)
+      .values({
+        title: body.title,
+        source: body.source || null,
+        instructions: body.instructions,
+        total_time: body.total_time || null,
+        servings: body.servings || null,
+      })
+      .returning();
+
+    if (body.ingredients?.length) {
+      await db.insert(recipeIngredients).values(
+        body.ingredients.map((ing: any) => ({
+          recipe_id: inserted.id,
+          name: ing.name,
+          quantity: ing.quantity || null,
+          unit: ing.unit || null,
+        })),
       );
     }
+
+    return NextResponse.json({ success: true, recipe: inserted }, { status: 201 });
+  } catch (err) {
+    console.error('POST /api/recipes error', err);
+    return NextResponse.json({ error: 'Failed to save recipe' }, { status: 500 });
+  }
+}
+
 
     // Insert recipe
     const [recipe] = await db
