@@ -50,7 +50,7 @@ export async function POST(req: Request) {
   const existing = aggregated.get(key) || {
     name: name,
     unit: unit,
-    amount: 0
+    qty: 0
   };
 
       existing.qty += ing.quantity || 0;
