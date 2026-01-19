@@ -139,3 +139,4 @@ if (!extractedText && inputType === 'text') {
 if (extractedText.length > MAX_CHARS) {
   extractedText = extractedText.slice(0, MAX_CHARS);
 }
+}
