@@ -118,8 +118,18 @@ export default async function handler(req, res) {
 
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       const pdfParseModule = require('pdf-parse');
-      // Handle both default export and direct export
-      const pdfParse = pdfParseModule.default || pdfParseModule;
+      console.log('pdfParseModule type:', typeof pdfParseModule);
+      console.log('pdfParseModule keys:', Object.keys(pdfParseModule));
+      console.log('pdfParseModule.default type:', typeof pdfParseModule.default);
+      
+      // Try multiple ways to get the function
+      let pdfParse = pdfParseModule.default || pdfParseModule;
+      
+      // If it's still an object, try calling it directly
+      if (typeof pdfParse !== 'function' && typeof pdfParseModule === 'function') {
+        pdfParse = pdfParseModule;
+      }
+      
       const dataBuffer = await fs.readFile(file.filepath);
       const data = await pdfParse(dataBuffer);
       extractedText = data.text;
