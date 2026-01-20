@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { db } from '../../lib/db';
-import { recipes } from '../../lib/db/schema';
+import { db } from '../../../lib/db';
+import { recipes } from '../../../lib/db/schema';
 import { z } from 'zod';
 
 const createRecipeSchema = z.object({
