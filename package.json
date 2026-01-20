@@ -10,15 +10,20 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@stripe/stripe-js": "^4.10.0",
     "axios": "^1.13.2",
+    "bcryptjs": "^2.4.3",
     "better-sqlite3": "^11.10.0",
     "formidable": "^3.5.4",
+    "jsonwebtoken": "^9.0.2",
     "next": "^16.1.1-canary.32",
+    "next-auth": "^4.24.11",
     "openai": "^6.16.0",
     "pdf-parse": "^2.4.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "sharp": "^0.34.5",
+    "stripe": "^17.5.0",
     "tesseract.js-node": "^0.1.0",
     "zod": "^4.3.5"
   },
