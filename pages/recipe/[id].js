@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { useRouter as useNextRouter } from 'next/router'; 
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
-import Image from 'next/image'; // FIX 1: Import the Image component
+import Image from 'next/image';
 import styles from '../../styles/recipe-card.module.css';
 
 export default function RecipePage() {
@@ -31,17 +31,15 @@ export default function RecipePage() {
     fetchRecipe();
   }, [id]);
 
-  // 2. Generate Image (Triggered when recipe name is available)
+  // 2. Generate Image (Triggered when recipe title is available)
   useEffect(() => {
-    if (!recipe?.name) return;
+    if (!recipe?.title) return;
     const generateDishImage = async () => {
-      // FIX 2: Added logic to use setDishImage so it is not "unused"
-      // Replace the URL below with your actual image generation endpoint
-      const imageUrl = `/api/generate-image?name=${encodeURIComponent(recipe.name)}`;
+      const imageUrl = `/api/generate-image?name=${encodeURIComponent(recipe.title)}`;
       setDishImage(imageUrl); 
     };
     generateDishImage();
-  }, [recipe?.name]);
+  }, [recipe?.title]);
 
   if (loading) return <div className={styles.loading}>Loading recipe...</div>;
   if (error) return <div className={styles.error}>Error: {error}</div>;
@@ -53,7 +51,7 @@ export default function RecipePage() {
   return (
     <>
       <Head>
-        <title>{recipe.name} - My Cookbook</title>
+        <title>{recipe.title} - My Cookbook</title>
       </Head>
       <div className={styles.pageContainer}>
         <header className={styles.header}>
@@ -71,13 +69,13 @@ export default function RecipePage() {
 
         <article className={styles.recipeCard}>
           <header className={styles.cardHeader}>
-            <h1 className={styles.recipeName}>{recipe.name}</h1>
+            <h1 className={styles.recipeName}>{recipe.title}</h1>
             {recipe.description && (
               <p className={styles.description}>{recipe.description}</p>
             )}
             <div className={styles.meta}>
-              {recipe.prepTime && <span className={styles.metaItem}>⏱ Prep: {recipe.prepTime}</span>}
-              {recipe.cookTime && <span className={styles.metaItem}>🔥 Cook: {recipe.cookTime}</span>}
+              {recipe.prepTimeMinutes && <span className={styles.metaItem}>⏱ Prep: {recipe.prepTimeMinutes} min</span>}
+              {recipe.cookTimeMinutes && <span className={styles.metaItem}>🔥 Cook: {recipe.cookTimeMinutes} min</span>}
               {recipe.servings && <span className={styles.metaItem}>🍽 Serves: {recipe.servings}</span>}
               {recipe.category && <span className={styles.metaItem}>🏷 {recipe.category}</span>}
             </div>
@@ -87,10 +85,10 @@ export default function RecipePage() {
             <div className={styles.dishImageContainer}>
               <Image
                 src={dishImage}
-                alt={recipe.name}
+                alt={recipe.title}
                 className={styles.dishImage}
-                width={800} // Required for next/image
-                height={500} // Required for next/image
+                width={800}
+                height={500}
                 priority
               />
             </div>
