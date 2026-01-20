@@ -1,6 +1,5 @@
-import { db } from '@/lib/db';
-import { recipes, recipeIngredients } from '@/lib/db/schema';
-//import { parseIngredientsWithZestful } from '@/lib/utils/zestful';
+import { db } from '../../../lib/db';
+import { recipes, recipeIngredients } from '../../../lib/db/schema';
 
 interface ParsedRecipe {
   title: string;
