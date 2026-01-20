@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { SUBSCRIPTION_PLANS } from '../lib/stripe';
+import { SUBSCRIPTION_PLANS } from '../lib/subscriptionPlans';
+
 
 export default function Pricing() {
   const router = useRouter();
