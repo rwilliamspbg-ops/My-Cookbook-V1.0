@@ -96,7 +96,7 @@ export default async function handler(req, res) {
 
         try {
           // Get subscription details from Stripe
-          const subscription = await stripe.subscriptions.retrieve(session.subscription);
+          const _subscription = await stripe.subscriptions.retrieve(session.subscription);
           
           // Get plan key from metadata
           const planKey = session.metadata?.planKey || 'free';
