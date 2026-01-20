@@ -117,7 +117,9 @@ export default async function handler(req, res) {
       }
 
       // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const pdfParse = require('pdf-parse');
+      const pdfParseModule = require('pdf-parse');
+      // Handle both default export and direct export
+      const pdfParse = pdfParseModule.default || pdfParseModule;
       const dataBuffer = await fs.readFile(file.filepath);
       const data = await pdfParse(dataBuffer);
       extractedText = data.text;
