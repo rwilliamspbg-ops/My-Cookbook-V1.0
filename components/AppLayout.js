@@ -7,11 +7,13 @@ export default function AppLayout({ children }) {
       <header className="app-header">
         <div className="app-header-inner">
           <Link href="/" className="app-logo">
-            🍳 My Cookbook
+            My Cookbook
           </Link>
           <nav className="app-nav">
+            <Link href="/">Recipes</Link>
             <Link href="/upload">Parse Recipe</Link>
             <Link href="/recipe/new">Add Recipe</Link>
+            <Link href="/pricing">Pricing</Link>
           </nav>
         </div>
       </header>
