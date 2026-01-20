@@ -1,6 +1,6 @@
-import { db } from '@/lib/db';
-import { recipeIngredients } from '@/lib/db/schema';
-import { eq } from 'drizzle-orm'; // <--- Add this line!
+import { db } from '../../../../lib/db';
+import { recipeIngredients } from '../../../../lib/db/schema';
+import { eq } from 'drizzle-orm';
 
 export async function GET(
   request: Request,
