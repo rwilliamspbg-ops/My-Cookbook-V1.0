@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { useRouter as useNextRouter } from 'next/router'; 
 import { useEffect, useState } from 'react';
 import Head from 'next/head';
-import Image from 'next/image';
 import styles from '../../styles/recipe-card.module.css';
 
 export default function RecipePage() {
@@ -11,9 +10,8 @@ export default function RecipePage() {
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [dishImage, setDishImage] = useState(null);
 
-  // 1. Fetch Recipe Data
+  // Fetch Recipe Data
   useEffect(() => {
     if (!id) return;
     const fetchRecipe = async () => {
@@ -30,16 +28,6 @@ export default function RecipePage() {
     };
     fetchRecipe();
   }, [id]);
-
-  // 2. Generate Image (Triggered when recipe title is available)
-  useEffect(() => {
-    if (!recipe?.title) return;
-    const generateDishImage = async () => {
-      const imageUrl = `/api/generate-image?name=${encodeURIComponent(recipe.title)}`;
-      setDishImage(imageUrl); 
-    };
-    generateDishImage();
-  }, [recipe?.title]);
 
   if (loading) return <div className={styles.loading}>Loading recipe...</div>;
   if (error) return <div className={styles.error}>Error: {error}</div>;
@@ -80,19 +68,6 @@ export default function RecipePage() {
               {recipe.category && <span className={styles.metaItem}>🏷 {recipe.category}</span>}
             </div>
           </header>
-
-          {dishImage && (
-            <div className={styles.dishImageContainer}>
-              <Image
-                src={dishImage}
-                alt={recipe.title}
-                className={styles.dishImage}
-                width={800}
-                height={500}
-                priority
-              />
-            </div>
-          )}
 
           <section className={styles.cardContent}>
             <div className={styles.section}>
