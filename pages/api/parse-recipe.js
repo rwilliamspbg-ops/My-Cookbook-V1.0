@@ -1,7 +1,9 @@
-import pdf from 'pdf-parse';
 import OpenAI from 'openai';
 import formidable from 'formidable';
 import fs from 'fs/promises';
+
+// Dynamic import for pdf-parse to handle ES module issues
+let pdfParse;
 
 export const config = {
   api: {
@@ -117,8 +119,14 @@ export default async function handler(req, res) {
         });
       }
 
+      // Dynamically import pdf-parse only when needed
+      if (!pdfParse) {
+        const pdfParseModule = await import('pdf-parse');
+        pdfParse = pdfParseModule.default || pdfParseModule;
+      }
+
       const dataBuffer = await fs.readFile(file.filepath);
-      const data = await pdf(dataBuffer);
+      const data = await pdfParse(dataBuffer);
       extractedText = data.text;
     } else if (inputType === 'url') {
       const url = fields.url?.[0];
