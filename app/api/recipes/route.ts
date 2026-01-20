@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { db } from '../../../lib/db';
 import { recipes } from '../../../lib/db/schema';
+import { eq } from 'drizzle-orm';
 import { z } from 'zod';
 
 const createRecipeSchema = z.object({
@@ -74,7 +75,29 @@ export async function POST(req: NextRequest) {
   }
 }
 
+export async function DELETE(req: NextRequest) {
+  try {
+    const json: unknown = await req.json();
+    const body = z.object({ id: z.number().int().positive() }).parse(json);
 
+    await db.delete(recipes).where(eq(recipes.id, body.id));
 
+    return NextResponse.json(
+      { success: true, message: 'Recipe deleted' },
+      { status: 200 }
+    );
+  } catch (err) {
+    if (err instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: 'Invalid request body', details: err.issues },
+        { status: 400 }
+      );
+    }
 
-
+    console.error('DELETE /api/recipes error', err);
+    return NextResponse.json(
+      { error: 'Failed to delete recipe' },
+      { status: 500 }
+    );
+  }
+}
