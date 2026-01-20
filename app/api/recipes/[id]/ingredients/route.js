@@ -1,5 +1,5 @@
-import { db } from '../../../../lib/db.js';
-import { recipeIngredients } from '../../../../lib/schema.js';
+import { db } from '../../../../../lib/db/index.ts';
+import { recipeIngredients } from '../../../../../lib/db/schema.ts';
 import { eq } from 'drizzle-orm';
 
 export async function GET(request, context) {
