@@ -1,6 +1,6 @@
 import { parseUserFromRequest } from '../lib/auth';
 
-export async function getServerSideProps({ req, res }) {
+export async function getServerSideProps({ req, _res }) {
   const user = parseUserFromRequest(req);
 
   if (!user) {
