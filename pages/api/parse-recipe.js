@@ -118,9 +118,21 @@ export default async function handler(req, res) {
 
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       const { PDFParse } = require('pdf-parse');
+      
+      console.log('=== PDFParse Class Debug ===');
+      console.log('PDFParse type:', typeof PDFParse);
+      console.log('PDFParse constructor name:', PDFParse.name);
+      console.log('PDFParse static methods:', Object.getOwnPropertyNames(PDFParse));
+      console.log('PDFParse prototype methods:', Object.getOwnPropertyNames(PDFParse.prototype));
+      
+      // Try to see if there's a prototype method
+      const instance = new PDFParse();
+      console.log('Instance type:', typeof instance);
+      console.log('Instance methods:', Object.getOwnPropertyNames(Object.getPrototypeOf(instance)));
+      console.log('Instance.parse type:', typeof instance.parse);
+      
       const dataBuffer = await fs.readFile(file.filepath);
-      // Try using PDFParse.parse() as a static method
-      const data = await PDFParse.parse(dataBuffer);
+      const data = await instance.parse(dataBuffer);
       extractedText = data.text;
     } else if (inputType === 'url') {
       const url = fields.url?.[0];
