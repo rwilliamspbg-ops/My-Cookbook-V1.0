@@ -2,6 +2,8 @@ import OpenAI from 'openai';
 import formidable from 'formidable';
 import fs from 'fs/promises';
 
+// Cache buster: 2026-01-20T08:11:00Z
+
 export const config = {
   api: {
     bodyParser: false,
@@ -104,7 +106,7 @@ export default async function handler(req, res) {
     let extractedText = '';
 
     if (inputType === 'pdf') {
-      const file = files.file?.[0]; // must be "file"
+      const file = files.file?.[0];
       if (!file) {
         return res
           .status(422)
@@ -118,9 +120,9 @@ export default async function handler(req, res) {
 
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       const pdfParseModule = require('pdf-parse');
-      console.log('pdfParseModule type:', typeof pdfParseModule);
-      console.log('pdfParseModule keys:', Object.keys(pdfParseModule));
-      console.log('pdfParseModule.default type:', typeof pdfParseModule.default);
+      console.log('DEBUG: pdfParseModule type:', typeof pdfParseModule);
+      console.log('DEBUG: pdfParseModule keys:', Object.keys(pdfParseModule));
+      console.log('DEBUG: pdfParseModule.default type:', typeof pdfParseModule.default);
       
       // Try multiple ways to get the function
       let pdfParse = pdfParseModule.default || pdfParseModule;
@@ -129,6 +131,8 @@ export default async function handler(req, res) {
       if (typeof pdfParse !== 'function' && typeof pdfParseModule === 'function') {
         pdfParse = pdfParseModule;
       }
+      
+      console.log('DEBUG: final pdfParse type:', typeof pdfParse);
       
       const dataBuffer = await fs.readFile(file.filepath);
       const data = await pdfParse(dataBuffer);
