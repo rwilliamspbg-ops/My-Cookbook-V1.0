@@ -1,123 +1,64 @@
 import { db } from '../../../lib/db';
-import {
-  shoppingLists,
-  shoppingListItems,
-  recipeIngredients,
-  //recipes,
-} from '../../../lib/db/schema';
-import { inArray, eq } from 'drizzle-orm';
+import { shoppingLists } from '../../../lib/db/schema';
+import { eq } from 'drizzle-orm';
 
-export async function POST(req: Request) {
-  try {
-    interface ShoppingListInput {
-      recipeId: string;
-      items: string[];
-    }
-    const _data: ShoppingListInput = await req.json();
-    // ... your logic ...
-    return Response.json({ success: true });
-  } catch { 
-    // This empty catch block is now lint-friendly
-    return Response.json({ error: 'Failed to update' }, { status: 500 });
-  }
-}
-
-    // Create shopping list
-    const [list] = await db
-      .insert(shoppingLists)
-      .values({ name })
-      .returning();
-
-    // Fetch all ingredients from recipes
-    const ingredients = await db
-      .select()
-      .from(recipeIngredients)
-      .where(inArray(recipeIngredients.recipeId, recipeIds));
-
-    // Aggregate by ingredient name + unit
-    const aggregated = new Map<
-      string,
-      {
-        name: string;
-        unit: string | null;
-        qty: number;
-        sourceIds: Set<number>;
-      }
-    >();
-
-    for (const ing of ingredients) {
-      const name = ing.ingredient; 
-      interface ShoppingListInput {
+// Define the interface to replace 'any' and satisfy the linter
+interface ShoppingListInput {
   recipeId: string;
   items: string[];
 }
 
-const data: ShoppingListInput = await req.json(); 
-      
-      const key = `${name.toLowerCase()}::${unit}`;
-      
-      const existing = aggregated.get(key) || {
-        name: name,
-        unit: unit,
-        qty: 0,
-        sourceIds: new Set<number>()
-      };
+export async function GET() {
+  try {
+    const lists = await db.select().from(shoppingLists);
+    return Response.json(lists);
+  } catch {
+    // Empty catch block to avoid unused variable errors
+    return Response.json({ error: 'Failed to fetch shopping lists' }, { status: 500 });
+  }
+}
 
-      existing.qty += ing.quantity || 0;
-      
-      if (ing.recipeId) {
-        existing.sourceIds.add(ing.recipeId);
-      }
-      
-      
-      aggregated.set(key, existing);
-    } 
+export async function POST(req: Request) {
+  try {
+    const data: ShoppingListInput = await req.json();
 
-    
-    // ./app/api/shopping-lists/route.ts
-
-const items = Array.from(aggregated.values()).map((v) => ({
-  
-  list_id: list.id,           
-  ingredient: v.name,         
-  unit: v.unit,               
-  quantity: v.qty,
-  sourceRecipeIds: JSON.stringify([...v.sourceIds]), 
-}));
-
-    if (items.length) {
-      await db.insert(shoppingListItems).values(items);
+    if (!data.recipeId) {
+      return Response.json({ error: 'Recipe ID is required' }, { status: 400 });
     }
 
-    return Response.json({ listId: list.id, itemCount: items.length }, { status: 201 });
-    // try block ends here
-  } catch (error) {
-    console.error('Shopping list error:', error);
+    const [newList] = await db
+      .insert(shoppingLists)
+      .values({
+        recipeId: data.recipeId,
+        items: data.items,
+      })
+      .returning();
+
+    return Response.json(newList, { status: 201 });
+  } catch {
     return Response.json({ error: 'Failed to create shopping list' }, { status: 500 });
   }
 }
 
-export async function GET(req: Request) {
+export async function PUT(req: Request) {
   try {
-    const { searchParams } = new URL(req.url);
-    const listId = searchParams.get('listId');
+    const data: ShoppingListInput & { id: string } = await req.json();
 
-    if (!listId) {
-      return Response.json({ error: 'listId required' }, { status: 400 });
+    if (!data.id) {
+      return Response.json({ error: 'List ID is required' }, { status: 400 });
     }
 
-    const items = await db
-  interface ShoppingListInput {
-  recipeId: string;
-  items: string[];
-}
+    const [updatedList] = await db
+      .update(shoppingLists)
+      .set({
+        items: data.items,
+      })
+      .where(eq(shoppingLists.id, data.id))
+      .returning();
 
-const data: ShoppingListInput = await req.json();
-  .from(shoppingListItems)
-  .where(eq(shoppingListItems.list_id, parseInt(listId)));
+    return Response.json(updatedList);
+  } catch {
 
-    return Response.json(items);
-  } catch (error) {
-    return Response.json({ error: 'Failed to fetch items' }, { status: 500 });
+    return Response.json({ error: 'Failed to update shopping list' }, { status: 500 });
   }
 }
