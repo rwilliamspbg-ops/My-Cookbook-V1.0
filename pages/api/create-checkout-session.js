@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { planKey } = req.body;
+    const { planKey, email, customerId } = req.body;
 
     // Validate plan
     if (!planKey || !SUBSCRIPTION_PLANS[planKey]) {
@@ -17,38 +17,41 @@ export default async function handler(req, res) {
 
     // Free plan doesn't need checkout
     if (planKey === 'free') {
-      return res.status(400).json({ error: 'Free plan does not require checkout' });
+      return res
+        .status(400)
+        .json({ error: 'Free plan does not require checkout' });
     }
 
     // Check if price ID is configured
     if (!plan.priceId) {
-      return res.status(500).json({ 
-        error: 'Subscription not configured. Please add STRIPE_PREMIUM_PRICE_ID and STRIPE_BUSINESS_PRICE_ID to your .env file' 
+      return res.status(500).json({
+        error:
+          'Subscription not configured. Please add STRIPE_PREMIUM_PRICE_ID and STRIPE_BUSINESS_PRICE_ID to your .env file',
       });
     }
 
-    // TODO: Get user from session/auth
-    // For now, we'll use customer email from request or create new
-    const { email, customerId } = req.body;
-
-    // Create checkout session
+    // Create checkout session via server-side Stripe helper
     const session = await createCheckoutSession({
       customerId,
       customerEmail: email,
       priceId: plan.priceId,
-      successUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/subscription/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancelUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/pricing`,
+      successUrl: `${
+        process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+      }/subscription/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancelUrl: `${
+        process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+      }/pricing`,
       metadata: {
-        planKey: planKey,
-      }
+        planKey,
+      },
     });
 
     return res.status(200).json({ url: session.url });
   } catch (error) {
     console.error('Checkout session error:', error);
-    return res.status(500).json({ 
+    return res.status(500).json({
       error: 'Failed to create checkout session',
-      details: error.message 
+      details: error.message,
     });
   }
 }
