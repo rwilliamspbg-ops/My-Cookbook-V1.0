@@ -1,7 +1,7 @@
 // pages/api/recipes/[id].js
 
 import { db } from '../../../lib/db';
-import { recipes } from '../../../lib/schema';
+import { recipes } from '../../../lib/db/schema';
 import { eq } from 'drizzle-orm';
 
 export default async function handler(req, res) {
@@ -30,4 +30,3 @@ export default async function handler(req, res) {
     res.status(500).json({ error: 'Failed to load recipe' });
   }
 }
-
