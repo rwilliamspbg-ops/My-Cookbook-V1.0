@@ -37,7 +37,10 @@ export default async function handler(req, res) {
       customerEmail: email,
       priceId: plan.priceId,
       successUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/subscription/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancelUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/pricing`,
+      cancelUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/pricing`,,
+      metadata: {
+        planKey: planKey,
+      }
     });
 
     return res.status(200).json({ url: session.url });
