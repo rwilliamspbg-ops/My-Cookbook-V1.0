@@ -1,3 +1,19 @@
+import { parseUserFromRequest } from '../lib/auth';
+
+export async function getServerSideProps({ req, res }) {
+  const user = parseUserFromRequest(req);
+
+  if (!user) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: { user } };
+}
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
