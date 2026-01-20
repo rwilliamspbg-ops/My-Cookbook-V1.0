@@ -8,9 +8,11 @@ const createRecipeSchema = z.object({
   title: z.string().min(1),
   description: z.string().optional().default(''),
   ingredients: z.string().optional().default(''),
+  instructions: z.string().optional().default(''),
   slug: z.string().optional(),
   prep_time: z.number().int().nonnegative().optional(),
   cook_time: z.number().int().nonnegative().optional(),
+  servings: z.number().int().positive().optional(),
   imageUrl: z.string().url().optional(),
 });
 
@@ -48,9 +50,11 @@ export async function POST(req: NextRequest) {
         title: body.title,
         description: body.description,
         ingredients: body.ingredients,
+        instructions: body.instructions,
         slug,
         prepTimeMinutes: body.prep_time ?? null,
         cookTimeMinutes: body.cook_time ?? null,
+        servings: body.servings ?? null,
         imageUrl: body.imageUrl ?? null,
       })
       .returning();
