@@ -2,9 +2,6 @@ import OpenAI from 'openai';
 import formidable from 'formidable';
 import fs from 'fs/promises';
 
-// Dynamic import for pdf-parse to handle ES module issues
-let pdfParse;
-
 export const config = {
   api: {
     bodyParser: false,
@@ -119,12 +116,8 @@ export default async function handler(req, res) {
         });
       }
 
-      // Dynamically import pdf-parse only when needed
-      if (!pdfParse) {
-        const pdfParseModule = await import('pdf-parse');
-        pdfParse = pdfParseModule.default || pdfParseModule;
-      }
-
+      // Use require for CommonJS module
+      const pdfParse = require('pdf-parse');
       const dataBuffer = await fs.readFile(file.filepath);
       const data = await pdfParse(dataBuffer);
       extractedText = data.text;
