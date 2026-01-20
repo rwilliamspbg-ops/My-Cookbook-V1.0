@@ -14,7 +14,8 @@ export default function Home() {
 
   const fetchRecipes = async () => {
     try {
-      await fetch('/api/recipes');
+      const response = await fetch('/api/recipes');
+      const data = await response.json();
       setRecipes(Array.isArray(data) ? data : []);
       setLoading(false);
     } catch {
@@ -386,4 +387,3 @@ export default function Home() {
     </>
   );
 }
-
