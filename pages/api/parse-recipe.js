@@ -117,9 +117,10 @@ export default async function handler(req, res) {
       }
 
       // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const pdf = require('pdf-parse');
+      const { PDFParse } = require('pdf-parse');
       const dataBuffer = await fs.readFile(file.filepath);
-      const data = await pdf(dataBuffer);
+      // Try using PDFParse.parse() as a static method
+      const data = await PDFParse.parse(dataBuffer);
       extractedText = data.text;
     } else if (inputType === 'url') {
       const url = fields.url?.[0];
