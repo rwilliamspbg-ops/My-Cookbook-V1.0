@@ -1,6 +1,4 @@
 import { parseUserFromRequest } from '../../lib/auth';
-import { db } from '../../lib/db'; // your drizzle connection
-import { users, subscriptions } from '../../lib/db/schema'; // adjust names
 import { eq } from 'drizzle-orm';
 
 export async function getServerSideProps({ req }) {
