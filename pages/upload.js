@@ -71,6 +71,7 @@ const response = await axios.post('/api/parse-recipe', formData);
     title: parsedRecipe.title || 'Untitled Recipe',
     description: parsedRecipe.description || '',
     ingredients: (parsedRecipe.ingredients || []).join('\n'),
+    instructions: (parsedRecipe.instructions || []).join('\n'),
   };
 
   // Only include numeric fields when present
@@ -79,6 +80,9 @@ const response = await axios.post('/api/parse-recipe', formData);
   }
   if (parsedRecipe.cookTime != null) {
     payload.cook_time = Number(parsedRecipe.cookTime);
+  }
+  if (parsedRecipe.servings != null) {
+    payload.servings = Number(parsedRecipe.servings);
   }
 
   // imageUrl is optional and must be a valid URL if present,
@@ -258,4 +262,3 @@ const response = await axios.post('/api/parse-recipe', formData);
     </>
   );
 }
-
