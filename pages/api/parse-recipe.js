@@ -117,12 +117,9 @@ export default async function handler(req, res) {
       }
 
       // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const pdfParseModule = require('pdf-parse');
-      // PDFParse is a class, instantiate it
-      const parser = new pdfParseModule.PDFParse();
-      
+      const pdf = require('pdf-parse');
       const dataBuffer = await fs.readFile(file.filepath);
-      const data = await parser.parse(dataBuffer);
+      const data = await pdf(dataBuffer);
       extractedText = data.text;
     } else if (inputType === 'url') {
       const url = fields.url?.[0];
