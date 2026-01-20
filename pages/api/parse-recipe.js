@@ -1,4 +1,4 @@
-// pages/api/parse-recipe.js
+import pdf from 'pdf-parse';
 import OpenAI from 'openai';
 import formidable from 'formidable';
 import fs from 'fs/promises';
@@ -105,6 +105,9 @@ export default async function handler(req, res) {
     let extractedText = '';
 
     if (inputType === 'pdf') {
+      const dataBuffer = await fs.readFile(file.filepath);
+      const data = await pdf(dataBuffer);
+      extractedText = data.text;
       const file = files.file?.[0]; // must be "file"
       if (!file) {
         return res
