@@ -105,18 +105,18 @@ export default function RecipePage() {
 
         <article className="recipe-detail">
           <header className="recipe-detail-header">
-            <div className="recipe-card-meta">
-              {recipe.prepTimeMinutes && (
-                <span>⏱️ Prep: {recipe.prepTimeMinutes} min</span>
-              )}
-              {recipe.cookTimeMinutes && (
-                <span> • 🔥 Cook: {recipe.cookTimeMinutes} min</span>
-              )}
-              {recipe.servings && (
-                <span> • 🍽️ Serves: {recipe.servings}</span>
-              )}
-              {recipe.category && <span> • 🏷️ {recipe.category}</span>}
-            </div>
+           <div className="recipe-card-meta">
+  {(recipe.prepTime || recipe.prep_time) && (
+    <span>⏱️ Prep: {recipe.prepTime || recipe.prep_time} min</span>
+  )}
+  {(recipe.cookTime || recipe.cook_time) && (
+    <span> • 🔥 Cook: {recipe.cookTime || recipe.cook_time} min</span>
+  )}
+  {recipe.servings && (
+    <span> • 🍽️ Serves: {recipe.servings}</span>
+  )}
+  {recipe.category && <span> • 🏷️ {recipe.category}</span>}
+</div>
           </header>
 
           <section className="recipe-detail-ingredients">
