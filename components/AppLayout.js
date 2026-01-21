@@ -1,10 +1,8 @@
-import Head from "next/head";
-import React from "react";
-import AppLayout from "./AppLayout";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useState } from "react";
 
-type LayoutProps = { children: React.ReactNode };
-
-export default function Layout({ children }: LayoutProps) {
+export default function AppLayout({ children }) {
   return (
     <>
       <Head>
