@@ -20,7 +20,7 @@ export async function getServerSideProps({ req, _res }) {
   return { props: { user } };
 }
 
-export default function Home({ user }) {
+export default function Home() {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, _setError] = useState(null);
