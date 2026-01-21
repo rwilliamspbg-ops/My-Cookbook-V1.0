@@ -247,7 +247,6 @@ export default function RecipesRolodexPage() {
           }
         }
       `}</style>
-      <div className="checkerboard-bg">
         <div className="container">
           <header className="header">
             <h1>📇 Recipe Rolodex</h1>
