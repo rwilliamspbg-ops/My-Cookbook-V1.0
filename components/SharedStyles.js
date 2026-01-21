@@ -1,28 +1,27 @@
 export default function SharedStyles() {
   return (
     <style jsx global>{`
-      /* ==================== CSS VARIABLES ==================== */
       :root {
-        --primary: #2563eb;
-        --primary-hover: #1d4ed8;
-        --primary-active: #1e40af;
-        --primary-light: #eff6ff;
+        --primary: #8b5cf6;
+        --primary-hover: #7c3aed;
+        --primary-active: #6d28d9;
+        --primary-light: #ede9fe;
         --success: #16a34a;
         --success-light: #ecfdf5;
         --warning: #ea580c;
         --warning-light: #fef3c7;
         --error: #dc2626;
         --error-light: #fef2f2;
-        --gray-50: #f9fafb;
-        --gray-100: #f3f4f6;
-        --gray-200: #e5e7eb;
-        --gray-300: #d1d5db;
-        --gray-400: #9ca3af;
-        --gray-500: #6b7280;
-        --gray-600: #4b5563;
-        --gray-700: #374151;
-        --gray-800: #1f2937;
-        --gray-900: #111827;
+        --gray-50: #0b1020;
+        --gray-100: #111827;
+        --gray-200: #1f2937;
+        --gray-300: #374151;
+        --gray-400: #6b7280;
+        --gray-500: #9ca3af;
+        --gray-600: #d1d5db;
+        --gray-700: #e5e7eb;
+        --gray-800: #f3f4f6;
+        --gray-900: #f9fafb;
         --white: #ffffff;
         --space-1: 0.25rem;
         --space-2: 0.5rem;
@@ -39,10 +38,10 @@ export default function SharedStyles() {
         --text-2xl: 1.5rem;
         --text-3xl: 1.875rem;
         --text-4xl: 2.25rem;
-        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
         --radius-md: 0.5rem;
         --radius-lg: 0.75rem;
         --radius-xl: 1rem;
@@ -51,6 +50,27 @@ export default function SharedStyles() {
         --duration-200: 200ms;
         --duration-300: 300ms;
         --ease: cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+          sans-serif;
+        font-size: var(--text-base);
+        line-height: 1.5;
+        color: var(--gray-900);
+        background-color: #050816; /* matches AppLayout root bg */
       }
       
       /* ==================== GLOBAL STYLES ==================== */
