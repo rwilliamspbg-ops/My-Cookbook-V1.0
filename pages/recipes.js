@@ -50,7 +50,6 @@ export default function RecipesRolodexPage() {
   return (
     <>
       <style jsx>{`
-        .checkerboard-bg {
           min-height: 100vh;
           background-image: linear-gradient(45deg, #dc143c 25%, transparent 25%),
             linear-gradient(-45deg, #dc143c 25%, transparent 25%),
