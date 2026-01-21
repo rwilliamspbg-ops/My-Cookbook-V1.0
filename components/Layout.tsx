@@ -27,14 +27,6 @@ export default function Layout({ children }: LayoutProps) {
               <span className="site-title">My Cookbook</span>
               <span className="site-version">V1.0</span>
             </div>
-
-            <nav className="site-nav">
-              <a href="/recipes">Recipes</a>
-              <a href="/upload">Parse Recipe</a>
-              <a href="/recipe/new">Add Recipe</a>
-              <a href="/pricing">Pricing</a>
-            </nav>
-          </div>
         </header>
 
         {/* Main page content */}
