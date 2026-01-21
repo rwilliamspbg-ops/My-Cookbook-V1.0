@@ -122,7 +122,7 @@ export default function RecipePage() {
                     id={`ingredient-${idx}`}
                     className="no-print"
                   />
-                  <label htmlFor={`ingredient-${idx}`}> style={{ color: '#000' }}{ingredient}</label>
+                  <label htmlFor={`ingredient-${idx}`}> className="ingredient-label"{ingredient}</label>
                 </li>
               ))}
             </ul>
