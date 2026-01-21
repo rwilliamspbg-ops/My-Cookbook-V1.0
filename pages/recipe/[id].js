@@ -1,8 +1,8 @@
-import Link from 'next/link';
-import { useRouter as useNextRouter } from 'next/router'; 
-import { useEffect, useState } from 'react';
-import Head from 'next/head';
-import styles from '../../styles/recipe-card.module.css';
+import Link from "next/link";
+import { useRouter as useNextRouter } from "next/router";
+import { useEffect, useState } from "react";
+import Head from "next/head";
+import Layout from "../../components/Layout";
 
 export default function RecipePage() {
   const router = useNextRouter();
@@ -14,10 +14,11 @@ export default function RecipePage() {
   // Fetch Recipe Data
   useEffect(() => {
     if (!id) return;
+
     const fetchRecipe = async () => {
       try {
         const res = await fetch(`/api/recipes/${id}`);
-        if (!res.ok) throw new Error('Recipe not found');
+        if (!res.ok) throw new Error("Recipe not found");
         const data = await res.json();
         setRecipe(data.recipe);
       } catch (err) {
@@ -26,12 +27,33 @@ export default function RecipePage() {
         setLoading(false);
       }
     };
+
     fetchRecipe();
   }, [id]);
 
-  if (loading) return <div className={styles.loading}>Loading recipe...</div>;
-  if (error) return <div className={styles.error}>Error: {error}</div>;
-  if (!recipe) return <div className={styles.error}>Recipe not found</div>;
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <p>Loading recipe...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="error-container">
+        <p>Error: {error}</p>
+      </div>
+    );
+  }
+
+  if (!recipe) {
+    return (
+      <div className="error-container">
+        <p>Recipe not found</p>
+      </div>
+    );
+  }
 
   const ingredients = parseData(recipe.ingredients);
   const instructions = parseData(recipe.instructions);
@@ -41,69 +63,88 @@ export default function RecipePage() {
       <Head>
         <title>{recipe.title} - My Cookbook</title>
       </Head>
-      <div className={styles.pageContainer}>
-        <header className={styles.header}>
-          <Link href="/" className={styles.backLink}>
-            ← Back to Cookbook
-          </Link>
-          <button
-            onClick={() => window.print()}
-            className={styles.printButton}
-            title="Print this recipe"
-          >
-            🖨 Print
-          </button>
-        </header>
 
-        <article className={styles.recipeCard}>
-          <header className={styles.cardHeader}>
-            <h1 className={styles.recipeName}>{recipe.title}</h1>
+      <Layout>
+        <div className="page-header">
+          <div>
+            <h1 className="page-title">{recipe.title}</h1>
             {recipe.description && (
-              <p className={styles.description}>{recipe.description}</p>
+              <p className="page-subtitle">{recipe.description}</p>
             )}
-            <div className={styles.meta}>
-              {recipe.prepTimeMinutes && <span className={styles.metaItem}>⏱ Prep: {recipe.prepTimeMinutes} min</span>}
-              {recipe.cookTimeMinutes && <span className={styles.metaItem}>🔥 Cook: {recipe.cookTimeMinutes} min</span>}
-              {recipe.servings && <span className={styles.metaItem}>🍽 Serves: {recipe.servings}</span>}
-              {recipe.category && <span className={styles.metaItem}>🏷 {recipe.category}</span>}
+          </div>
+          <div className="page-actions">
+            <Link href="/" className="btn-pill no-print">
+              ← Back to cookbook
+            </Link>
+            <Link
+              href={`/recipe/${recipe.id}/edit`}
+              className="btn-pill no-print"
+            >
+              ✏️ Edit
+            </Link>
+            <button
+              onClick={() => window.print()}
+              className="btn-pill primary no-print"
+              title="Print this recipe"
+            >
+              🖨️ Print recipe
+            </button>
+          </div>
+        </div>
+
+        <article className="recipe-detail">
+          <header className="recipe-detail-header">
+            <div className="recipe-card-meta">
+              {recipe.prepTimeMinutes && (
+                <span>⏱️ Prep: {recipe.prepTimeMinutes} min</span>
+              )}
+              {recipe.cookTimeMinutes && (
+                <span> • 🔥 Cook: {recipe.cookTimeMinutes} min</span>
+              )}
+              {recipe.servings && (
+                <span> • 🍽️ Serves: {recipe.servings}</span>
+              )}
+              {recipe.category && <span> • 🏷️ {recipe.category}</span>}
             </div>
           </header>
 
-          <section className={styles.cardContent}>
-            <div className={styles.section}>
-              <h2 className={styles.sectionTitle}>Ingredients</h2>
-              <ul className={styles.ingredientsList}>
-                {ingredients.map((ingredient, idx) => (
-                  <li key={idx} className={styles.ingredientItem}>
-                    <input type="checkbox" className={styles.checkbox} id={`ingredient-${idx}`} />
-                    <label htmlFor={`ingredient-${idx}`} className={styles.ingredientLabel}>
-                      {ingredient}
-                    </label>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          <section className="recipe-detail-ingredients">
+            <h2>Ingredients</h2>
+            <ul>
+              {ingredients.map((ingredient, idx) => (
+                <li key={idx}>
+                  <input
+                    type="checkbox"
+                    id={`ingredient-${idx}`}
+                    className="no-print"
+                  />
+                  <label htmlFor={`ingredient-${idx}`}>{ingredient}</label>
+                </li>
+              ))}
+            </ul>
+          </section>
 
-            <div className={styles.section}>
-              <h2 className={styles.sectionTitle}>Instructions</h2>
-              <ol className={styles.instructionsList}>
-                {instructions.map((step, idx) => (
-                  <li key={idx} className={styles.instructionItem}>{step}</li>
-                ))}
-              </ol>
-            </div>
+          <section className="recipe-detail-instructions">
+            <h2>Instructions</h2>
+            <ol>
+              {instructions.map((step, idx) => (
+                <li key={idx}>{step}</li>
+              ))}
+            </ol>
           </section>
         </article>
-      </div>
+      </Layout>
     </>
   );
 
   function parseData(data) {
     try {
-      if (typeof data === 'string') return JSON.parse(data);
+      if (typeof data === "string") return JSON.parse(data);
       return Array.isArray(data) ? data : [];
     } catch {
-      return typeof data === 'string' ? data.split('\n').filter(Boolean) : [];
+      return typeof data === "string"
+        ? data.split("\n").filter(Boolean)
+        : [];
     }
   }
 }
