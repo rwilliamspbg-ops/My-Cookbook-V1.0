@@ -16,11 +16,9 @@ export default function AppLayout({ children }) {
         <div style={navStyles.container}>
           <div style={navStyles.navContent}>
             {/* Logo */}
-            <Link href="/">
-              <a style={navStyles.logo}>
-                <span style={navStyles.logoIcon}>🍳</span>
-                My Cookbook
-              </a>
+            <Link href="/" style={navStyles.logo}>
+             <span style={navStyles.logoIcon}>🍳</span>
+              My Cookbook
             </Link>
 
             {/* Mobile Menu Toggle */}
@@ -37,18 +35,10 @@ export default function AppLayout({ children }) {
               ...navStyles.navLinks,
               display: mobileMenuOpen ? 'flex' : 'none',
             }}>
-              <Link href="/recipes">
-                <a style={navStyles.navLink}>Recipes</a>
-              </Link>
-              <Link href="/recipe/new">
-                <a style={navStyles.navLink}>Upload</a>
-              </Link>
-              <Link href="/pricing">
-                <a style={navStyles.navLink}>Pricing</a>
-              </Link>
-              <Link href="/admin">
-                <a style={navStyles.navLink}>Account</a>
-              </Link>
+              <Link href="/recipes" style={navStyles.navLink}>Recipes</Link>
+              <Link href="/recipe/new" style={navStyles.navLink}>Upload</Link>
+              <Link href="/pricing" style={navStyles.navLink}>Pricing</Link>
+              <Link href="/admin" style={navStyles.navLink}>Account</Link>
             </div>
           </div>
         </div>
@@ -72,9 +62,15 @@ export default function AppLayout({ children }) {
             <div style={footerStyles.column}>
               <h4 style={footerStyles.heading}>Quick Links</h4>
               <ul style={footerStyles.list}>
-                <li><Link href="/recipes"><a style={footerStyles.link}>All Recipes</a></Link></li>
-                <li><Link href="/recipe/new"><a style={footerStyles.link}>Add Recipe</a></Link></li>
-                <li><Link href="/pricing"><a style={footerStyles.link}>Pricing</a></Link></li>
+               <li>
+  <Link href="/recipes" style={footerStyles.link}>All Recipes</Link>
+</li>
+<li>
+  <Link href="/recipe/new" style={footerStyles.link}>Add Recipe</Link>
+</li>
+<li>
+  <Link href="/pricing" style={footerStyles.link}>Pricing</Link>
+</li>
               </ul>
             </div>
             <div style={footerStyles.column}>
