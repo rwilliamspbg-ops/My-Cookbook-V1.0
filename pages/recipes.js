@@ -80,7 +80,7 @@ export default function RecipesRolodexPage() {
       </div>
 
       <p className="letter-label">
-        Showing recipes starting with "{selectedLetter}"
+        Showing recipes starting with &quot;{selectedLetter}&quot;
       </p>
 
       {loading ? (
@@ -90,8 +90,7 @@ export default function RecipesRolodexPage() {
       ) : filtered.length === 0 ? (
         <div className="empty-state">
           <p>
-            No recipes found starting with "{selectedLetter}". Try a different
-            letter.
+           No recipes found starting with &quot;{selectedLetter}&quot;. Try a different letter.
           </p>
         </div>
       ) : (
