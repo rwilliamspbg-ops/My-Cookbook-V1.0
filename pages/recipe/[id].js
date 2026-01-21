@@ -59,68 +59,61 @@ export default function RecipePage() {
   const instructions = parseData(recipe.instructions);
 
   return (
-    <>
-      <Head>
-        <title>{recipe.title} - My Cookbook</title>
-      </Head>
+  <>
+    <Head>
+      <title>{recipe.title} - My Cookbook</title>
+    </Head>
 
-      <Layout>
-        <div className="page-actions" style={{ marginBottom: '1rem' }}>
-  <Link href="/" className="btn-pill">
-    ← Back to cookbook
-  </Link>
-  <Link
-    href={`/recipe/${recipe.id}/edit`}
-    className="btn-pill"
-  >
-    ✏️ Edit
-  </Link>
-  <button
-    onClick={() => window.print()}
-    className="btn-pill primary"
-    title="Print this recipe"
-  >
-    🖨️ Print recipe
-  </button>
-</div>
-          <div className="page-actions">
-            <Link href="/" className="btn-pill no-print">
-              ← Back to cookbook
-            </Link>
-            <Link
-              href={`/recipe/${recipe.id}/edit`}
-              className="btn-pill no-print"
-            >
-              ✏️ Edit
-            </Link>
-            <button
-              onClick={() => window.print()}
-              className="btn-pill primary no-print"
-              title="Print this recipe"
-            >
-              🖨️ Print recipe
-            </button>
+    <Layout>
+      {/* Action buttons - only render once */}
+      <div className="page-actions" style={{ marginBottom: '1rem' }}>
+        <Link href="/" className="btn-pill">
+          ← Back to cookbook
+        </Link>
+        <Link
+          href={`/recipe/${recipe.id}/edit`}
+          className="btn-pill"
+        >
+          ✏️ Edit
+        </Link>
+        <button
+          onClick={() => window.print()}
+          className="btn-pill primary"
+          title="Print this recipe"
+        >
+          🖨️ Print recipe
+        </button>
+      </div>
+
+      {/* Recipe title and description */}
+      <div style={{ marginBottom: '1.5rem' }}>
+        <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{recipe.title}</h1>
+        {recipe.description && (
+          <p style={{ color: '#666', marginBottom: '0.5rem' }}>{recipe.description}</p>
+        )}
+      </div>
+
+      {/* Recipe metadata */}
+      <article className="recipe-detail">
+        <header className="recipe-detail-header">
+          <div className="recipe-card-meta">
+            {(recipe.prepTime || recipe.prep_time) && (
+              <span>⏱️ Prep: {recipe.prepTime || recipe.prep_time} min</span>
+            )}
+            {(recipe.cookTime || recipe.cook_time) && (
+              <span> • 🔥 Cook: {recipe.cookTime || recipe.cook_time} min</span>
+            )}
+            {recipe.servings && (
+              <span> • 🍽️ Serves: {recipe.servings}</span>
+            )}
+            {recipe.category && <span> • 🏷️ {recipe.category}</span>}
           </div>
-        </div>
+        </header>
 
-        <article className="recipe-detail">
-          <header className="recipe-detail-header">
-           <div className="recipe-card-meta">
-  {(recipe.prepTime || recipe.prep_time) && (
-    <span>⏱️ Prep: {recipe.prepTime || recipe.prep_time} min</span>
-  )}
-  {(recipe.cookTime || recipe.cook_time) && (
-    <span> • 🔥 Cook: {recipe.cookTime || recipe.cook_time} min</span>
-  )}
-  {recipe.servings && (
-    <span> • 🍽️ Serves: {recipe.servings}</span>
-  )}
-  {recipe.category && <span> • 🏷️ {recipe.category}</span>}
-</div>
-          </header>
-
-          <section className="recipe-detail-ingredients">
-            <h2>Ingredients</h2>
+        {/* Ingredients section */}
+        <section className="recipe-detail-ingredients">
+          <h2>Ingredients</h2>
+          {ingredients.length > 0 ? (
             <ul>
               {ingredients.map((ingredient, idx) => (
                 <li key={idx}>
@@ -133,29 +126,36 @@ export default function RecipePage() {
                 </li>
               ))}
             </ul>
-          </section>
+          ) : (
+            <p>No ingredients listed.</p>
+          )}
+        </section>
 
-          <section className="recipe-detail-instructions">
-            <h2>Instructions</h2>
+        {/* Instructions section */}
+        <section className="recipe-detail-instructions">
+          <h2>Instructions</h2>
+          {instructions.length > 0 ? (
             <ol>
               {instructions.map((step, idx) => (
                 <li key={idx}>{step}</li>
               ))}
             </ol>
-          </section>
-        </article>
-      </Layout>
-    </>
-  );
+          ) : (
+            <p>No instructions listed.</p>
+          )}
+        </section>
+      </article>
+    </Layout>
+  </>
+);
 
-  function parseData(data) {
-    try {
-      if (typeof data === "string") return JSON.parse(data);
-      return Array.isArray(data) ? data : [];
-    } catch {
-      return typeof data === "string"
-        ? data.split("\n").filter(Boolean)
-        : [];
-    }
+function parseData(data) {
+  try {
+    if (typeof data === "string") return JSON.parse(data);
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return typeof data === "string"
+      ? data.split("\n").filter(Boolean)
+      : [];
   }
 }
