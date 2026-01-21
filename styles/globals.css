@@ -173,7 +173,59 @@ body {
 .btn-pill:hover {
   transform: translateY(-1px);
 }
+.rolodex-strip {
+  display: flex;
+  overflow-x: auto;
+  gap: 6px;
+  padding: 10px;
+  margin: 0 0 10px;
+  background: #fff5f7;
+  border-radius: 999px;
+  border: 2px solid var(--color-accent);
+}
 
+.rolodex-letter {
+  min-width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: 1px solid transparent;
+  color: var(--color-accent);
+  background: #ffffff;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.rolodex-letter:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.rolodex-letter.active {
+  background: var(--color-accent);
+  color: #ffffff;
+  border-color: var(--color-accent);
+}
+
+.letter-label {
+  margin-top: 10px;
+  font-style: italic;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.recipe-row {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(260px, 1fr);
+  gap: 20px;
+  overflow-x: auto;
+  padding: 10px 0 5px;
+}
 /* Lists & cards */
 
 .recipe-list {
