@@ -36,12 +36,14 @@ export default function EditRecipePage() {
         <p>Loading recipe...</p>
       </div>
     );
+
   if (error)
     return (
       <div className="error-container">
         <p>Error: {error}</p>
       </div>
     );
+
   if (!recipe)
     return (
       <div className="error-container">
@@ -64,6 +66,7 @@ export default function EditRecipePage() {
 // Inline form – adapted from new.js
 function RecipeForm({ mode = "create", initialValues }) {
   const router = useRouter();
+
   const [formData, setFormData] = useState({
     title: initialValues?.title || "",
     description: initialValues?.description || "",
