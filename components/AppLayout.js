@@ -133,25 +133,32 @@ export default function AppLayout({ children }) {
               "linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0.4))",
           }}
         >
-          <NavItem href="/" active={isActive("/")}>
-            🏠 Home
-          </NavItem>
-          <NavItem href="/recipes" active={isActive("/recipes")}>
-            📚 Recipes
-          </NavItem>
-          <NavItem href="/recipe/new" active={isActive("/recipe/new")}>
-            ➕ New
-          </NavItem>
-          <NavItem href="/admin" active={isActive("/admin")}>
-            👤 Account
-          </NavItem>
+          <NavItem href="/" active={isActive("/")} icon="🏠" label="Home" />
+          <NavItem
+            href="/recipes"
+            active={isActive("/recipes")}
+            icon="📚"
+            label="Recipes"
+          />
+          <NavItem
+            href="/recipe/new"
+            active={isActive("/recipe/new")}
+            icon="➕"
+            label="New"
+          />
+          <NavItem
+            href="/admin"
+            active={isActive("/admin")}
+            icon="👤"
+            label="Account"
+          />
         </nav>
       </div>
     </div>
   );
 }
 
-function NavItem({ href, active, children }) {
+function NavItem({ href, active, icon, label }) {
   return (
     <Link
       href={href}
@@ -179,11 +186,10 @@ function NavItem({ href, active, children }) {
           fontSize: "14px",
         }}
       >
-        {typeof children === "string" ? children[0] : "•"}
+        {icon}
       </div>
-      <span>{children}</span>
+      <span>{label}</span>
     </Link>
   );
 }
-
 
