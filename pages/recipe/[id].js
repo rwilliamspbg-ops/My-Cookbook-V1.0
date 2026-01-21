@@ -89,13 +89,13 @@ export default function RecipePage() {
       <div style={{ marginBottom: '1.5rem' }}>
         <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{recipe.title}</h1>
         {recipe.description && (
-          <p style={{ color: '#666', marginBottom: '0.5rem' }}>{recipe.description}</p>
+          <p style={{ color: '#ccc', marginBottom: '0.5rem' }}>{recipe.description}</p>
         )}
       </div>
 
       {/* Recipe metadata */}
       <article className="recipe-detail">
-        <header className="recipe-detail-header">
+        <header className="recipe-detail-header style={{ display: 'none' }}">
           <div className="recipe-card-meta">
             {(recipe.prepTime || recipe.prep_time) && (
               <span>⏱️ Prep: {recipe.prepTime || recipe.prep_time} min</span>
