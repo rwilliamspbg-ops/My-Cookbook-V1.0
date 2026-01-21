@@ -17,11 +17,20 @@ export default function Signup() {
           <label>Password</label>
           <input type="password" name="password" required />
         </div>
-        <button type="submit">Create account</button>
+        <button 
+  type="submit"
+  className="btn-pill primary"
+  style={{ width: '100%' }}
+>
+  Create account
+</button>
       </form>
 
       <p style={{ marginTop: '1rem' }}>
-        Already have an account? <Link href="/login">Log in</Link>
+        Already have an account?{' '}
+<Link href="/login" className="btn-pill" style={{ display: 'inline-block', marginTop: '0.5rem' }}>
+  Log in
+</Link>
       </p>
     </main>
   );
