@@ -65,13 +65,24 @@ export default function RecipePage() {
       </Head>
 
       <Layout>
-        <div className="page-header">
-          <div>
-            <h1 className="page-title">{recipe.title}</h1>
-            {recipe.description && (
-              <p className="page-subtitle">{recipe.description}</p>
-            )}
-          </div>
+        <div className="page-actions" style={{ marginBottom: '1rem' }}>
+  <Link href="/" className="btn-pill">
+    ← Back to cookbook
+  </Link>
+  <Link
+    href={`/recipe/${recipe.id}/edit`}
+    className="btn-pill"
+  >
+    ✏️ Edit
+  </Link>
+  <button
+    onClick={() => window.print()}
+    className="btn-pill primary"
+    title="Print this recipe"
+  >
+    🖨️ Print recipe
+  </button>
+</div>
           <div className="page-actions">
             <Link href="/" className="btn-pill no-print">
               ← Back to cookbook
