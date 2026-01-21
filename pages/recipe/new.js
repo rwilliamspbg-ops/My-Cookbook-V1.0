@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import axios from 'axios';
 import Link from 'next/link';
 
-export default function NewRecipe() {
+export default function RecipeForm({ mode = "create", initialValues }) {
   const router = useRouter();
   const [formData, setFormData] = useState({
     title: '',
