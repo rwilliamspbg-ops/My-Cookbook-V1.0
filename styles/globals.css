@@ -366,5 +366,5 @@ body {
 .justify-between { justify-content: space-between; }
 
 .ingredient-label {
-  color: #000;
+  color: #000; !important
 }
