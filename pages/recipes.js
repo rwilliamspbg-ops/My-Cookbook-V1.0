@@ -1,11 +1,12 @@
 // pages/recipes.js
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import Layout from '../components/AppLayout';
 
 const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
-export async function getServerSideProps({ req, res }) {
+export async function getServerSideProps({ req }) {
   const user = req.cookies?.user_session || null;
   if (!user) {
     return {
@@ -92,7 +93,9 @@ export default function RecipesPage() {
           <div style={styles.emptyState}>
             <p style={styles.emptyIcon}>📚</p>
             <h3>No recipes found</h3>
-            <p>No recipes starting with "{selectedLetter}"</p>
+            <p>
+              No recipes starting with &quot;{selectedLetter}&quot;
+            </p>
           </div>
         )}
 
@@ -103,9 +106,11 @@ export default function RecipesPage() {
               <div key={recipe.id} style={styles.card}>
                 {recipe.image && (
                   <div style={styles.cardImage}>
-                    <img
+                    <Image
                       src={recipe.image}
                       alt={recipe.title}
+                      width={280}
+                      height={200}
                       style={styles.image}
                     />
                   </div>
@@ -261,6 +266,7 @@ const styles = {
     height: '200px',
     overflow: 'hidden',
     backgroundColor: '#f3f4f6',
+    position: 'relative',
   },
   image: {
     width: '100%',
