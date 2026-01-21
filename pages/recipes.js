@@ -81,7 +81,7 @@ export default function RecipesPage() {
 
         {/* Loading State */}
         {loading && (
-          <div style={styles.loadingContainer}>
+          <div style={styles.emptyState}>
             <div style={styles.spinner}></div>
             <p>Loading recipes...</p>
           </div>
@@ -137,6 +137,13 @@ export default function RecipesPage() {
           </div>
         )}
       </div>
+
+      <style jsx>{`
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </Layout>
   );
 }
@@ -171,7 +178,7 @@ const styles = {
     padding: '0.75rem 1.5rem',
     borderRadius: '0.75rem',
     fontWeight: '500',
-    transition: 'background-color 150ms ease, transform 150ms ease',
+    transition: 'background-color 150ms ease',
     cursor: 'pointer',
     display: 'inline-flex',
     alignItems: 'center',
@@ -211,13 +218,19 @@ const styles = {
     color: '#ffffff',
     borderColor: '#2563eb',
   },
-  loadingContainer: {
+  emptyState: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     padding: '4rem 1rem',
-    gap: '1rem',
+    backgroundColor: '#f9fafb',
+    borderRadius: '0.75rem',
+    textAlign: 'center',
+  },
+  emptyIcon: {
+    fontSize: '3rem',
+    marginBottom: '1rem',
   },
   spinner: {
     width: '40px',
@@ -226,4 +239,87 @@ const styles = {
     borderTop: '4px solid #2563eb',
     borderRadius: '50%',
     animation: 'spin 1s linear infinite',
-  
+    marginBottom: '1rem',
+  },
+  grid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+    gap: '1.5rem',
+  },
+  card: {
+    backgroundColor: '#ffffff',
+    borderRadius: '0.75rem',
+    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+    overflow: 'hidden',
+    transition: 'all 200ms ease',
+    border: '1px solid #e5e7eb',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  cardImage: {
+    width: '100%',
+    height: '200px',
+    overflow: 'hidden',
+    backgroundColor: '#f3f4f6',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+  },
+  cardContent: {
+    padding: '1.5rem',
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  cardTitle: {
+    fontSize: '1.25rem',
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: '0.5rem',
+    margin: 0,
+  },
+  cardDescription: {
+    fontSize: '0.875rem',
+    color: '#6b7280',
+    marginBottom: '1rem',
+    margin: 0,
+  },
+  cardMeta: {
+    display: 'flex',
+    gap: '1rem',
+    fontSize: '0.875rem',
+    color: '#6b7280',
+    marginBottom: '1.5rem',
+  },
+  cardActions: {
+    display: 'flex',
+    gap: '0.5rem',
+    marginTop: 'auto',
+  },
+  viewBtn: {
+    flex: 1,
+    padding: '0.5rem',
+    backgroundColor: '#2563eb',
+    color: '#ffffff',
+    borderRadius: '0.5rem',
+    textAlign: 'center',
+    fontSize: '0.875rem',
+    fontWeight: '500',
+    transition: 'background-color 150ms ease',
+    cursor: 'pointer',
+  },
+  editBtn: {
+    flex: 1,
+    padding: '0.5rem',
+    backgroundColor: '#f3f4f6',
+    color: '#111827',
+    borderRadius: '0.5rem',
+    textAlign: 'center',
+    fontSize: '0.875rem',
+    fontWeight: '500',
+    transition: 'background-color 150ms ease',
+    cursor: 'pointer',
+  },
+};
