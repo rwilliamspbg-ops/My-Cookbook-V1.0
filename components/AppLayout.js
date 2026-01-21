@@ -6,7 +6,6 @@ import { useState } from "react";
 export default function AppLayout({ children }) {
   const router = useRouter();
   const path = router.pathname;
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isActive = (href) => path === href || path.startsWith(href + "/");
 
   return (
