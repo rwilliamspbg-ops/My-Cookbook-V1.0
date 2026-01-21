@@ -5,9 +5,9 @@ export default function PaymentCancel() {
     <main style={{ padding: "2rem" }}>
       <h1>Payment Canceled</h1>
       <p>Your payment was canceled and no charges were made.</p>
-      <Link href="/pricing">
-        <button>Return to Pricing</button>
-      </Link>
+      <Link href="/pricing" className="btn-pill primary">
+  Return to Pricing
+</Link>
     </main>
   );
 }
