@@ -57,14 +57,22 @@ export default function LoginPage() {
             style={{ width: '100%', padding: '0.5rem' }}
           />
         </div>
-        <button type="submit" disabled={loading}>
-          {loading ? 'Logging in…' : 'Login'}
-        </button>
+       <button 
+  type="submit" 
+  disabled={loading}
+  className="btn-pill primary"
+  style={{ width: '100%', marginTop: '1rem' }}
+>
+  {loading ? 'Logging in…' : 'Login'}
+</button>
       </form>
 
-      <p style={{ marginTop: '1rem' }}>
-        Need an account? <Link href="/signup">Sign up</Link>
-      </p>
+      <p style={{ marginTop: '1rem', textAlign: 'center' }}>
+  Need an account?{' '}
+  <Link href="/signup" className="btn-pill" style={{ display: 'inline-block', marginTop: '0.5rem' }}>
+    Sign up
+  </Link>
+</p>
     </main>
   );
 }
