@@ -156,6 +156,8 @@ function parseData(data) {
   } catch {
     return typeof data === "string"
       ? data.split("\n").filter(Boolean)
-      : [];
+          : [];
   }
 }
+}
+
