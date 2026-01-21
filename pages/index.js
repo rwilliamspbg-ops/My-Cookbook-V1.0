@@ -83,21 +83,14 @@ export default function Home() {
   return (
     <Layout>
       <main className="home">
-        <div className="page-header">
-          <div>
-            <h1 className="page-title">🍳 My Cookbook</h1>
-            <p className="page-subtitle">
-              Search, add, and print family recipes.
-            </p>
-          </div>
-          <div className="page-actions">
-            <Link href="/upload" className="btn-pill">
-              📤 Parse Recipe
-            </Link>
-            <Link href="/recipe/new" className="btn-pill primary">
-              ➕ Add Recipe
-            </Link>
-          </div>
+        <div className="page-actions" style={{ marginBottom: '1rem' }}>
+        <Link href="/upload" className="btn-pill">
+          📤 Parse Recipe
+        </Link>
+        <Link href="/recipe/new" className="btn-pill primary">
+          ➕ Add Recipe
+        </Link>
+      </div>
         </div>
 
         <div className="search-section">
