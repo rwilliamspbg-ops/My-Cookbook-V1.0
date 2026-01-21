@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useRouter as useNextRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Head from "next/head";
-import Layout from "../../components/Layout";
+import AppLayout from "../../components/AppLayout";
 
 export default function RecipePage() {
   const router = useNextRouter();
@@ -64,7 +64,7 @@ export default function RecipePage() {
       <title>{recipe.title} - My Cookbook</title>
     </Head>
 
-    <Layout>
+    <AppLayout>
       {/* Action buttons - only render once */}
       <div className="page-actions" style={{ marginBottom: '1rem' }}>
         <Link href="/" className="btn-pill">
@@ -145,7 +145,7 @@ export default function RecipePage() {
           )}
         </section>
       </article>
-    </Layout>
+   </AppLayout>
   </>
 );
 
