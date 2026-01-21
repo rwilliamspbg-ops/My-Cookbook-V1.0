@@ -309,7 +309,45 @@ body {
 .text-center {
   text-align: center;
 }
+@media print {
+  /* Remove all headers and footers */
+  .app-header,
+  .app-footer,
+  header,
+  footer,
+  nav {
+    display: none !important;
+  }
 
+  /* Remove any browser default header/footer margins */
+  @page {
+    margin: 0.5in;
+    size: auto;
+  }
+
+  /* Adjust body/main layout */
+  body {
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+  }
+
+  .app-root {
+    display: block;
+  }
+
+  .app-main {
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Optional: remove any top/bottom padding from content */
+  .recipe-detail {
+    box-shadow: none;
+    border: none;
+    padding: 0;
+  }
+}
 .mt-1 { margin-top: 0.5rem; }
 .mt-2 { margin-top: 1rem; }
 .mt-3 { margin-top: 1.5rem; }
