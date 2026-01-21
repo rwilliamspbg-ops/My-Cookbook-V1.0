@@ -18,7 +18,6 @@ export default function Layout({ children }: LayoutProps) {
       </Head>
 
       <div className="app-shell">
-        {/* Top navigation bar */}
         <header className="site-header">
           <div className="site-header-inner">
             <div className="site-logo">
@@ -30,14 +29,26 @@ export default function Layout({ children }: LayoutProps) {
             </div>
 
             <nav className="site-nav">
-              <Link href="/recipes"> Recipe Rolodex </a>
+              <Link href="/recipes" className="nav-link">
+                Recipes
+              </Link>
+              <Link href="/upload" className="nav-link">
+                Parse Recipe
+              </Link>
+              <Link href="/recipe/new" className="nav-link">
+                Add Recipe
+              </Link>
+              <Link href="/pricing" className="nav-link">
+                Pricing
+              </Link>
             </nav>
           </div>
         </header>
 
-        {/* Main page content */}
         <main className="site-main">{children}</main>
       </div>
     </>
+  );
+}
   );
 }
