@@ -109,7 +109,7 @@ export default function AppLayout({ children }) {
             "radial-gradient(circle at top, rgba(255,255,255,0.06), transparent 60%), #141022",
           display: "flex",
           flexDirection: "column",
-          overflow: "hidden",
+          overflow: "visible",
         }}
       >
         {/* Main content - scrollable */}
