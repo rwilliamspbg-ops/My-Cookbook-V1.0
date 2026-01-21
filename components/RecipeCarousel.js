@@ -177,8 +177,8 @@ const styles = {
     },
   },
   recipeCard: {
-    flex: '0 0 calc(100% - 2rem)',
-    minWidth: '700px',
+    flex: '1 1 90%',
+    minWidth: '500px',
     background: 'radial-gradient(circle at top, rgba(255,255,255,0.06), transparent 60%), #141022',
     borderRadius: '16px',
     padding: '1.5rem',
