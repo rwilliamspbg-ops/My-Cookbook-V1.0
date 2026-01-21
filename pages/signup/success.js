@@ -8,12 +8,12 @@ export default function SignupSuccess() {
       <p>You can now log in and access your recipes and subscription features.</p>
 
       <div style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem' }}>
-        <Link href="/login">
-          <button>Go to Login</button>
-        </Link>
-        <Link href="/pricing">
-          <button>View Subscription Plans</button>
-        </Link>
+        <Link href="/login" className="btn-pill">
+  Go to Login
+</Link>
+<Link href="/pricing" className="btn-pill primary">
+  View Subscription Plans
+</Link>
       </div>
     </main>
   );
