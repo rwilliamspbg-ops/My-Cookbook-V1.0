@@ -91,7 +91,6 @@ export default function Home() {
           ➕ Add Recipe
         </Link>
       </div>
-        </div>
 
         <div className="search-section">
           <input
