@@ -35,7 +35,7 @@ export default function AppLayout({ children }) {
             {/* Navigation Links */}
             <div style={{
               ...navStyles.navLinks,
-              display: mobileMenuOpen ? 'flex' : undefined
+              display: mobileMenuOpen ? 'flex' : 'none',
             }}>
               <Link href="/recipes">
                 <a style={navStyles.navLink}>Recipes</a>
@@ -132,7 +132,6 @@ const navStyles = {
     alignItems: 'center',
     gap: '0.5rem',
     cursor: 'pointer',
-    transition: 'color 150ms ease',
   },
   logoIcon: {
     fontSize: '1.75rem',
@@ -144,29 +143,14 @@ const navStyles = {
     fontSize: '1.5rem',
     cursor: 'pointer',
     padding: '0.5rem',
-    '@media (max-width: 768px)': {
-      display: 'block',
-    },
   },
   navLinks: {
-    display: 'flex',
     gap: '2rem',
     alignItems: 'center',
-    '@media (max-width: 768px)': {
-      position: 'absolute',
-      top: '64px',
-      left: 0,
-      right: 0,
-      backgroundColor: '#ffffff',
-      flexDirection: 'column',
-      padding: '1rem',
-      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-    },
   },
   navLink: {
     color: '#4b5563',
     fontWeight: '500',
-    transition: 'color 150ms ease',
     cursor: 'pointer',
   },
 };
@@ -213,7 +197,6 @@ const footerStyles = {
   link: {
     fontSize: '0.875rem',
     color: '#d1d5db',
-    transition: 'color 150ms ease',
     cursor: 'pointer',
   },
   divider: {
