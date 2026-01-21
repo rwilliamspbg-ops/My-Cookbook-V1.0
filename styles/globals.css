@@ -364,3 +364,7 @@ body {
 .gap-3 { gap: 1.5rem; }
 .items-center { align-items: center; }
 .justify-between { justify-content: space-between; }
+
+.ingredient-label {
+  color: #000;
+}
