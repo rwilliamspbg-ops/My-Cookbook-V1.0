@@ -5,9 +5,9 @@ export default function PaymentSuccess() {
     <main style={{ padding: "2rem" }}>
       <h1>Payment Successful</h1>
       <p>Your subscription is now active. You can access all premium features.</p>
-      <Link href="/">
-        <button>Go to Dashboard</button>
-      </Link>
+     <Link href="/" className="btn-pill primary">
+  Go to Dashboard
+</Link>
     </main>
   );
 }
