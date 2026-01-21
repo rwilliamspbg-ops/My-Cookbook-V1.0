@@ -30,7 +30,6 @@ export default function Layout({ children }: LayoutProps) {
 
             <nav className="site-nav">
               <a href="/recipes"> Recipe Rolodex </a>
-              <a href="/pricing"> Pricing </a>
             </nav>
           </div>
         </header>
