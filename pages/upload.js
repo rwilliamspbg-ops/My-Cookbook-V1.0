@@ -253,7 +253,12 @@ const response = await axios.post('/api/parse-recipe', formData);
                   </div>
                 </div>
 
-                <button onClick={saveRecipe}>Save to My Cookbook</button>
+                <button 
+  onClick={saveRecipe}
+  className="btn-pill primary"
+>
+  Save to My Cookbook
+</button>
               </div>
             </section>
           )}
