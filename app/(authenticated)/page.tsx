@@ -2,40 +2,54 @@ import { cookies } from 'next/headers';
 import { parseUserFromRequest } from '@/lib/auth';
 import Link from 'next/link';
 
-// Server Component - runs on the server
-async function getRecipes() {
+interface Recipe {
+  id: number;
+  title?: string;
+  description?: string;
+  prepTime?: string;
+  cookTime?: string;
+  servings?: number | string;
+  category?: string;
+  ingredients?: string[] | string;
+}
+
+async function getRecipes(): Promise<Recipe[]> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
   
   try {
     const res = await fetch(`${baseUrl}/api/recipes`, {
-      cache: 'no-store', // Always get fresh data
+      cache: 'no-store',
     });
     
     if (!res.ok) return [];
     
     const data = await res.json();
-    return Array.isArray(data) ? data : [];
+    return Array.isArray(data) ? (data as Recipe[]) : [];
   } catch (error) {
     console.error('Failed to fetch recipes:', error);
     return [];
   }
 }
 
-function getFeaturedRecipe(recipes: any[]) {
+function getFeaturedRecipe(recipes: Recipe[]): Recipe | null {
   if (recipes.length === 0) return null;
   const randomIndex = Math.floor(Math.random() * recipes.length);
   return recipes[randomIndex];
 }
 
+interface MockRequest {
+  headers: {
+    cookie?: string;
+  };
+}
+
 export default async function Home() {
-  // Get user from cookies
   const cookieStore = await cookies();
-  const mockReq = {
+  const mockReq: MockRequest = {
     headers: { cookie: cookieStore.toString() },
   };
-  const user = parseUserFromRequest(mockReq as any);
+  const user = parseUserFromRequest(mockReq);
 
-  // Fetch recipes server-side
   const recipes = await getRecipes();
   const featuredRecipe = getFeaturedRecipe(recipes);
 
@@ -107,7 +121,7 @@ export default async function Home() {
                     fontWeight: 600
                   }}
                 >
-                  ✨ Today's Spotlight
+                  ✨ Today&apos;s Spotlight
                 </div>
                 <h2 
                   className="card-title" 
