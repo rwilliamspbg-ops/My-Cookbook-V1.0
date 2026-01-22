@@ -2,7 +2,7 @@ import OpenAI from 'openai';
 import formidable from 'formidable';
 import fs from 'fs/promises';
 import { parseUserFromRequest } from '../../lib/auth';
-const { db } = require('../../lib/db');
+
 const { recipes } = require('../../lib/db/schema');
 
 
