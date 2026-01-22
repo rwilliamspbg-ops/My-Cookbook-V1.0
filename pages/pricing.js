@@ -79,4 +79,19 @@ export default function PricingPage() {
                 className={`btn ${
                   key === 'free' ? 'btn-secondary' : 'btn-primary'
                 } btn-full mt-4`}
-                onClick={() => handleSubscribe(k
+                onClick={() => handleSubscribe(key)}
+                disabled={loading === key}
+              >
+                {loading === key
+                  ? 'Loading...'
+                  : key === 'free'
+                  ? 'Get Started Free'
+                  : `Subscribe to ${plan.name}`}
+              </button>
+            </div>
+          ))}
+        </div>
+      </main>
+    </AppLayout>
+  );
+}
