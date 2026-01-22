@@ -248,22 +248,11 @@ Important:
       });
     }
 
-    // Save the recipe to database
+       // Save the recipe to database
     try {
       const result = await db
         .insert(recipes)
-        .values({
-          userId: user.id,
-          title: parsedRecipe.title || 'Untitled Recipe',
-          description: parsedRecipe.description,
-          ingredients: JSON.stringify(parsedRecipe.ingredients || []),
-          instructions: JSON.stringify(parsedRecipe.instructions || []),
-          prepTime: parsedRecipe.prepTime,
-          cookTime: parsedRecipe.cookTime,
-          servings: parsedRecipe.servings,
-          category: parsedRecipe.category,
-          notes: parsedRecipe.notes,
-        })
+        .values({ /* ... */ })
         .returning({ insertedId: recipes.id });
 
       return res.status(200).json({
@@ -279,3 +268,25 @@ Important:
         detail: dbError.message,
       });
     }
+  } catch (error) {
+    console.error('Parsing Error (parse-recipe):', error);
+
+    const status =
+      error?.message && error.message.includes('maxFileSize')
+        ? 413
+        : 500;
+
+    return res.status(status).json({
+      error:
+        status === 413
+          ? 'Uploaded file too large'
+          : 'Failed to parse recipe',
+      detail: error?.message || 'Unknown error',
+      stack:
+        process.env.NODE_ENV === 'development'
+          ? error.stack
+          : undefined,
+    });
+  }
+}
+
