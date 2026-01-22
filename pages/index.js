@@ -1,7 +1,6 @@
 import { parseUserFromRequest } from "../lib/auth";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import axios from "axios";
 import Layout from "../components/Layout";
 import RecipeCarousel from "../components/RecipeCarousel";
 
