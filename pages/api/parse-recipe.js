@@ -16,7 +16,7 @@ const openai = new OpenAI({
 
 const MAX_CHARS = 8000;
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
-const URL_FETCH_TIMEOUT_MS = 8000; // 8s
+const URL_FETCH_TIMEOUT_MS = 15000; // 15s
 
 function createFormidable() {
   return formidable({
@@ -247,26 +247,21 @@ Important:
 
     // Save the recipe to database
     try {
-      const db = require('../../lib/db').default;
+      import { db } from '../../lib/db';
+import { recipes } from '../../lib/db/schema';
       
-      const result = await db.run(
-        `INSERT INTO recipes (
-          userId, title, description, ingredients, instructions,
-          prepTime, cookTime, servings, category, notes
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          user.id,
-          parsedRecipe.title || 'Untitled Recipe',
-          parsedRecipe.description,
-          JSON.stringify(parsedRecipe.ingredients || []),
-          JSON.stringify(parsedRecipe.instructions || []),
-          parsedRecipe.prepTime,
-          parsedRecipe.cookTime,
-          parsedRecipe.servings,
-          parsedRecipe.category,
-          parsedRecipe.notes,
-        ]
-      );
+      const result = await db.insert(recipes).values({
+  userId: user.id,
+  title: parsedRecipe.title || 'Untitled Recipe',
+  description: parsedRecipe.description,
+  ingredients: JSON.stringify(parsedRecipe.ingredients || []),
+  instructions: JSON.stringify(parsedRecipe.instructions || []),
+  prepTime: parsedRecipe.prepTime,
+  cookTime: parsedRecipe.cookTime,
+  servings: parsedRecipe.servings,
+  category: parsedRecipe.category,
+  notes: parsedRecipe.notes,
+}).returning({ insertedId: recipes.id });
 
       return res.status(200).json({ 
         success: true, 
