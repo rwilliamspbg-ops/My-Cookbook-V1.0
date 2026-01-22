@@ -120,6 +120,9 @@ export default function AppLayout({ children }) {
           }}
         >
           {children}
+<Link href="/recipes" className="nav-link">
+  Recipes
+</Link>
         </main>
 
         {/* Bottom nav - Footer stays fixed */}
