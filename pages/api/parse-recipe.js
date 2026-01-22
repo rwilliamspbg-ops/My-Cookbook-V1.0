@@ -2,6 +2,9 @@ import OpenAI from 'openai';
 import formidable from 'formidable';
 import fs from 'fs/promises';
 import { parseUserFromRequest } from '../../lib/auth';
+const { db } = require('../../lib/db');
+const { recipes } = require('../../lib/db/schema');
+
 
 export const config = {
   api: {
@@ -247,27 +250,27 @@ Important:
 
     // Save the recipe to database
     try {
-      import { db } from '../../lib/db';
-import { recipes } from '../../lib/db/schema';
-      
-      const result = await db.insert(recipes).values({
-  userId: user.id,
-  title: parsedRecipe.title || 'Untitled Recipe',
-  description: parsedRecipe.description,
-  ingredients: JSON.stringify(parsedRecipe.ingredients || []),
-  instructions: JSON.stringify(parsedRecipe.instructions || []),
-  prepTime: parsedRecipe.prepTime,
-  cookTime: parsedRecipe.cookTime,
-  servings: parsedRecipe.servings,
-  category: parsedRecipe.category,
-  notes: parsedRecipe.notes,
-}).returning({ insertedId: recipes.id });
+      const result = await db
+        .insert(recipes)
+        .values({
+          userId: user.id,
+          title: parsedRecipe.title || 'Untitled Recipe',
+          description: parsedRecipe.description,
+          ingredients: JSON.stringify(parsedRecipe.ingredients || []),
+          instructions: JSON.stringify(parsedRecipe.instructions || []),
+          prepTime: parsedRecipe.prepTime,
+          cookTime: parsedRecipe.cookTime,
+          servings: parsedRecipe.servings,
+          category: parsedRecipe.category,
+          notes: parsedRecipe.notes,
+        })
+        .returning({ insertedId: recipes.id });
 
-      return res.status(200).json({ 
-        success: true, 
+      return res.status(200).json({
+        success: true,
         recipe: parsedRecipe,
-        recipeId: result.lastID,
-        id: result.lastID,
+        recipeId: result[0]?.insertedId,
+        id: result[0]?.insertedId,
       });
     } catch (dbError) {
       console.error('Database error:', dbError);
@@ -276,25 +279,3 @@ import { recipes } from '../../lib/db/schema';
         detail: dbError.message,
       });
     }
-  } catch (error) {
-    console.error('Parsing Error (parse-recipe):', error);
-
-    const status =
-      error?.message &&
-      error.message.includes('maxFileSize')
-        ? 413
-        : 500;
-
-    return res.status(status).json({
-      error:
-        status === 413
-          ? 'Uploaded file too large'
-          : 'Failed to parse recipe',
-      detail: error?.message || 'Unknown error',
-      stack:
-        process.env.NODE_ENV === 'development'
-          ? error.stack
-          : undefined,
-    });
-  }
-}
