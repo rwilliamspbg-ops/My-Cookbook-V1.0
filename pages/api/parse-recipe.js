@@ -2,6 +2,9 @@ import OpenAI from 'openai';
 import formidable from 'formidable';
 import fs from 'fs/promises';
 import { parseUserFromRequest } from '../../lib/auth';
+import { db } from '../../lib/db/index';
+import { recipes } from '../../lib/db/schema';
+
 
 // Drizzle DB + schema
 const { db } = require('../../lib/db');
