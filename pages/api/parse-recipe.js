@@ -3,8 +3,9 @@ import formidable from 'formidable';
 import fs from 'fs/promises';
 import { parseUserFromRequest } from '../../lib/auth';
 
+// Drizzle DB + schema
+const { db } = require('../../lib/db');
 const { recipes } = require('../../lib/db/schema');
-
 
 export const config = {
   api: {
@@ -125,7 +126,6 @@ export default async function handler(req, res) {
       }
 
       try {
-        // Correct usage of pdf-parse
         const pdfParse = require('pdf-parse');
         const dataBuffer = await fs.readFile(file.filepath);
         const pdfData = await pdfParse(dataBuffer);
@@ -133,7 +133,8 @@ export default async function handler(req, res) {
       } catch (pdfError) {
         console.error('PDF parsing error:', pdfError);
         return res.status(422).json({
-          error: 'Failed to parse PDF. Make sure it\'s a valid PDF file with extractable text.',
+          error:
+            'Failed to parse PDF. Make sure it\'s a valid PDF file with extractable text.',
           detail: pdfError.message,
         });
       }
@@ -248,11 +249,22 @@ Important:
       });
     }
 
-       // Save the recipe to database
+    // Save the recipe to database
     try {
       const result = await db
         .insert(recipes)
-        .values({ /* ... */ })
+        .values({
+          userId: user.id,
+          title: parsedRecipe.title || 'Untitled Recipe',
+          description: parsedRecipe.description,
+          ingredients: JSON.stringify(parsedRecipe.ingredients || []),
+          instructions: JSON.stringify(parsedRecipe.instructions || []),
+          prepTime: parsedRecipe.prepTime,
+          cookTime: parsedRecipe.cookTime,
+          servings: parsedRecipe.servings,
+          category: parsedRecipe.category,
+          notes: parsedRecipe.notes,
+        })
         .returning({ insertedId: recipes.id });
 
       return res.status(200).json({
@@ -272,7 +284,8 @@ Important:
     console.error('Parsing Error (parse-recipe):', error);
 
     const status =
-      error?.message && error.message.includes('maxFileSize')
+      error?.message &&
+      error.message.includes('maxFileSize')
         ? 413
         : 500;
 
