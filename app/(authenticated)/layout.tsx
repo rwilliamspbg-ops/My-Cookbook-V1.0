@@ -3,8 +3,14 @@ import { redirect } from 'next/navigation';
 import { parseUserFromRequest } from '@/lib/auth';
 import AppLayout from '@/components/AppLayout';
 
-export default async function AuthenticatedLayout({
-  children,
+import { ReactNode } from "react";
+
+interface AuthenticatedLayoutProps {
+  children: ReactNode;
+}
+
+export default function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
+  return <>{children}</>;
 }: {
   children: React.ReactNode;
 }) {
