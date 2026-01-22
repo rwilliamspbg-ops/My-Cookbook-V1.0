@@ -2,7 +2,16 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-
+interface Recipe {
+  id: string | number;
+  title: string;
+  description?: string;
+  prepTime?: string;
+  cookTime?: string;
+  servings?: number;
+  category?: string;
+  ingredients?: string[] | string;
+}
 export default function RecipeForm() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
