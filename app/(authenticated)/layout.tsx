@@ -8,17 +8,21 @@ interface AuthenticatedLayoutProps {
   children: ReactNode;
 }
 
-// This is a Server Component layout
 export default async function AuthenticatedLayout({
   children,
 }: AuthenticatedLayoutProps) {
-  // Get cookies from the request
-  const cookieStore = cookies();
+  // Await the dynamic cookies API
+  const cookieStore = await cookies();
 
-  // Create a mock request object for your auth parser
+  // If parseUserFromRequest can accept raw cookie string:
+  const cookieHeader = cookieStore
+    .getAll()
+    .map((c) => `${c.name}=${c.value}`)
+    .join('; ');
+
   const mockReq = {
     headers: {
-      cookie: cookieStore.toString(),
+      cookie: cookieHeader,
     },
   };
 
@@ -30,3 +34,4 @@ export default async function AuthenticatedLayout({
 
   return <AppLayout>{children}</AppLayout>;
 }
+
