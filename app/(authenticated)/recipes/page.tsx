@@ -1,6 +1,16 @@
 import Link from 'next/link';
 import RecipeCard from './RecipeCard';
 
+interface Recipe {
+  id: string | number;
+  title: string;
+  description?: string;
+  prepTime?: string;
+  cookTime?: string;
+  servings?: number;
+  category?: string;
+  ingredients?: string[] | string;
+}
 async function getRecipes() {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
   
@@ -70,9 +80,9 @@ export default async function RecipesPage() {
         </div>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
-          {recipes.map((recipe: any) => (
-            <RecipeCard key={recipe.id} recipe={recipe} />
-          ))}
+          {recipes.map((recipe: Recipe) => (
+  <RecipeCard key={recipe.id} recipe={recipe} />
+))}
         </div>
       )}
     </div>
