@@ -2,8 +2,11 @@ import { cookies } from 'next/headers';
 import { parseUserFromRequest } from '@/lib/auth';
 import Link from 'next/link';
 import LogoutButton from './LogoutButton';
+interface AdminPageProps {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
 
-export default async function AdminPage() {
+export default function AdminPage({ searchParams }: AdminPageProps) {
   const cookieStore = await cookies();
   const mockReq = {
     headers: { cookie: cookieStore.toString() },
