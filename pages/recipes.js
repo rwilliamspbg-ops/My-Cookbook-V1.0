@@ -1,101 +1,43 @@
-import { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import RecipeCarousel from '../components/RecipeCarousel';
 
 export async function getServerSideProps({ req }) {
-  const user = req.cookies?.user_session || null;
-  if (!user) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    };
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL ||
+    `http://${req.headers.host || 'localhost:3000'}`;
+
+  const res = await fetch(`${baseUrl}/api/recipes`);
+  let recipes = [];
+  try {
+    const data = await res.json();
+    recipes = Array.isArray(data) ? data : [];
+  } catch {
+    recipes = [];
   }
-  return { props: { user } };
+
+  return {
+    props: {
+      recipes,
+    },
+  };
 }
 
-export default function RecipesPage() {
-  const [recipes, setRecipes] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    fetchRecipes();
-  }, []);
-
-  const fetchRecipes = async () => {
-    try {
-      const response = await fetch('/api/recipes');
-      const data = await response.json();
-      setRecipes(Array.isArray(data) ? data : []);
-      setLoading(false);
-    } catch (err) {
-      console.error('Error fetching recipes:', err);
-      setError('Failed to load recipes');
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <Layout>
-        <div style={styles.container}>
-          <p>Loading recipes...</p>
-        </div>
-      </Layout>
-    );
-  }
-
-  if (error) {
-    return (
-      <Layout>
-        <div style={styles.container}>
-          <p style={{ color: '#ff6b6b' }}>{error}</p>
-        </div>
-      </Layout>
-    );
-  }
-
-  const safeRecipes = Array.isArray(recipes) ? recipes : [];
-
+export default function RecipesPage({ recipes }) {
   return (
     <Layout>
-      <main style={styles.main}>
-        <h1 style={styles.title}>All Recipes</h1>
-        {safeRecipes.length === 0 ? (
-          <div style={styles.emptyState}>
-            <p>No recipes found</p>
+      <main className="page-container">
+        <header className="page-header">
+          <div>
+            <h1>Recipes</h1>
+            <p>Browse and edit your saved recipes.</p>
           </div>
-        ) : (
-          <RecipeCarousel recipes={safeRecipes} />
-        )}
+        </header>
+
+        <section className="card">
+          <RecipeCarousel recipes={recipes} />
+        </section>
       </main>
     </Layout>
   );
 }
 
-const styles = {
-  main: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1.5rem',
-    width: '100%',
-  },
-  container: {
-    textAlign: 'center',
-    padding: '2rem',
-    color: '#9ca3af',
-  },
-  title: {
-    textAlign: 'center',
-    fontSize: '1.5rem',
-    color: '#e5e7eb',
-    margin: '0 0 1rem 0',
-  },
-  emptyState: {
-    textAlign: 'center',
-    padding: '2rem',
-    color: '#9ca3af',
-  },
-};
