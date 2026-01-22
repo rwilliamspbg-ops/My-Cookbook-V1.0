@@ -1,5 +1,7 @@
-// components/AppLayout.js
-import Link from "next/link";
+import { useState } from 'react';
+import Link from 'next/link';
+import AppLayout from '../components/AppLayout';
+import axios from 'axios';
 import { useRouter } from "next/router";
 
 export default function AppLayout({ children }) {
