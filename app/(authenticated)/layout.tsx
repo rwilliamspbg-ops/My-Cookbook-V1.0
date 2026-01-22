@@ -8,30 +8,21 @@ interface AuthenticatedLayoutProps {
   children: ReactNode;
 }
 
-export default async function AuthenticatedLayout({
-  children,
-}: AuthenticatedLayoutProps) {
-  // Await the dynamic cookies API
-  const cookieStore = await cookies();
+import type { RequestCookies } from 'next/dist/compiled/@edge-runtime/cookies';
 
-  // If parseUserFromRequest can accept raw cookie string:
-  const cookieHeader = cookieStore
-    .getAll()
-    .map((c) => `${c.name}=${c.value}`)
-    .join('; ');
+export function parseUserFromRequest(cookiesOrReq: RequestCookies | { headers: { cookie?: string } }) {
+  let cookieHeader: string | undefined;
 
-  const mockReq = {
-    headers: {
-      cookie: cookieHeader,
-    },
-  };
-
-  const user = parseUserFromRequest(mockReq as any);
-
-  if (!user) {
-    redirect('/login');
+  if ('getAll' in cookiesOrReq) {
+    // Next.js cookies()
+    cookieHeader = cookiesOrReq
+      .getAll()
+      .map((c) => `${c.name}=${c.value}`)
+      .join('; ');
+  } else {
+    cookieHeader = cookiesOrReq.headers.cookie;
   }
 
-  return <AppLayout>{children}</AppLayout>;
+  // existing logic using cookieHeader...
 }
 
