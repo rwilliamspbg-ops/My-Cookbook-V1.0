@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import RecipeCard from './RecipeCard';
 
 async function getRecipes() {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
@@ -23,78 +24,57 @@ export default async function RecipesPage() {
 
   return (
     <div className="page-container">
-      <div className="card">
+      <div className="card" style={{ marginBottom: '1.5rem' }}>
         <div className="card-header">
           <div>
-            <h1 className="card-title">Your Recipes</h1>
-            <p className="card-description">
-              Browse and manage your recipe collection
+            <h1 className="card-title" style={{ fontSize: '1.875rem', marginBottom: '0.5rem' }}>
+              Your Recipes
+            </h1>
+            <p className="card-description" style={{ fontSize: '1rem' }}>
+              {recipes.length} {recipes.length === 1 ? 'recipe' : 'recipes'} in your collection
             </p>
           </div>
           <div className="page-header-actions">
             <Link href="/upload" className="btn btn-secondary">
-              📤 Parse recipe
+              📤 Parse
             </Link>
             <Link href="/recipe/new" className="btn btn-primary">
-              ➕ Add recipe
+              ➕ Add
             </Link>
           </div>
         </div>
-
-        {recipes.length === 0 ? (
-          <div style={{ padding: '2rem', textAlign: 'center' }}>
-            <p style={{ marginBottom: '1rem', opacity: 0.7 }}>
-              No recipes yet. Start by adding your first recipe!
-            </p>
-            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-              <Link href="/upload" className="btn btn-primary">
-                📤 Parse recipe
-              </Link>
-              <Link href="/recipe/new" className="btn btn-secondary">
-                ➕ Add manually
-              </Link>
-            </div>
-          </div>
-        ) : (
-          <div className="grid grid-2" style={{ gap: '1rem' }}>
-            {recipes.map((recipe: any) => (
-              <Link
-                key={recipe.id}
-                href={`/recipe/${recipe.id}`}
-                className="card"
-                style={{
-                  textDecoration: 'none',
-                  transition: 'transform 0.2s, box-shadow 0.2s',
-                }}
-              >
-                <h3 style={{ marginBottom: '0.5rem', fontSize: '1.125rem' }}>
-                  {recipe.title || 'Untitled Recipe'}
-                </h3>
-                {recipe.description && (
-                  <p
-                    style={{
-                      fontSize: '0.875rem',
-                      opacity: 0.7,
-                      marginBottom: '0.75rem',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      display: '-webkit-box',
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: 'vertical',
-                    }}
-                  >
-                    {recipe.description}
-                  </p>
-                )}
-                <div style={{ fontSize: '0.75rem', opacity: 0.6 }}>
-                  {recipe.category && <span>{recipe.category} • </span>}
-                  {recipe.servings && <span>{recipe.servings} servings</span>}
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
       </div>
+
+      {recipes.length === 0 ? (
+        <div 
+          className="card" 
+          style={{ 
+            textAlign: 'center',
+            padding: '3rem 1.5rem',
+            background: 'radial-gradient(circle at center, rgba(139,92,246,0.1), transparent 70%)'
+          }}
+        >
+          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🍳</div>
+          <h2 style={{ fontSize: '1.5rem', marginBottom: '0.75rem' }}>No recipes yet</h2>
+          <p style={{ marginBottom: '2rem', opacity: 0.7, maxWidth: '400px', margin: '0 auto 2rem' }}>
+            Start building your cookbook by adding your first recipe
+          </p>
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Link href="/upload" className="btn btn-primary">
+              📤 Parse recipe
+            </Link>
+            <Link href="/recipe/new" className="btn btn-secondary">
+              ➕ Add manually
+            </Link>
+          </div>
+        </div>
+      ) : (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
+          {recipes.map((recipe: any) => (
+            <RecipeCard key={recipe.id} recipe={recipe} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

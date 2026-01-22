@@ -1,6 +1,7 @@
 import OpenAI from 'openai';
 import formidable from 'formidable';
 import fs from 'fs/promises';
+import { parseUserFromRequest } from '../../lib/auth';
 
 export const config = {
   api: {
@@ -52,8 +53,6 @@ function normalizeWhitespace(text) {
   return text.replace(/\s+/g, ' ').trim();
 }
 
-// More permissive: accept any recipe where either
-// title or some ingredients or some instructions exist.
 function basicRecipeShapeValid(recipe) {
   if (!recipe || typeof recipe !== 'object') return false;
 
@@ -91,6 +90,12 @@ export default async function handler(req, res) {
       .json({ error: 'Method not allowed' });
   }
 
+  // Check authentication
+  const user = parseUserFromRequest(req);
+  if (!user) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
   const form = createFormidable();
 
   try {
@@ -116,20 +121,18 @@ export default async function handler(req, res) {
         });
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { PDFParse } = require('pdf-parse');
-      
-      const dataBuffer = await fs.readFile(file.filepath);
-      // Create parser with data buffer
-      const parser = new PDFParse({ data: dataBuffer });
-      
       try {
-        // Call getText() method
-        const result = await parser.getText();
-        extractedText = result.text;
-      } finally {
-        // Always destroy the parser
-        await parser.destroy();
+        // Correct usage of pdf-parse
+        const pdfParse = require('pdf-parse');
+        const dataBuffer = await fs.readFile(file.filepath);
+        const pdfData = await pdfParse(dataBuffer);
+        extractedText = pdfData.text;
+      } catch (pdfError) {
+        console.error('PDF parsing error:', pdfError);
+        return res.status(422).json({
+          error: 'Failed to parse PDF. Make sure it\'s a valid PDF file with extractable text.',
+          detail: pdfError.message,
+        });
       }
     } else if (inputType === 'url') {
       const url = fields.url?.[0];
@@ -143,7 +146,8 @@ export default async function handler(req, res) {
         const html = await fetchWithTimeout(url);
         const stripped = html.replace(/<[^>]*>/g, ' ');
         extractedText = normalizeWhitespace(stripped);
-      } catch {
+      } catch (urlError) {
+        console.error('URL fetch error:', urlError);
         extractedText = '';
       }
 
@@ -187,16 +191,19 @@ Return ONLY a JSON object with this exact shape:
   "description": string | null,
   "ingredients": string[],
   "instructions": string[],
-  "prepTime": number | null,
-  "cookTime": number | null,
-  "servings": number | null,
-  "category": string | null
+  "prepTime": string | null,
+  "cookTime": string | null,
+  "servings": string | null,
+  "category": string | null,
+  "notes": string | null
 }
 
 Important:
 - When any recipe-like content exists, do your best to infer a short title.
 - "ingredients" should list one ingredient per string where possible.
 - "instructions" should list one step per string where possible.
+- For time fields (prepTime, cookTime), return strings like "15 mins" or "1 hour"
+- For servings, return strings like "4" or "6-8"
 - Use null for truly missing scalar fields and [] for truly missing lists.
 - Never invent a recipe from thin air; always base everything on the given text.`,
         },
@@ -230,16 +237,6 @@ Important:
       }
     }
 
-    parsedRecipe.prepTime = coerceNumberOrNull(
-      parsedRecipe.prepTime
-    );
-    parsedRecipe.cookTime = coerceNumberOrNull(
-      parsedRecipe.cookTime
-    );
-    parsedRecipe.servings = coerceNumberOrNull(
-      parsedRecipe.servings
-    );
-
     if (!basicRecipeShapeValid(parsedRecipe)) {
       return res.status(422).json({
         error:
@@ -248,9 +245,42 @@ Important:
       });
     }
 
-    return res
-      .status(200)
-      .json({ success: true, recipe: parsedRecipe });
+    // Save the recipe to database
+    try {
+      const db = require('../../lib/db').default;
+      
+      const result = await db.run(
+        `INSERT INTO recipes (
+          userId, title, description, ingredients, instructions,
+          prepTime, cookTime, servings, category, notes
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          user.id,
+          parsedRecipe.title || 'Untitled Recipe',
+          parsedRecipe.description,
+          JSON.stringify(parsedRecipe.ingredients || []),
+          JSON.stringify(parsedRecipe.instructions || []),
+          parsedRecipe.prepTime,
+          parsedRecipe.cookTime,
+          parsedRecipe.servings,
+          parsedRecipe.category,
+          parsedRecipe.notes,
+        ]
+      );
+
+      return res.status(200).json({ 
+        success: true, 
+        recipe: parsedRecipe,
+        recipeId: result.lastID,
+        id: result.lastID,
+      });
+    } catch (dbError) {
+      console.error('Database error:', dbError);
+      return res.status(500).json({
+        error: 'Failed to save recipe to database',
+        detail: dbError.message,
+      });
+    }
   } catch (error) {
     console.error('Parsing Error (parse-recipe):', error);
 

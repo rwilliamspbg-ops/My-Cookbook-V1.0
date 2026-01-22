@@ -33,122 +33,148 @@ export default async function RecipeDetailPage({
 
   return (
     <div className="page-container">
-      <div className="card">
-        <div className="card-header">
-          <div>
-            <h1 className="card-title">{recipe.title || 'Untitled Recipe'}</h1>
-            {recipe.description && (
-              <p className="card-description">{recipe.description}</p>
-            )}
-          </div>
-          <div className="page-header-actions">
-            <Link href={`/recipe/${recipe.id}/edit`} className="btn btn-secondary">
-              ✏️ Edit
-            </Link>
-            <DeleteButton recipeId={recipe.id} />
-          </div>
-        </div>
+      {/* Header Card */}
+      <div className="card" style={{ marginBottom: '1.5rem' }}>
+        <h1 className="card-title" style={{ marginBottom: '0.875rem' }}>
+          {recipe.title || 'Untitled Recipe'}
+        </h1>
+        
+        {recipe.description && (
+          <p className="card-description" style={{ marginBottom: '1.5rem' }}>
+            {recipe.description}
+          </p>
+        )}
 
-        {/* Recipe Info */}
-        <div className="grid grid-3" style={{ marginBottom: '2rem' }}>
+        {/* Action Buttons */}
+        <div className="page-header-actions">
+          <Link href={`/recipe/${recipe.id}/edit`} className="btn btn-secondary">
+            ✏️ Edit
+          </Link>
+          <DeleteButton recipeId={recipe.id} />
+        </div>
+      </div>
+
+      {/* Quick Info Card */}
+      <div 
+        className="card" 
+        style={{ 
+          marginBottom: '1.5rem',
+          background: 'radial-gradient(circle at 0% 0%, rgba(139,92,246,0.15), rgba(20,16,34,0.8) 70%)',
+        }}
+      >
+        <div className="grid grid-3">
           {recipe.prepTime && (
             <div>
-              <h4 style={{ fontSize: '0.875rem', opacity: 0.7, marginBottom: '0.25rem' }}>
-                Prep Time
+              <h4 style={{ fontSize: '0.75rem', marginBottom: '0.5rem', opacity: 0.7 }}>
+                PREP TIME
               </h4>
-              <p>{recipe.prepTime}</p>
+              <p style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff' }}>
+                {recipe.prepTime}
+              </p>
             </div>
           )}
           {recipe.cookTime && (
             <div>
-              <h4 style={{ fontSize: '0.875rem', opacity: 0.7, marginBottom: '0.25rem' }}>
-                Cook Time
+              <h4 style={{ fontSize: '0.75rem', marginBottom: '0.5rem', opacity: 0.7 }}>
+                COOK TIME
               </h4>
-              <p>{recipe.cookTime}</p>
+              <p style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff' }}>
+                {recipe.cookTime}
+              </p>
             </div>
           )}
           {recipe.servings && (
             <div>
-              <h4 style={{ fontSize: '0.875rem', opacity: 0.7, marginBottom: '0.25rem' }}>
-                Servings
+              <h4 style={{ fontSize: '0.75rem', marginBottom: '0.5rem', opacity: 0.7 }}>
+                SERVINGS
               </h4>
-              <p>{recipe.servings}</p>
+              <p style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff' }}>
+                {recipe.servings}
+              </p>
+            </div>
+          )}
+          {recipe.category && (
+            <div>
+              <h4 style={{ fontSize: '0.75rem', marginBottom: '0.5rem', opacity: 0.7 }}>
+                CATEGORY
+              </h4>
+              <p style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff' }}>
+                {recipe.category}
+              </p>
             </div>
           )}
         </div>
-
-        {recipe.category && (
-          <div style={{ marginBottom: '2rem' }}>
-            <span
-              style={{
-                display: 'inline-block',
-                padding: '0.25rem 0.75rem',
-                background: 'rgba(139, 92, 246, 0.2)',
-                borderRadius: '999px',
-                fontSize: '0.875rem',
-              }}
-            >
-              {recipe.category}
-            </span>
-          </div>
-        )}
-
-        {/* Ingredients */}
-        {recipe.ingredients && (
-          <div style={{ marginBottom: '2rem' }}>
-            <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Ingredients</h2>
-            <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '0.5rem' }}>
-              {Array.isArray(recipe.ingredients) ? (
-                <ul style={{ margin: 0, paddingLeft: '1.5rem' }}>
-                  {recipe.ingredients.map((ingredient: string, index: number) => (
-                    <li key={index} style={{ marginBottom: '0.5rem' }}>
-                      {ingredient}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <pre style={{ whiteSpace: 'pre-wrap', margin: 0, fontFamily: 'inherit' }}>
-                  {recipe.ingredients}
-                </pre>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Instructions */}
-        {recipe.instructions && (
-          <div>
-            <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Instructions</h2>
-            <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '0.5rem' }}>
-              {Array.isArray(recipe.instructions) ? (
-                <ol style={{ margin: 0, paddingLeft: '1.5rem' }}>
-                  {recipe.instructions.map((instruction: string, index: number) => (
-                    <li key={index} style={{ marginBottom: '1rem' }}>
-                      {instruction}
-                    </li>
-                  ))}
-                </ol>
-              ) : (
-                <pre style={{ whiteSpace: 'pre-wrap', margin: 0, fontFamily: 'inherit' }}>
-                  {recipe.instructions}
-                </pre>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Notes */}
-        {recipe.notes && (
-          <div style={{ marginTop: '2rem' }}>
-            <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Notes</h2>
-            <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '0.5rem' }}>
-              <pre style={{ whiteSpace: 'pre-wrap', margin: 0, fontFamily: 'inherit' }}>
-                {recipe.notes}
-              </pre>
-            </div>
-          </div>
-        )}
       </div>
+
+      {/* Ingredients Card */}
+      {recipe.ingredients && (
+        <div className="card" style={{ marginBottom: '1.5rem' }}>
+          <h2 className="section-title">
+            <span className="section-title-icon">🥕</span>
+            Ingredients
+          </h2>
+          <div className="content-section">
+            {Array.isArray(recipe.ingredients) ? (
+              <ul style={{ fontSize: '1.0625rem' }}>
+                {recipe.ingredients.map((ingredient: string, index: number) => (
+                  <li key={index}>
+                    {ingredient}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="prose">
+                {recipe.ingredients}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Instructions Card */}
+      {recipe.instructions && (
+        <div className="card" style={{ marginBottom: '1.5rem' }}>
+          <h2 className="section-title">
+            <span className="section-title-icon">👨‍🍳</span>
+            Instructions
+          </h2>
+          <div className="content-section">
+            {Array.isArray(recipe.instructions) ? (
+              <ol style={{ fontSize: '1.0625rem', lineHeight: 1.9 }}>
+                {recipe.instructions.map((instruction: string, index: number) => (
+                  <li key={index} style={{ marginBottom: '1.25rem', paddingLeft: '0.5rem' }}>
+                    {instruction}
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <div className="prose">
+                {recipe.instructions}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Notes Card */}
+      {recipe.notes && (
+        <div 
+          className="card"
+          style={{
+            background: 'radial-gradient(circle at 100% 100%, rgba(96,165,250,0.12), rgba(20,16,34,0.8) 70%)',
+          }}
+        >
+          <h2 className="section-title">
+            <span className="section-title-icon">📝</span>
+            Notes & Tips
+          </h2>
+          <div className="content-section">
+            <div className="prose">
+              {recipe.notes}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
