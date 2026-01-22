@@ -28,21 +28,6 @@ export default function RecipeForm({ _mode = 'create', _initialValues }) {
     }
   };
 
-  const handleArrayChange = (field, index, value) => {
-    const updated = [...formData[field]];
-    updated[index] = value;
-    setFormData({ ...formData, [field]: updated });
-  };
-
-  const addArrayItem = (field) => {
-    setFormData({ ...formData, [field]: [...formData[field], ''] });
-  };
-
-  const removeArrayItem = (field, index) => {
-    const updated = formData[field].filter((_, i) => i !== index);
-    setFormData({ ...formData, [field]: updated });
-  };
-
  return (
     <AppLayout>
       <main className="page-container">
