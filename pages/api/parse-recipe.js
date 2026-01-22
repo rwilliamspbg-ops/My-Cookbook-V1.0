@@ -77,7 +77,7 @@ function basicRecipeShapeValid(recipe) {
   return true;
 }
 
-function coerceNumberOrNull(value) {
+function _coerceNumberOrNull(value) {
   if (value === null || value === undefined) return null;
   const n = Number(value);
   return Number.isFinite(n) && n >= 0 ? n : null;
