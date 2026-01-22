@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
-import SharedStyles from '../components/SharedStyles';
+import AppLayout from '../components/AppLayout';
 import axios from 'axios';
 
 export default function UploadPage() {
@@ -114,7 +114,7 @@ const response = await axios.post('/api/parse-recipe', formData);
 
   return (
     <>
-      <SharedStyles />
+      
 
       <div className="page-container">
         <header className="page-header">
