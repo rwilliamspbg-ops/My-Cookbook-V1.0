@@ -52,26 +52,6 @@ export default function SharedStyles() {
         --ease: cubic-bezier(0.4, 0, 0.2, 1);
       }
 
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      html {
-        scroll-behavior: smooth;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-      }
-
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-          sans-serif;
-        font-size: var(--text-base);
-        line-height: 1.5;
-        color: var(--gray-900);
-        background-color: #050816; /* matches AppLayout root bg */
-      }
       
       /* ==================== GLOBAL STYLES ==================== */
       * {
