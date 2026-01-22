@@ -39,18 +39,6 @@ export default function Home() {
     }
   };
 
-  const deleteRecipe = async (id) => {
-    if (!confirm("Are you sure you want to delete this recipe?")) return;
-    try {
-      await axios.delete("/api/recipes", {
-        data: { id },
-      });
-      await fetchRecipes();
-    } catch {
-      console.error("Failed to delete recipe");
-    }
-  };
-
   if (loading) {
     return (
       <Layout>
