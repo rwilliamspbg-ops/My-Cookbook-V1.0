@@ -1,5 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
-import Link from 'next/link';
+import { useState, useRef } from 'react';
 
 export default function RecipeCarousel({ recipes = [] }) {
   const scrollContainerRef = useRef(null);
@@ -60,7 +59,6 @@ export default function RecipeCarousel({ recipes = [] }) {
     );
   }
 
-  const currentRecipe = filteredRecipes[currentIndex];
 
   return (
     <div style={styles.container}>
