@@ -1,10 +1,7 @@
 // app/(authenticated)/admin/page.tsx
 import Link from 'next/link';
 
-interface AdminPageProps {
-  // Remove entirely if you are not using searchParams
-  // searchParams?: { [key: string]: string | string[] | undefined };
-}
+type Props = object;
 
 export default function AdminPage(_props: AdminPageProps) {
   // Admin dashboard content
