@@ -8,21 +8,18 @@ interface AuthenticatedLayoutProps {
   children: ReactNode;
 }
 
-import type { RequestCookies } from 'next/dist/compiled/@edge-runtime/cookies';
+export default async function AuthenticatedLayout({
+  children,
+}: AuthenticatedLayoutProps) {
+  // Await dynamic cookies API in Next 15
+  const cookieStore = await cookies();
 
-export function parseUserFromRequest(cookiesOrReq: RequestCookies | { headers: { cookie?: string } }) {
-  let cookieHeader: string | undefined;
+  // Pass the cookieStore directly into the shared auth helper
+  const user = parseUserFromRequest(cookieStore);
 
-  if ('getAll' in cookiesOrReq) {
-    // Next.js cookies()
-    cookieHeader = cookiesOrReq
-      .getAll()
-      .map((c) => `${c.name}=${c.value}`)
-      .join('; ');
-  } else {
-    cookieHeader = cookiesOrReq.headers.cookie;
+  if (!user) {
+    redirect('/login');
   }
 
-  // existing logic using cookieHeader...
+  return <AppLayout>{children}</AppLayout>;
 }
-
