@@ -1,7 +1,6 @@
 import { parseUserFromRequest } from '../../lib/auth';
-import { db } from '../../lib/db'; // adjust if your db export path is different
-import { users, subscriptions } from '../../lib/db/schema'; // adjust to your actual tables
-import { eq } from 'drizzle-orm';
+import { db } from '../../lib/db';
+import { recipes } from '../../lib/db/schema'; // <- change here
 import AppLayout from '../../components/AppLayout';
 
 export async function getServerSideProps({ req }) {
@@ -16,27 +15,14 @@ export async function getServerSideProps({ req }) {
     };
   }
 
-  const rows = await db
-    .select({
-      id: users.id,
-      email: users.email,
-      role: users.role,
-      planKey: subscriptions.planKey,
-      status: subscriptions.status,
-      currentPeriodEnd: subscriptions.currentPeriodEnd,
-    })
-    .from(users)
-    .leftJoin(subscriptions, eq(users.id, subscriptions.userId));
+  const rows = await db.select().from(recipes);
 
   return {
     props: {
       members: rows.map((r) => ({
         id: r.id,
-        email: r.email,
-        role: r.role,
-        planKey: r.planKey || 'free',
-        status: r.status || 'inactive',
-        currentPeriodEnd: r.currentPeriodEnd || null,
+        title: r.title,
+        createdAt: r.createdAt ?? null,
       })),
     },
   };
@@ -48,8 +34,8 @@ export default function AdminMembers({ members }) {
       <main className="page-container">
         <div className="page-header">
           <div>
-            <h1>Membership Console</h1>
-            <p>View user accounts, roles, and subscription status.</p>
+            <h1>Admin: Recipes</h1>
+            <p>Overview of recipes stored in the system.</p>
           </div>
         </div>
 
@@ -68,19 +54,10 @@ export default function AdminMembers({ members }) {
                   ID
                 </th>
                 <th style={{ borderBottom: '1px solid #ccc', padding: '0.5rem' }}>
-                  Email
+                  Title
                 </th>
                 <th style={{ borderBottom: '1px solid #ccc', padding: '0.5rem' }}>
-                  Role
-                </th>
-                <th style={{ borderBottom: '1px solid #ccc', padding: '0.5rem' }}>
-                  Plan
-                </th>
-                <th style={{ borderBottom: '1px solid #ccc', padding: '0.5rem' }}>
-                  Status
-                </th>
-                <th style={{ borderBottom: '1px solid #ccc', padding: '0.5rem' }}>
-                  Current Period End
+                  Created At
                 </th>
               </tr>
             </thead>
@@ -101,7 +78,7 @@ export default function AdminMembers({ members }) {
                       padding: '0.5rem',
                     }}
                   >
-                    {m.email}
+                    {m.title}
                   </td>
                   <td
                     style={{
@@ -109,31 +86,7 @@ export default function AdminMembers({ members }) {
                       padding: '0.5rem',
                     }}
                   >
-                    {m.role}
-                  </td>
-                  <td
-                    style={{
-                      borderBottom: '1px solid #eee',
-                      padding: '0.5rem',
-                    }}
-                  >
-                    {m.planKey}
-                  </td>
-                  <td
-                    style={{
-                      borderBottom: '1px solid #eee',
-                      padding: '0.5rem',
-                    }}
-                  >
-                    {m.status}
-                  </td>
-                  <td
-                    style={{
-                      borderBottom: '1px solid #eee',
-                      padding: '0.5rem',
-                    }}
-                  >
-                    {m.currentPeriodEnd || '-'}
+                    {m.createdAt || '-'}
                   </td>
                 </tr>
               ))}
