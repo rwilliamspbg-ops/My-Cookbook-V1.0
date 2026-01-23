@@ -6,13 +6,12 @@ async function getRecipe(id: string) {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
   
   try {
-   const response = await fetch(`/api/recipes/${id}`);
-      cache: 'no-store',
-    });
-    
-    if (!res.ok) return null;
-    
-    return await res.json();
+   const response = await fetch(`/api/recipes/${id}`, {
+  cache: 'no-store',
+});
+
+if (!response.ok) return null;
+const recipe = await response.json();
   } catch (error) {
     console.error('Failed to fetch recipe:', error);
     return null;
