@@ -6,7 +6,7 @@ async function getRecipe(id: string) {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
   
   try {
-    const res = await fetch(`${baseUrl}/api/recipes/${id}`, {
+   const response = await fetch(`/api/recipes/${id}`);
       cache: 'no-store',
     });
     
