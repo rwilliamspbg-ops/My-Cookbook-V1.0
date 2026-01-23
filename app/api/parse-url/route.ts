@@ -10,6 +10,7 @@ interface ParsedRecipe {
   servings?: number;
   prepTimeMinutes?: number;
   cookTimeMinutes?: number;
+  imageUrl?: string | null; // ✅ include this
 }
 
 async function scrapeRecipe(url: string): Promise<ParsedRecipe> {
@@ -25,7 +26,14 @@ async function scrapeRecipe(url: string): Promise<ParsedRecipe> {
     throw new Error(`Scraper failed: ${response.status}`);
   }
 
-  return response.json();
+  // If your scraper sometimes returns `image_url`, normalize it here:
+  const data = await response.json();
+  const imageUrl = data.imageUrl ?? data.image_url ?? null;
+
+  return {
+    ...data,
+    imageUrl,
+  };
 }
 
 export async function POST(req: Request) {
@@ -55,7 +63,7 @@ export async function POST(req: Request) {
         description: parsed.description || '',
         ingredients: parsed.ingredients.join('\n'),
         instructions: parsed.instructions.join('\n'),
-        imageUrl: parsed.imageUrl ?? null,
+        imageUrl: parsed.imageUrl ?? null,         // ✅ matches DB column imageUrl
         prepTimeMinutes: parsed.prepTimeMinutes ?? null,
         cookTimeMinutes: parsed.cookTimeMinutes ?? null,
         servings: parsed.servings ?? null,
@@ -83,4 +91,5 @@ export async function POST(req: Request) {
     );
   }
 }
+
 
