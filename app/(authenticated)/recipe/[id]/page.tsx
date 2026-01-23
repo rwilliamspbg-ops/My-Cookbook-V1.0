@@ -25,14 +25,18 @@ async function getRecipe(id: string) {
 export default async function RecipeDetailPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }) {
-  const { id } = await params;
+  const { id } = params;
   const recipe = await getRecipe(id);
 
   if (!recipe) {
     notFound();
   }
+
+  ...
+}
+
 
   return (
     <div className="page-container">
