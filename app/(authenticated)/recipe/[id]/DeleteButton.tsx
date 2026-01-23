@@ -12,7 +12,7 @@ export default function DeleteButton({ recipeId }: { recipeId: string }) {
     setIsDeleting(true);
     
     try {
-      const res = await fetch(`/api/recipes/${recipeId}`, {
+      const res = await fetch(`/api/recipes/${id}`, {
         method: 'DELETE',
       });
 
