@@ -84,7 +84,7 @@ export async function DELETE(req: NextRequest) {
     const json: unknown = await req.json();
     const body = z.object({ id: z.number().int().positive() }).parse(json);
 
-    await db.delete(recipes).where(eq(recipes.id, body.id));
+    await db.delete(recipe).where(eq(recipe.id, body.id));
 
     return NextResponse.json(
       { success: true, message: 'Recipe deleted' },
