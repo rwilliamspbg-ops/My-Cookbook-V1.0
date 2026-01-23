@@ -5,18 +5,9 @@ import DeleteButton from './DeleteButton';
 async function getRecipe(id: string) {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
-  try {
-    const response = await fetch(`${baseUrl}/api/recipes/${id}`, {
-      cache: 'no-store',
-    });
-
-    if (!response.ok) return null;
-
-    return await response.json();
-  } catch (error) {
-    console.error('Failed to fetch recipe:', error);
-    return null;
-  }
+  const res = await fetch(`${baseUrl}/api/recipes/${id}`, { cache: 'no-store' });
+  if (!res.ok) return null;
+  return res.json();
 }
 
 export default async function RecipeDetailPage({
@@ -25,11 +16,9 @@ export default async function RecipeDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const recipe = await getRecipe(id);
 
-  if (!recipe) {
-    notFound();
-  }
+  const recipe = await getRecipe(id);
+  if (!recipe) notFound();
 
   const ingredients = Array.isArray(recipe.ingredients)
     ? recipe.ingredients
