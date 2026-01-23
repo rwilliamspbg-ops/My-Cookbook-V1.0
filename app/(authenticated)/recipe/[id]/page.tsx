@@ -6,14 +6,13 @@ async function getRecipe(id: string) {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
   try {
-    const response = await fetch(`${baseUrl}/api/recipe/${id}`, {
+    const response = await fetch(`${baseUrl}/api/recipes/${id}`, {
       cache: 'no-store',
     });
 
     if (!response.ok) return null;
 
-    const recipe = await response.json();
-    return recipe;
+    return await response.json();
   } catch (error) {
     console.error('Failed to fetch recipe:', error);
     return null;
@@ -25,13 +24,7 @@ export default async function RecipeDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  // params is a Promise – unwrap it
   const { id } = await params;
-
-  if (!id) {
-    notFound();
-  }
-
   const recipe = await getRecipe(id);
 
   if (!recipe) {
