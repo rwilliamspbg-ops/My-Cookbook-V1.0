@@ -23,16 +23,21 @@ async function getRecipe(id: string) {
 export default async function RecipeDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const { id } = params;
+  // params is a Promise – unwrap it
+  const { id } = await params;
+
+  if (!id) {
+    notFound();
+  }
+
   const recipe = await getRecipe(id);
 
   if (!recipe) {
     notFound();
   }
 
-  // Normalize ingredients/instructions in case they are newline strings
   const ingredients = Array.isArray(recipe.ingredients)
     ? recipe.ingredients
     : (recipe.ingredients ?? '').split('\n').filter(Boolean);
@@ -55,7 +60,6 @@ export default async function RecipeDetailPage({
           </p>
         )}
 
-        {/* Action Buttons */}
         <div className="page-header-actions">
           <Link href={`/recipe/${recipe.id}/edit`} className="btn btn-secondary">
             ✏️ Edit
@@ -177,3 +181,4 @@ export default async function RecipeDetailPage({
     </div>
   );
 }
+
