@@ -6,23 +6,37 @@ type Props = object;
 export default function AdminPage(_props: AdminPageProps) {
   // Admin dashboard content
   return (
-    <main className="page-container">
-      <section className="card">
-        <h1 className="card-title">Admin</h1>
-        <p className="card-description">
-          Manage application settings and data here.
-        </p>
+   <main className="page-container">
+        <header className="page-header">
+          <div>
+            <h1>Admin Dashboard</h1>
+            <p>Manage members and system tools.</p>
+          </div>
+          <div className="page-header-actions">
+            <Link href="/" className="btn btn-secondary">
+              ← Back to app
+            </Link>
+          </div>
+        </header>
 
-        <div style={{ marginTop: '1.5rem', display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-          <Link href="/recipes" className="btn btn-secondary">
-            📚 View recipes
-          </Link>
-          <Link href="/recipe/new" className="btn btn-primary">
-            ➕ Add recipe
-          </Link>
-        </div>
-      </section>
-    </main>
+        <section className="grid grid-2">
+          <div className="card">
+            <div className="card-header">
+              <div>
+                <h2 className="card-title">Members</h2>
+                <p className="card-description">
+                  View users and subscription status.
+                </p>
+              </div>
+            </div>
+            <div className="card-footer">
+              <Link href="/admin/members" className="btn btn-primary">
+                Open membership console
+              </Link>
+            </div>
+          </div>
+        </section>
+      </main>
   );
 }
 
