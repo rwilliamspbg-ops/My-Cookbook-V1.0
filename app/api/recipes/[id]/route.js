@@ -4,9 +4,10 @@ import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 export async function GET(request, { params }) {
+  const { id } = await params;
+  
   try {
-    const { id } = await params;
-    
+    // Now that { schema } is passed in lib/db, this will work!
     const recipe = await db.query.recipes.findFirst({
       where: eq(recipes.id, parseInt(id)),
     });
@@ -17,7 +18,6 @@ export async function GET(request, { params }) {
 
     return NextResponse.json(recipe);
   } catch (error) {
-    console.error("Database error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
