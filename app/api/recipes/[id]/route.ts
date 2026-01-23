@@ -6,12 +6,8 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   const recipe = await fetchRecipe(params.id);
-
-  if (!recipe) {
-    return NextResponse.json({ error: 'Not found' }, { status: 404 });
-  }
-
-  return NextResponse.json(recipe, { status: 200 });
+  ...
 }
+
 
 
