@@ -1,13 +1,12 @@
 import OpenAI from 'openai';
 import formidable from 'formidable';
 import fs from 'fs/promises';
-import pdfParse from 'pdf-parse';
+import * as pdfParseModule from 'pdf-parse';
 import { parseUserFromRequest } from '../../lib/auth';
 import { db } from '../../lib/db';
 import { recipes } from '../../lib/db/schema';
 
-
-
+const pdfParse = pdfParseModule.default || pdfParseModule;
 
 export const config = {
   api: {
@@ -128,7 +127,6 @@ export default async function handler(req, res) {
       }
 
       try {
-        
         const dataBuffer = await fs.readFile(file.filepath);
         const pdfData = await pdfParse(dataBuffer);
         extractedText = pdfData.text;
@@ -304,4 +302,3 @@ Important:
     });
   }
 }
-
