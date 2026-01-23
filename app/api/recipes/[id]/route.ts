@@ -13,5 +13,10 @@ export async function GET(
 
   return NextResponse.json(recipe, { status: 200 });
 }
+export default async function RecipeDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const recipe = await getRecipe(id);
+  ...
+}
 
 
