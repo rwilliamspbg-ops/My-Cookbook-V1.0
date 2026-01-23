@@ -26,6 +26,7 @@ export const recipeIngredients = sqliteTable('recipe_ingredients', {
   ingredient: text('ingredient').notNull(),
   quantity: integer('quantity'),
   unit: text('unit'),
+  imageUrl: text('image_url'),
 });
 
 
