@@ -1,23 +1,23 @@
-import { db } from "@/lib/db";
-import { recipes } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
+import { db } from '@/lib/db';
+import { recipes } from '@/lib/schema';
+import { eq } from 'drizzle-orm';
 
-export async function GET(request, { params }) {
-  const { id } = await params;
-  
-  try {
-    // Now that { schema } is passed in lib/db, this will work!
-    const recipe = await db.query.recipe.findFirst({
-      where: eq(recipe.id, parseInt(id)),
-    });
-
-    if (!recipe) {
-      return NextResponse.json({ error: "Recipe not found" }, { status: 404 });
-    }
-
-    return NextResponse.json(recipe);
-  } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+export async function GET(
+  _req: Request,
+  { params }: { params: { id: string } }
+) {
+  const id = Number(params.id);
+  if (Number.isNaN(id)) {
+    return NextResponse.json({ error: 'Invalid id' }, { status: 400 });
   }
+
+  const [recipe] = await db.select().from(recipes).where(eq(recipes.id, id)).limit(1);
+
+  if (!recipe) {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
+
+  return NextResponse.json(recipe, { status: 200 });
 }
+
