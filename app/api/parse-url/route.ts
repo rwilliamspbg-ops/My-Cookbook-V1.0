@@ -1,5 +1,6 @@
-import { db } from '../../../lib/db';
-import { recipes, recipeIngredients } from '../../../lib/db/schema';
+import { NextResponse } from 'next/server';
+import { db } from '@/lib/db';
+import { recipes, recipeIngredients } from '@/lib/schema';
 
 interface ParsedRecipe {
   title: string;
@@ -9,11 +10,9 @@ interface ParsedRecipe {
   servings?: number;
   prepTimeMinutes?: number;
   cookTimeMinutes?: number;
-  imageUrl?: string;
 }
 
 async function scrapeRecipe(url: string): Promise<ParsedRecipe> {
-  // Call Python microservice that uses recipe-scrapers
   const scraperUrl = process.env.RECIPE_SCRAPER_URL || 'http://localhost:5001';
 
   const response = await fetch(`${scraperUrl}/parse-url`, {
@@ -32,46 +31,56 @@ async function scrapeRecipe(url: string): Promise<ParsedRecipe> {
 export async function POST(req: Request) {
   try {
     const { url } = await req.json();
-    if (!url) {
-      return Response.json({ error: 'URL required' }, { status: 400 });
+
+    if (!url || typeof url !== 'string') {
+      return NextResponse.json(
+        { error: 'URL required' },
+        { status: 400 },
+      );
     }
 
     const parsed = await scrapeRecipe(url);
 
-   // app/api/parse-url/route.ts
+    const slug = parsed.title
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
 
-const slug = parsed.title
-  .toLowerCase()
-  .replace(/[^a-z0-9]+/g, '-') 
-  .replace(/^-+|-+$/g, '');    
+    const [recipe] = await db
+      .insert(recipes)
+      .values({
+        title: parsed.title,
+        slug,
+        description: parsed.description || '',
+        ingredients: parsed.ingredients.join('\n'),
+        instructions: parsed.instructions.join('\n'),
+        imageUrl: parsed.imageUrl ?? null,
+        prepTimeMinutes: parsed.prepTimeMinutes ?? null,
+        cookTimeMinutes: parsed.cookTimeMinutes ?? null,
+        servings: parsed.servings ?? null,
+      })
+      .returning();
 
-
-const [recipe] = await db
-  .insert(recipes)
-  .values({
-    title: parsed.title,
-    slug: slug, 
-    description: parsed.description || '',
-    ingredients: parsed.ingredients.join('\n'),
-    instructions: parsed.instructions.join('\n'),
-    imageUrl: parsed.imageUrl,
-    prepTimeMinutes: parsed.prepTimeMinutes,
-    cookTimeMinutes: parsed.cookTimeMinutes,
-    servings: parsed.servings,
-  })
-  .returning();
-
-    if (parsed.ingredients?.length) {
-      const ingredientRows = parsed.ingredients.map((line: string) => ({
-        recipe_id: recipe.id,
+    if (parsed.ingredients && parsed.ingredients.length > 0) {
+      const ingredientRows = parsed.ingredients.map((line) => ({
+        recipeId: recipe.id,
         ingredient: line,
       }));
+
       await db.insert(recipeIngredients).values(ingredientRows);
     }
 
-    return Response.json({ recipe }, { status: 201 });
+    return NextResponse.json(
+      { recipe },
+      { status: 201 },
+    );
   } catch (err) {
     console.error('parse-url error', err);
-    return Response.json({ error: 'Failed to parse recipe URL' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to parse recipe URL' },
+      { status: 500 },
+    );
   }
 }
+
