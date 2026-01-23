@@ -4,13 +4,13 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 interface Recipe {
-  id: string;
+  id: string | number;
   title: string;
   description?: string;
   category?: string;
-  prepTime?: string;
-  cookTime?: string;
-  servings?: string;
+  prepTimeMinutes?: number | string;
+  cookTimeMinutes?: number | string;
+  servings?: number | string;
 }
 
 export default function RecipeCard({ recipe }: { recipe: Recipe }) {
@@ -37,7 +37,7 @@ export default function RecipeCard({ recipe }: { recipe: Recipe }) {
     >
       {/* Category badge */}
       {recipe.category && (
-        <div 
+        <div
           style={{
             position: 'absolute',
             top: '12px',
@@ -48,7 +48,7 @@ export default function RecipeCard({ recipe }: { recipe: Recipe }) {
             borderRadius: '999px',
             fontSize: '0.75rem',
             fontWeight: 500,
-            border: '1px solid rgba(139,92,246,0.4)'
+            border: '1px solid rgba(139,92,246,0.4)',
           }}
         >
           {recipe.category}
@@ -56,18 +56,18 @@ export default function RecipeCard({ recipe }: { recipe: Recipe }) {
       )}
 
       <div style={{ flex: 1 }}>
-        <h3 
-          style={{ 
-            marginBottom: '0.75rem', 
+        <h3
+          style={{
+            marginBottom: '0.75rem',
             fontSize: '1.25rem',
             fontWeight: 600,
             lineHeight: '1.4',
-            paddingRight: recipe.category ? '80px' : '0'
+            paddingRight: recipe.category ? '80px' : '0',
           }}
         >
           {recipe.title || 'Untitled Recipe'}
         </h3>
-        
+
         {recipe.description && (
           <p
             style={{
@@ -79,7 +79,7 @@ export default function RecipeCard({ recipe }: { recipe: Recipe }) {
               display: '-webkit-box',
               WebkitLineClamp: 2,
               WebkitBoxOrient: 'vertical',
-              lineHeight: '1.5'
+              lineHeight: '1.5',
             }}
           >
             {recipe.description}
@@ -88,8 +88,8 @@ export default function RecipeCard({ recipe }: { recipe: Recipe }) {
       </div>
 
       {/* Recipe meta info */}
-      <div 
-        style={{ 
+      <div
+        style={{
           display: 'flex',
           flexWrap: 'wrap',
           gap: '0.75rem',
@@ -97,17 +97,17 @@ export default function RecipeCard({ recipe }: { recipe: Recipe }) {
           opacity: 0.65,
           marginTop: 'auto',
           paddingTop: '1rem',
-          borderTop: '1px solid rgba(255,255,255,0.05)'
+          borderTop: '1px solid rgba(255,255,255,0.05)',
         }}
       >
-        {recipe.prepTime && (
+        {recipe.prepTimeMinutes && (
           <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-            ⏱️ {recipe.prepTime}
+            ⏱️ {recipe.prepTimeMinutes}
           </span>
         )}
-        {recipe.cookTime && (
+        {recipe.cookTimeMinutes && (
           <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-            🔥 {recipe.cookTime}
+            🔥 {recipe.cookTimeMinutes}
           </span>
         )}
         {recipe.servings && (
@@ -119,3 +119,4 @@ export default function RecipeCard({ recipe }: { recipe: Recipe }) {
     </Link>
   );
 }
+
