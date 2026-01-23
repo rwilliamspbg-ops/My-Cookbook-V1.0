@@ -3,15 +3,19 @@ import Link from 'next/link';
 import DeleteButton from './DeleteButton';
 
 async function getRecipe(id: string) {
+  // Use absolute URL for server-side fetching
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
   
   try {
-   const response = await fetch(`/api/recipes/${id}`, {
-  cache: 'no-store',
-});
+    const response = await fetch(`${baseUrl}/api/recipes/${id}`, {
+      cache: 'no-store',
+    });
 
-if (!response.ok) return null;
-const recipe = await response.json();
+    if (!response.ok) return null;
+    
+    // FIX: You must return the parsed JSON
+    const recipe = await response.json();
+    return recipe; 
   } catch (error) {
     console.error('Failed to fetch recipe:', error);
     return null;
