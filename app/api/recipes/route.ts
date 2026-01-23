@@ -13,7 +13,6 @@ const createRecipeSchema = z.object({
   prep_time: z.number().int().nonnegative().optional(),
   cook_time: z.number().int().nonnegative().optional(),
   servings: z.number().int().positive().optional(),
-  imageUrl: z.string().url().optional(),
 });
 
 type CreateRecipeInput = z.infer<typeof createRecipeSchema>;
