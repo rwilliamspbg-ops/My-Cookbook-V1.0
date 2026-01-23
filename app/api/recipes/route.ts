@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
         .replace(/\s+/g, '-');
 
     const [inserted] = await db
-      .insert(recipes)
+      .insert(recipe)
       .values({
         title: body.title,
         description: body.description,
