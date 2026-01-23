@@ -26,7 +26,7 @@ export async function GET() {
     console.error('GET /api/recipes error:', error);
     return NextResponse.json(
       { error: 'Failed to fetch recipes' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
         .replace(/\s+/g, '-');
 
     const [inserted] = await db
-      .insert(recipe)
+      .insert(recipes)
       .values({
         title: body.title,
         description: body.description,
@@ -61,20 +61,20 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(
       { success: true, recipe: inserted },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (err) {
     if (err instanceof z.ZodError) {
       return NextResponse.json(
         { error: 'Invalid request body', details: err.issues },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     console.error('POST /api/recipes error', err);
     return NextResponse.json(
       { error: 'Failed to save recipe' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -84,24 +84,24 @@ export async function DELETE(req: NextRequest) {
     const json: unknown = await req.json();
     const body = z.object({ id: z.number().int().positive() }).parse(json);
 
-    await db.delete(recipe).where(eq(recipe.id, body.id));
+    await db.delete(recipes).where(eq(recipes.id, body.id));
 
     return NextResponse.json(
       { success: true, message: 'Recipe deleted' },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (err) {
     if (err instanceof z.ZodError) {
       return NextResponse.json(
         { error: 'Invalid request body', details: err.issues },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     console.error('DELETE /api/recipes error', err);
     return NextResponse.json(
       { error: 'Failed to delete recipe' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
