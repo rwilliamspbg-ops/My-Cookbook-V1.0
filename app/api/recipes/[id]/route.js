@@ -9,7 +9,7 @@ export async function GET(request, { params }) {
   try {
     // Now that { schema } is passed in lib/db, this will work!
     const recipe = await db.query.recipe.findFirst({
-      where: eq(recipes.id, parseInt(id)),
+      where: eq(recipe.id, parseInt(id)),
     });
 
     if (!recipe) {
