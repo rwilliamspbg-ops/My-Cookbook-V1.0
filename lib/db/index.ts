@@ -4,16 +4,26 @@ import * as schema from './schema';
 import { eq } from 'drizzle-orm';
 
 const sqlite = new Database('sqlite.db');
+
+// This initializes drizzle with your schema so db.query works
 export const db = drizzle(sqlite, { schema });
 
-// Helper function for server components
-export async function getRecipeById(id) {
+/**
+ * Helper to fetch a single recipe by ID
+ * Usage: const recipe = await fetchRecipe(5);
+ */
+export async function fetchRecipe(id) {
   try {
-    return await db.query.recipes.findFirst({
-      where: eq(schema.recipes.id, parseInt(id)),
+    const recipeId = parseInt(id);
+    if (isNaN(recipeId)) return null;
+
+    const result = await db.query.recipes.findFirst({
+      where: eq(schema.recipes.id, recipeId),
     });
+
+    return result || null;
   } catch (error) {
-    console.error("DB Fetch Error:", error);
-    return null;
+    console.error('Database fetch error:', error);
+    throw error;
   }
 }
