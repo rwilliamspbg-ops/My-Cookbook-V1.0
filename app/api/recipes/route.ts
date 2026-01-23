@@ -20,7 +20,7 @@ type CreateRecipeInput = z.infer<typeof createRecipeSchema>;
 
 export async function GET() {
   try {
-    const allRecipes = await db.select().from(recipe).limit(100);
+    const allRecipes = await db.select().from(recipes).limit(100);
     return NextResponse.json(allRecipes, { status: 200 });
   } catch (error) {
     console.error('GET /api/recipes error:', error);
