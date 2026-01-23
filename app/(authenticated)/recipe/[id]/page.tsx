@@ -3,19 +3,17 @@ import Link from 'next/link';
 import DeleteButton from './DeleteButton';
 
 async function getRecipe(id: string) {
-  // Use absolute URL for server-side fetching
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-  
+
   try {
     const response = await fetch(`${baseUrl}/api/recipes/${id}`, {
       cache: 'no-store',
     });
 
     if (!response.ok) return null;
-    
-    // FIX: You must return the parsed JSON
+
     const recipe = await response.json();
-    return recipe; 
+    return recipe;
   } catch (error) {
     console.error('Failed to fetch recipe:', error);
     return null;
@@ -34,9 +32,14 @@ export default async function RecipeDetailPage({
     notFound();
   }
 
-  ...
-}
+  // Normalize ingredients/instructions in case they are newline strings
+  const ingredients = Array.isArray(recipe.ingredients)
+    ? recipe.ingredients
+    : (recipe.ingredients ?? '').split('\n').filter(Boolean);
 
+  const instructions = Array.isArray(recipe.instructions)
+    ? recipe.instructions
+    : (recipe.instructions ?? '').split('\n').filter(Boolean);
 
   return (
     <div className="page-container">
@@ -45,7 +48,7 @@ export default async function RecipeDetailPage({
         <h1 className="card-title" style={{ marginBottom: '0.875rem' }}>
           {recipe.title || 'Untitled Recipe'}
         </h1>
-        
+
         {recipe.description && (
           <p className="card-description" style={{ marginBottom: '1.5rem' }}>
             {recipe.description}
@@ -62,31 +65,32 @@ export default async function RecipeDetailPage({
       </div>
 
       {/* Quick Info Card */}
-      <div 
-        className="card" 
-        style={{ 
+      <div
+        className="card"
+        style={{
           marginBottom: '1.5rem',
-          background: 'radial-gradient(circle at 0% 0%, rgba(139,92,246,0.15), rgba(20,16,34,0.8) 70%)',
+          background:
+            'radial-gradient(circle at 0% 0%, rgba(139,92,246,0.15), rgba(20,16,34,0.8) 70%)',
         }}
       >
         <div className="grid grid-3">
-          {recipe.prepTime && (
+          {recipe.prepTimeMinutes && (
             <div>
               <h4 style={{ fontSize: '0.75rem', marginBottom: '0.5rem', opacity: 0.7 }}>
                 PREP TIME
               </h4>
               <p style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff' }}>
-                {recipe.prepTime}
+                {recipe.prepTimeMinutes}
               </p>
             </div>
           )}
-          {recipe.cookTime && (
+          {recipe.cookTimeMinutes && (
             <div>
               <h4 style={{ fontSize: '0.75rem', marginBottom: '0.5rem', opacity: 0.7 }}>
                 COOK TIME
               </h4>
               <p style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff' }}>
-                {recipe.cookTime}
+                {recipe.cookTimeMinutes}
               </p>
             </div>
           )}
@@ -114,61 +118,51 @@ export default async function RecipeDetailPage({
       </div>
 
       {/* Ingredients Card */}
-      {recipe.ingredients && (
+      {ingredients.length > 0 && (
         <div className="card" style={{ marginBottom: '1.5rem' }}>
           <h2 className="section-title">
             <span className="section-title-icon">🥕</span>
             Ingredients
           </h2>
           <div className="content-section">
-            {Array.isArray(recipe.ingredients) ? (
-              <ul style={{ fontSize: '1.0625rem' }}>
-                {recipe.ingredients.map((ingredient: string, index: number) => (
-                  <li key={index}>
-                    {ingredient}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <div className="prose">
-                {recipe.ingredients}
-              </div>
-            )}
+            <ul style={{ fontSize: '1.0625rem' }}>
+              {ingredients.map((ingredient: string, index: number) => (
+                <li key={index}>{ingredient}</li>
+              ))}
+            </ul>
           </div>
         </div>
       )}
 
       {/* Instructions Card */}
-      {recipe.instructions && (
+      {instructions.length > 0 && (
         <div className="card" style={{ marginBottom: '1.5rem' }}>
           <h2 className="section-title">
             <span className="section-title-icon">👨‍🍳</span>
             Instructions
           </h2>
           <div className="content-section">
-            {Array.isArray(recipe.instructions) ? (
-              <ol style={{ fontSize: '1.0625rem', lineHeight: 1.9 }}>
-                {recipe.instructions.map((instruction: string, index: number) => (
-                  <li key={index} style={{ marginBottom: '1.25rem', paddingLeft: '0.5rem' }}>
-                    {instruction}
-                  </li>
-                ))}
-              </ol>
-            ) : (
-              <div className="prose">
-                {recipe.instructions}
-              </div>
-            )}
+            <ol style={{ fontSize: '1.0625rem', lineHeight: 1.9 }}>
+              {instructions.map((instruction: string, index: number) => (
+                <li
+                  key={index}
+                  style={{ marginBottom: '1.25rem', paddingLeft: '0.5rem' }}
+                >
+                  {instruction}
+                </li>
+              ))}
+            </ol>
           </div>
         </div>
       )}
 
       {/* Notes Card */}
       {recipe.notes && (
-        <div 
+        <div
           className="card"
           style={{
-            background: 'radial-gradient(circle at 100% 100%, rgba(96,165,250,0.12), rgba(20,16,34,0.8) 70%)',
+            background:
+              'radial-gradient(circle at 100% 100%, rgba(96,165,250,0.12), rgba(20,16,34,0.8) 70%)',
           }}
         >
           <h2 className="section-title">
@@ -176,9 +170,7 @@ export default async function RecipeDetailPage({
             Notes & Tips
           </h2>
           <div className="content-section">
-            <div className="prose">
-              {recipe.notes}
-            </div>
+            <div className="prose">{recipe.notes}</div>
           </div>
         </div>
       )}
