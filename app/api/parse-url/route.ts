@@ -1,82 +1,66 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { recipes } from '@/lib/schema';
+import { z } from 'zod';
 
-interface ParsedRecipe {
-  title: string;
-  description?: string;
-  ingredients: string[];
-  instructions: string[];
-  servings?: number;
-  prepTimeMinutes?: number;
-  cookTimeMinutes?: number;
-  imageUrl?: string | null;
-}
+const createRecipeSchema = z.object({
+  title: z.string().min(1),
+  description: z.string().optional().default(''),
+  ingredients: z.string().optional().default(''),
+  instructions: z.string().optional().default(''),
+  prepTimeMinutes: z.number().int().nonnegative().optional(),
+  cookTimeMinutes: z.number().int().nonnegative().optional(),
+  servings: z.number().int().positive().optional(),
+  imageUrl: z.string().url().optional(),
+  category: z.string().optional(),
+  notes: z.string().optional(),
+});
 
-async function scrapeRecipe(url: string): Promise<ParsedRecipe> {
-  const scraperUrl = process.env.RECIPE_SCRAPER_URL || 'http://localhost:5001';
-
-  const response = await fetch(`${scraperUrl}/parse-url`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ url }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Scraper failed: ${response.status}`);
+export async function GET() {
+  try {
+    const allRecipes = await db.select().from(recipes).limit(200);
+    return NextResponse.json(allRecipes, { status: 200 });
+  } catch (error) {
+    console.error('GET /api/recipes error:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch recipes' },
+      { status: 500 },
+    );
   }
-
-  const data = await response.json();
-  const imageUrl = data.imageUrl ?? data.image_url ?? null;
-
-  return {
-    ...data,
-    imageUrl,
-  };
 }
 
 export async function POST(req: Request) {
   try {
-    const { url } = await req.json();
-
-    if (!url || typeof url !== 'string') {
-      return NextResponse.json(
-        { error: 'URL required' },
-        { status: 400 },
-      );
-    }
-
-    const parsed = await scrapeRecipe(url);
+    const json = await req.json();
+    const body = createRecipeSchema.parse(json);
 
     const recipeValues = {
       userId: 1, // TODO: replace with real user id from auth/session
-      title: parsed.title,
-      description: parsed.description || '',
-      ingredients: parsed.ingredients.join('\n'),
-      instructions: parsed.instructions.join('\n'),
-      imageUrl: parsed.imageUrl ?? null,
+      title: body.title,
+      description: body.description ?? '',
+      ingredients: body.ingredients ?? '',
+      instructions: body.instructions ?? '',
+      imageUrl: body.imageUrl ?? null,
       prepTimeMinutes:
-        parsed.prepTimeMinutes != null ? String(parsed.prepTimeMinutes) : null,
+        body.prepTimeMinutes != null ? String(body.prepTimeMinutes) : null,
       cookTimeMinutes:
-        parsed.cookTimeMinutes != null ? String(parsed.cookTimeMinutes) : null,
+        body.cookTimeMinutes != null ? String(body.cookTimeMinutes) : null,
       servings:
-        parsed.servings != null ? String(parsed.servings) : null,
-      // category and notes are optional and can be added later
+        body.servings != null ? String(body.servings) : null,
+      category: body.category ?? null,
+      notes: body.notes ?? null,
     } satisfies typeof recipes.$inferInsert;
 
-    const [recipe] = await db
+    const [inserted] = await db
       .insert(recipes)
       .values(recipeValues)
       .returning();
 
-    return NextResponse.json(
-      { recipe },
-      { status: 201 },
-    );
+    return NextResponse.json(inserted, { status: 201 });
   } catch (err) {
-    console.error('parse-url error', err);
+    console.error('POST /api/recipes error', err);
     return NextResponse.json(
-      { error: 'Failed to parse recipe URL' },
+      { error: 'Failed to save recipe' },
       { status: 500 },
     );
   }
