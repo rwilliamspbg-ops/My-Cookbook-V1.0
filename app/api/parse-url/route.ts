@@ -55,23 +55,23 @@ export async function POST(req: Request) {
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '');
 
+    const recipeValues = {
+      userId: 1, // TODO: replace with real user id from auth/session
+      title: parsed.title,
+      description: parsed.description || '',
+      ingredients: parsed.ingredients.join('\n'),
+      instructions: parsed.instructions.join('\n'),
+      imageUrl: parsed.imageUrl ?? null,
+      prepTimeMinutes: parsed.prepTimeMinutes ?? null,
+      cookTimeMinutes: parsed.cookTimeMinutes ?? null,
+      servings: parsed.servings ?? null,
+      // category and notes can be added here if you want
+    } satisfies typeof recipes.$inferInsert;
+
     const [recipe] = await db
-  .insert(recipes)
-  .values({
-    userId: 1, // TODO: replace with real user id from auth/session
-    title: parsed.title,
-    description: parsed.description || '',
-    ingredients: parsed.ingredients.join('\n'),
-    instructions: parsed.instructions.join('\n'),
-    imageUrl: parsed.imageUrl ?? null,
-    prepTimeMinutes: parsed.prepTimeMinutes ?? null,
-    cookTimeMinutes: parsed.cookTimeMinutes ?? null,
-    servings: parsed.servings ?? null,
-    // category and notes can be added here if you want
-  })
-  .returning();
-
-
+      .insert(recipes)
+      .values(recipeValues)
+      .returning();
 
     return NextResponse.json(
       { recipe },
