@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { recipes, recipeIngredients } from '@/lib/schema';
+import { recipes } from '@/lib/schema';
 
 interface ParsedRecipe {
   title: string;
@@ -72,14 +72,6 @@ export async function POST(req: Request) {
   .returning();
 
 
-    if (parsed.ingredients && parsed.ingredients.length > 0) {
-      const ingredientRows = parsed.ingredients.map((line) => ({
-        recipeId: recipe.id,
-        ingredient: line,
-      }));
-
-      await db.insert(recipeIngredients).values(ingredientRows);
-    }
 
     return NextResponse.json(
       { recipe },
