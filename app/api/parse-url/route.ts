@@ -59,7 +59,6 @@ export async function POST(req: Request) {
       .insert(recipes)
       .values({
         title: parsed.title,
-        slug,
         description: parsed.description || '',
         ingredients: parsed.ingredients.join('\n'),
         instructions: parsed.instructions.join('\n'),
