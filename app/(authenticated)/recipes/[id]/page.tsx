@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import RecipeCard from './[id]/RecipeCard';
+
 
 interface Recipe {
   id: string | number;
