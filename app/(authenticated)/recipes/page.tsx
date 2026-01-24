@@ -1,6 +1,6 @@
 import { db } from '@/lib/db';
 import { recipes as recipesTable } from '@/lib/schema';
-import RecipeCard from '@/app/(authenticated)/recipes/RecipeCard'; // Adjust path if needed
+import RecipeCard from '@/app/(authenticated)/recipes/[id]/RecipeCard'; // Adjust path if needed
 import Link from 'next/link';
 
 export default async function RecipesPage() {
