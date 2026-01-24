@@ -1,5 +1,5 @@
 // app/(authenticated)/admin/page.tsx
-import Link from 'next/link';
+import Link as _Link from 'next/link';
 
 type Props = object;
 
