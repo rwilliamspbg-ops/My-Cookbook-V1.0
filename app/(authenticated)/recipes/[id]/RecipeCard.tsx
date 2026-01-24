@@ -18,7 +18,7 @@ export default function RecipeCard({ recipe }: { recipe: Recipe }) {
 
   return (
     <Link
-      href={`/recipe/${recipe.id}`}
+      href={`/recipes/${recipe?.id}`}
       className="card"
       style={{
         textDecoration: 'none',
