@@ -4,46 +4,61 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 interface DeleteButtonProps {
-  id: number | string;
+  recipeId: number | string;
 }
 
-export default function DeleteButton({ id }: DeleteButtonProps) {
+export default function DeleteButton({ recipeId }: DeleteButtonProps) {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
-    if (!confirm('Are you sure you want to delete this recipe?')) return;
+    // 1. Confirmation dialog
+    if (!confirm('Are you sure you want to delete this recipe? This action cannot be undone.')) {
+      return;
+    }
 
-    setLoading(true);
+    setIsDeleting(true);
 
     try {
-      const res = await fetch(`/api/recipes/${id}`, {
+      // 2. Call your API route to handle the deletion
+      const response = await fetch(`/api/recipes/${recipeId}`, {
         method: 'DELETE',
       });
 
-      if (!res.ok) {
-        throw new Error('Failed to delete recipe');
+      if (response.ok) {
+        // 3. Redirect to the main recipes list on success
+        router.push('/recipes');
+        router.refresh(); // Refresh the list to show it's gone
+      } else {
+        const errorData = await response.json();
+        alert(`Failed to delete recipe: ${errorData.message || 'Unknown error'}`);
       }
-
-      router.push('/recipes');
-      router.refresh();
-    } catch (err) {
-      console.error(err);
-      alert('Error deleting recipe');
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert('An error occurred while trying to delete the recipe.');
     } finally {
-      setLoading(false);
+      setIsDeleting(false);
     }
   };
 
   return (
     <button
-      type="button"
       onClick={handleDelete}
-      disabled={loading}
-      className="text-red-600 hover:underline disabled:opacity-50"
+      disabled={isDeleting}
+      style={{
+        backgroundColor: '#ef4444',
+        color: 'white',
+        border: 'none',
+        padding: '0.6rem 1.2rem',
+        borderRadius: '6px',
+        cursor: isDeleting ? 'not-allowed' : 'pointer',
+        fontSize: '0.9rem',
+        fontWeight: '600',
+        transition: 'opacity 0.2s ease',
+        opacity: isDeleting ? 0.7 : 1,
+      }}
     >
-      {loading ? 'Deleting...' : 'Delete'}
+      {isDeleting ? 'Deleting...' : '🗑️ Delete Recipe'}
     </button>
   );
 }
-
