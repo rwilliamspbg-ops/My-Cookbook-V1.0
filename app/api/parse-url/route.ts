@@ -10,7 +10,7 @@ interface ParsedRecipe {
   servings?: number;
   prepTimeMinutes?: number;
   cookTimeMinutes?: number;
-  imageUrl?: string | null; // ✅ include this
+  imageUrl?: string | null;
 }
 
 async function scrapeRecipe(url: string): Promise<ParsedRecipe> {
@@ -26,7 +26,6 @@ async function scrapeRecipe(url: string): Promise<ParsedRecipe> {
     throw new Error(`Scraper failed: ${response.status}`);
   }
 
-  // If your scraper sometimes returns `image_url`, normalize it here:
   const data = await response.json();
   const imageUrl = data.imageUrl ?? data.image_url ?? null;
 
@@ -49,12 +48,6 @@ export async function POST(req: Request) {
 
     const parsed = await scrapeRecipe(url);
 
-    const slug = parsed.title
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '');
-
     const recipeValues = {
       userId: 1, // TODO: replace with real user id from auth/session
       title: parsed.title,
@@ -62,10 +55,13 @@ export async function POST(req: Request) {
       ingredients: parsed.ingredients.join('\n'),
       instructions: parsed.instructions.join('\n'),
       imageUrl: parsed.imageUrl ?? null,
-      prepTimeMinutes: parsed.prepTimeMinutes ?? null,
-      cookTimeMinutes: parsed.cookTimeMinutes ?? null,
-      servings: parsed.servings ?? null,
-      // category and notes can be added here if you want
+      prepTimeMinutes:
+        parsed.prepTimeMinutes != null ? String(parsed.prepTimeMinutes) : null,
+      cookTimeMinutes:
+        parsed.cookTimeMinutes != null ? String(parsed.cookTimeMinutes) : null,
+      servings:
+        parsed.servings != null ? String(parsed.servings) : null,
+      // category and notes are optional and can be added later
     } satisfies typeof recipes.$inferInsert;
 
     const [recipe] = await db
