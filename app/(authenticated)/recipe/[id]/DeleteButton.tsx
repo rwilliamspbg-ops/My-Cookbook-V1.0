@@ -3,62 +3,47 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export default function DeleteButton({ recipeId }: { recipeId: string }) {
+interface DeleteButtonProps {
+  id: number | string;
+}
+
+export default function DeleteButton({ id }: DeleteButtonProps) {
   const router = useRouter();
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleDelete = async () => {
-    setIsDeleting(true);
-    
+    if (!confirm('Are you sure you want to delete this recipe?')) return;
+
+    setLoading(true);
+
     try {
       const res = await fetch(`/api/recipes/${id}`, {
         method: 'DELETE',
       });
 
-      if (res.ok) {
-        router.push('/recipes');
-        router.refresh();
-      } else {
-        alert('Failed to delete recipe');
-        setIsDeleting(false);
+      if (!res.ok) {
+        throw new Error('Failed to delete recipe');
       }
-    } catch (error) {
-      console.error('Error deleting recipe:', error);
-      alert('Failed to delete recipe');
-      setIsDeleting(false);
+
+      router.push('/recipes');
+      router.refresh();
+    } catch (err) {
+      console.error(err);
+      alert('Error deleting recipe');
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (showConfirm) {
-    return (
-      <div style={{ display: 'flex', gap: '0.5rem' }}>
-        <button
-          onClick={handleDelete}
-          disabled={isDeleting}
-          className="btn btn-primary"
-          style={{ background: '#dc2626' }}
-        >
-          {isDeleting ? 'Deleting...' : 'Confirm Delete'}
-        </button>
-        <button
-          onClick={() => setShowConfirm(false)}
-          disabled={isDeleting}
-          className="btn btn-secondary"
-        >
-          Cancel
-        </button>
-      </div>
-    );
-  }
-
   return (
     <button
-      onClick={() => setShowConfirm(true)}
-      className="btn btn-secondary"
-      style={{ color: '#dc2626' }}
+      type="button"
+      onClick={handleDelete}
+      disabled={loading}
+      className="text-red-600 hover:underline disabled:opacity-50"
     >
-      🗑️ Delete
+      {loading ? 'Deleting...' : 'Delete'}
     </button>
   );
 }
+
