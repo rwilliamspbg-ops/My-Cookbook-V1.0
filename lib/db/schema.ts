@@ -12,7 +12,7 @@ export const recipes = sqliteTable('recipes', {
   servings: text('servings'),
   category: text('category'),
   notes: text('notes'),
-  imageUrl: text('image_url'),
+  imageUrl: text('imageUrl'),
 });
 
 export const collections = sqliteTable('collections', {
