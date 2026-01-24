@@ -1,24 +1,22 @@
 import { db } from '@/lib/db';
 import { recipes } from '@/lib/schema';
 import { eq } from 'drizzle-orm';
-import RecipeDetailPage from './RecipeDetailPage'; // Your client component
+import RecipeDetailPage from './RecipeDetailPage';
 import { notFound } from 'next/navigation';
 
-export default async function Page({ params }: { params: { id: string } }) {
-  // 1. Fetch data on the server
-  const recipeId = parseInt(params.id);
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
+  const recipeId = parseInt(resolvedParams.id);
   
   const [recipe] = await db
     .select()
     .from(recipes)
     .where(eq(recipes.id, recipeId));
 
-  // 2. Handle missing recipe
   if (!recipe) {
     notFound(); 
   }
 
-  // 3. Pass data to your existing client component
+  // Passing the database record to your new Client Component
   return <RecipeDetailPage recipe={recipe} />;
 }
-
