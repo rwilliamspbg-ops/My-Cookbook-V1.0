@@ -90,12 +90,7 @@ const nextConfig = {
     ignoreBuildErrors: false,
   },
 
-  // ESLint configuration
-  eslint: {
-    // Set to true to allow production builds even with ESLint errors
-    // ⚠️ NOT recommended - fix errors instead!
-    ignoreDuringBuilds: false,
-  },
+ 
 
   // Output configuration for deployment
   // output: 'standalone', // Uncomment for Docker deployments
