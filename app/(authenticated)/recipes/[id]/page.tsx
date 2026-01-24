@@ -1,128 +1,75 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
-import RecipeCard from './[id]/RecipeCard';
-
+import DeleteButton from './DeleteButton';
 
 interface Recipe {
   id: string | number;
   title: string;
   description?: string;
   category?: string;
+  ingredients?: string; // These are usually JSON strings or arrays in your DB
+  instructions?: string;
   prepTimeMinutes?: number | string;
   cookTimeMinutes?: number | string;
   servings?: number | string;
 }
 
-export default function RecipeCard({ recipe }: { recipe: Recipe }) {
-  const [isHovered, setIsHovered] = useState(false);
-  
+export default function RecipeDetailPage({ recipe }: { recipe: Recipe }) {
+  // Guard clause to handle missing data
   if (!recipe) {
-    return null; // Or return a loading placeholder/skeleton
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <h2>Recipe not found</h2>
+        <Link href="/recipes">Back to all recipes</Link>
+      </div>
+    );
   }
 
+  // If ingredients/instructions are stored as JSON strings, parse them
+  const ingredients = typeof recipe.ingredients === 'string' 
+    ? JSON.parse(recipe.ingredients) 
+    : [];
+  const instructions = typeof recipe.instructions === 'string' 
+    ? JSON.parse(recipe.instructions) 
+    : [];
+
   return (
-    <Link
-      href={`/recipe/${recipe?.id}`}
-      className="card"
-      style={{
-        textDecoration: 'none',
-        transition: 'all 0.2s ease',
-        cursor: 'pointer',
-        position: 'relative',
-        overflow: 'hidden',
-        minHeight: '180px',
-        display: 'flex',
-        flexDirection: 'column',
-        transform: isHovered ? 'translateY(-4px)' : 'translateY(0)',
-        boxShadow: isHovered ? '0 12px 24px rgba(139,92,246,0.3)' : undefined,
-      }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      {/* Category badge */}
-      {recipe.category && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '12px',
-            right: '12px',
-            padding: '0.25rem 0.75rem',
-            background: 'rgba(139,92,246,0.3)',
-            backdropFilter: 'blur(10px)',
-            borderRadius: '999px',
-            fontSize: '0.75rem',
-            fontWeight: 500,
-            border: '1px solid rgba(139,92,246,0.4)',
-          }}
-        >
-          {recipe.category}
+    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem' }}>
+      <header style={{ marginBottom: '2rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '1rem' }}>
+        <Link href="/recipes" style={{ color: '#8b5cf6', textDecoration: 'none', fontSize: '0.9rem' }}>
+          ← Back to Recipes
+        </Link>
+        <h1 style={{ fontSize: '2.5rem', marginTop: '1rem' }}>{recipe.title}</h1>
+        <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', opacity: 0.8 }}>
+          {recipe.prepTimeMinutes && <span>⏱️ Prep: {recipe.prepTimeMinutes} mins</span>}
+          {recipe.cookTimeMinutes && <span>🔥 Cook: {recipe.cookTimeMinutes} mins</span>}
+          {recipe.servings && <span>🍽️ Serves: {recipe.servings}</span>}
         </div>
-      )}
+      </header>
 
-      <div style={{ flex: 1 }}>
-        <h3
-          style={{
-            marginBottom: '0.75rem',
-            fontSize: '1.25rem',
-            fontWeight: 600,
-            lineHeight: '1.4',
-            paddingRight: recipe.category ? '80px' : '0',
-          }}
-        >
-          {recipe.title || 'Untitled Recipe'}
-        </h3>
+      <section style={{ marginBottom: '2rem' }}>
+        <h2 style={{ color: '#a78bfa', marginBottom: '1rem' }}>Ingredients</h2>
+        <ul>
+          {ingredients.map((item: string, i: number) => (
+            <li key={i} style={{ marginBottom: '0.5rem' }}>{item}</li>
+          ))}
+        </ul>
+      </section>
 
-        {recipe.description && (
-          <p
-            style={{
-              fontSize: '0.875rem',
-              opacity: 0.75,
-              marginBottom: '1rem',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              display: '-webkit-box',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              lineHeight: '1.5',
-            }}
-          >
-            {recipe.description}
-          </p>
-        )}
-      </div>
+      <section style={{ marginBottom: '2rem' }}>
+        <h2 style={{ color: '#a78bfa', marginBottom: '1rem' }}>Instructions</h2>
+        <ol>
+          {instructions.map((step: string, i: number) => (
+            <li key={i} style={{ marginBottom: '1rem', lineHeight: '1.6' }}>{step}</li>
+          ))}
+        </ol>
+      </section>
 
-      {/* Recipe meta info */}
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: '0.75rem',
-          fontSize: '0.8125rem',
-          opacity: 0.65,
-          marginTop: 'auto',
-          paddingTop: '1rem',
-          borderTop: '1px solid rgba(255,255,255,0.05)',
-        }}
-      >
-        {recipe.prepTimeMinutes && (
-          <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-            ⏱️ {recipe.prepTimeMinutes}
-          </span>
-        )}
-        {recipe.cookTimeMinutes && (
-          <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-            🔥 {recipe.cookTimeMinutes}
-          </span>
-        )}
-        {recipe.servings && (
-          <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-            🍽️ {recipe.servings}
-          </span>
-        )}
-      </div>
-    </Link>
+      <footer style={{ marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+        <DeleteButton recipeId={recipe.id} />
+      </footer>
+    </div>
   );
 }
 
