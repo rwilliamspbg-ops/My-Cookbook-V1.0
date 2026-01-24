@@ -63,23 +63,12 @@ function basicRecipeShapeValid(recipe) {
 
   const { title, ingredients, instructions } = recipe;
 
-  const hasTitle =
-    typeof title === 'string' && title.trim().length > 0;
-  const hasIngredients =
-    Array.isArray(ingredients) &&
-    ingredients.some(
-      (s) => typeof s === 'string' && s.trim().length > 0
-    );
-  const hasInstructions =
-    Array.isArray(instructions) &&
-    instructions.some(
-      (s) => typeof s === 'string' && s.trim().length > 0
-    );
+  const hasTitle = typeof title === 'string' && title.trim().length > 0;
+  const hasIngredients = Array.isArray(ingredients) && ingredients.length > 0;
+  const hasInstructions = Array.isArray(instructions) && instructions.length > 0;
 
-  if (!hasTitle && !hasIngredients && !hasInstructions) {
-    return false;
-  }
-  return true;
+  // Change: Return true if ANY of these exist, rather than requiring ALL of them
+  return hasTitle || hasIngredients || hasInstructions;
 }
 
 function _coerceNumberOrNull(value) {

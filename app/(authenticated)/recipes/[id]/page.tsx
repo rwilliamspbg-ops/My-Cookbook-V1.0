@@ -15,10 +15,14 @@ interface Recipe {
 
 export default function RecipeCard({ recipe }: { recipe: Recipe }) {
   const [isHovered, setIsHovered] = useState(false);
+  
+  if (!recipe) {
+    return null; // Or return a loading placeholder/skeleton
+  }
 
   return (
     <Link
-      href={`/recipe/${recipe.id}`}
+      href={`/recipe/${recipe?.id}`}
       className="card"
       style={{
         textDecoration: 'none',
